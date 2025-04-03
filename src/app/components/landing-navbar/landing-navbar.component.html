@@ -1,15 +1,17 @@
 <div class="navbar">
   <div class="logo">
-    <p>PLACEHOLDER IMAGE</p>
+    <img ngSrc="/img/LOGO_RVB_BLANC.svg" height="85" width="85" alt="Logo CaniCampus">
   </div>
 
   <div class="menu">
-    <button mat-button routerLink="/home" routerLinkActive="active">Accueil</button>
-    <button mat-button routerLink="/home" routerLinkActive="active">Cours</button>
-    <button mat-button routerLink="/home" routerLinkActive="active">Coachs</button>
-    <button mat-button routerLink="/home" routerLinkActive="active">À propos</button>
-    <button mat-button routerLink="/home" routerLinkActive="active">Partenaires</button>
-    <button mat-button routerLink="/home" routerLinkActive="active">Contact</button>
+<ul>
+  <li><a routerLink="/home" routerLinkActive="active">Accueil</a></li>
+  <li><a routerLink="#courses" routerLinkActive="active">Cours</a></li>
+  <li><a routerLink="#coachs" routerLinkActive="active">Coachs</a></li>
+  <li><a routerLink="#about" routerLinkActive="active">À propos</a></li>
+  <li><a routerLink="#partnairs" routerLinkActive="active">Partenaires</a></li>
+  <li><a routerLink="#contacts" routerLinkActive="active">Contacts</a></li>
+</ul>
   </div>
 
   <div class="connections">
