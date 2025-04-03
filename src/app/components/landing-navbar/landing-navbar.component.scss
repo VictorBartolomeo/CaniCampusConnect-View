@@ -1,0 +1,20 @@
+.navbar{
+  background-color: #1B2140;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 85px;
+
+  mat-button{
+    background-color: #5BC4F1
+  }
+
+  .connection-flex-container{
+    display: flex;
+    gap: 10px;
+  }
+  .logo{
+    height: 85px;
+    //object-fit: cover;
+  }
+}
