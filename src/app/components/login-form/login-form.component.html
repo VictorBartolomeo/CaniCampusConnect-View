@@ -1,0 +1,48 @@
+<form class="card">
+  <div class="card-header">
+
+    <h2>Connexion</h2>
+    <p class="muted-foreground-text">Entrez vos informations pour vous connecter</p>
+  </div>
+
+  <div class="card-form">
+    <p>E-mail</p>
+    <mat-form-field class="form-field">
+      <mat-label>email</mat-label>
+      <input matInput placeholder="Exemple : laurent.tanplan@gmail.com">
+    </mat-form-field>
+    <p>Mot de passe</p>
+    <mat-form-field class="form-field">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput [type]="hide() ? 'password' : 'text'"/>
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="clickEvent($event)"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide()"
+      >
+        <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="card-footer">
+
+      <button type="submit" mat-flat-button class="form-field">
+        Se connecter
+      </button>
+
+      <button type="submit" mat-flat-button class="form-field" color="black">
+        <mat-icon>google</mat-icon>
+        Se connecter avec Google
+      </button>
+
+      <p>Vous n'avez pas de compte ? <a routerLink="/register">Créer un compte</a></p>
+
+    </div>
+  </div>
+
+
+</form>
+
+
