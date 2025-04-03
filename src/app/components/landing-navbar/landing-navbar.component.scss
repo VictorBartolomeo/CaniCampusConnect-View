@@ -7,21 +7,27 @@
   padding: 0 15px;
 
   .logo {
+    width: 25%;
     height: 85px;
   }
 
   .menu {
+      width: 50%;
     ul {
+
       display: inline-flex;
-      //border: 1px solid #8dba16;
+      align-self: center;
+      justify-content: center;
       border-radius: 20px;
       overflow: hidden;
       background-color: white;
+      padding-left: 0;
 
       li {
+        font-weight: 500;
         color: #1B2140;
         list-style-type: none;
-        padding: 20px 30px;
+        padding: 18px 30px;
         border: none;
         background-color: transparent;
         cursor: pointer;
@@ -53,6 +59,10 @@
     }
   }
 
+  .connection{
+    width: 25%;
+    flex-shrink: inherit;
+  }
   .connection-flex-container {
     display: flex;
     gap: 10px;
