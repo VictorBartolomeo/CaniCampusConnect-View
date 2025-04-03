@@ -1,0 +1,51 @@
+:host {
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .card-form {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .col2-form-field {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .form-field {
+    width: 100%;
+  }
+
+  .card-footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px;
+
+    p {
+      text-align: center;
+    }
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    vertical-align: baseline;
+  }
+
+  .form-field-logo {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+  }
+}
+

@@ -1,0 +1,67 @@
+<form class="card">
+  <div class="card-header">
+
+    <h2>Inscription</h2>
+    <p class="muted-foreground-text">Enregistrez vos informations pour créer un compte</p>
+  </div>
+
+  <div class="card-form">
+    <div class="col2-form-field">
+
+      <div>
+        <p>Prénom</p>
+        <mat-form-field>
+          <mat-label>Prénom</mat-label>
+          <input matInput placeholder="Laurent">
+        </mat-form-field>
+      </div>
+      <div>
+        <p>Nom de famille</p>
+        <mat-form-field>
+          <mat-label>Nom de famille</mat-label>
+          <input matInput placeholder="Tanplan">
+        </mat-form-field>
+      </div>
+    </div>
+    <p>E-mail</p>
+    <mat-form-field class="form-field">
+      <mat-label>email</mat-label>
+      <input matInput placeholder="Exemple : laurent.tanplan@gmail.com">
+    </mat-form-field>
+    <p>Mot de passe</p>
+    <mat-form-field class="form-field">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput [type]="hide() ? 'password' : 'text'"/>
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="clickEvent($event)"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide()"
+      >
+        <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-checkbox>Je reconnais avoir lu et compris <a routerLink="/CGU">les CGU</a> et je les accepte</mat-checkbox>
+
+    <div class="card-footer">
+
+      <button type="submit" mat-flat-button class="form-field">
+        Se connecter
+      </button>
+
+      <button type="submit" mat-flat-button class="form-field-logo" color="black">
+        <img ngSrc="/icons/Google__G__logo.svg" alt="Google logo" width="24" height="24"/>
+        Se connecter avec Google
+      </button>
+
+      <p>Vous avez déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+
+    </div>
+  </div>
+
+
+</form>
+
+
