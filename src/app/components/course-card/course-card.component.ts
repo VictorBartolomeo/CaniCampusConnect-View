@@ -1,26 +1,29 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {MatCardModule} from '@angular/material/card';
 import {HttpClient} from '@angular/common/http';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-course-card',
-  imports: [MatCardModule],
+  imports: [MatCardModule, MatProgressBar],
   templateUrl: './course-card.component.html',
   styleUrl: './course-card.component.scss'
 })
-export class CourseCardComponent implements ngOnInit {
-
+export class CourseCardComponent implements OnInit {
   http = inject(HttpClient);
-  course: Course[]= [];
+  courses: Course[] = [];
+  isLoading: boolean = true;
 
   ngOnInit() {
-    this.http.get<Course[]>("http://localhost:8080/course")
-      .subscribe(course => {
-        this.course = course;
-      })
-  }
-
-  onClick(products: any) {
-    alert("Vous avez payé " + course.price + "€ pour un " + course.name)
+    this.http.get<Course[]>('http://localhost:8080/courses').subscribe({
+      next: (courses) => {
+        this.courses = courses;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching courses:', error);
+        this.isLoading = false;
+      },
+    });
   }
 }
