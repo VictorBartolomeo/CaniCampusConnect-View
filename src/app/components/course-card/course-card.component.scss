@@ -1,0 +1,11 @@
+.courses-container {
+  padding: 30px 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 50px;
+
+  .course-card {
+    width: 500px;
+  }
+}

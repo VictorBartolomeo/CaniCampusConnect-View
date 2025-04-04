@@ -1,0 +1,28 @@
+@if (isLoading) {
+
+<div>Loading courses...</div>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+} @else {
+<div class="courses-container">
+
+  @for (course of courses; track course.id) {
+  <mat-card appearance="outlined" class="course-card">
+    <mat-card-header>
+      <mat-card-title>{{ course.title }}</mat-card-title>
+      <mat-card-subtitle>{{ course.courseType.name }}</mat-card-subtitle>
+    </mat-card-header>
+      <img mat-card-image src="https://picsum.photos/id/{{course.id+65}}/500/400" alt="Course"/>
+    <mat-card-content>
+      <p>{{ course.description }}</p>
+      <p>Start: {{ course.startDatetime }}</p>
+      <p>End: {{ course.endDatetime }}</p>
+      <p>Max Capacity: {{ course.maxCapacity }}</p>
+      <p>Reserved: {{ course.reservedCapacity }}</p>
+      <p>Price: {{ course.price }}</p>
+      <p>Coach: {{ course.coach.firstname }} {{ course.coach.lastname }}</p>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>
+}
+
