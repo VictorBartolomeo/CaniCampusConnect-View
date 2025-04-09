@@ -1,29 +1,76 @@
-<div class="container">
+<mat-toolbar class="custom-toolbar" role="header">
 
-<div>
-  <mat-form-field appearance="outline" class="dog-select-container">
-    <mat-select [(ngModel)]="selectedDog" placeholder="Sélectionner un chien">
+  <button mat-button class="dog-menu-trigger" [matMenuTriggerFor]="dogMenu" aria-label="Menu de sélection du chien">
+    <img class="dog-avatar-small"
+         [src]="currentDog?.avatarUrl || 'dog-default-avatar.svg'" alt="Avatar du chien sélectionné">
+    <span
+      class="dog-name">{{ currentDog?.name | slice:0:15 || 'Choisir un chien' }}{{ (currentDog?.name?.length || 0) > 15 ? '...' : '' }}</span>
+    <mat-icon>arrow_drop_down</mat-icon>
+  </button>
 
-      @if (selectedDog) {
+  <mat-menu #dogMenu="matMenu" class="dog-selection-menu" panelClass="dog-menu-panel-style-target"> @if (clientDogs.length > 0) {
+    <div class="mat-menu-header">Mes chiens</div>
 
-        <mat-select-trigger>
-          <div class="dog-option-display">
-            <img class="dog-avatar" ngSrc="selectedDog.avatarUrl" alt="Avatar de {{ selectedDog.name }}" fill>
-            <span>Didier</span>
-          </div>
-        </mat-select-trigger>
-      }
+    @for (dog of clientDogs; track dog.id) {
+      <button mat-menu-item (click)="selectDog(dog)">
+        <img class="dog-avatar-menu"
+             ngSrc="{{dog.avatarUrl || 'assets/images/avatars/default-dog.png'}}" alt="Avatar de {{ dog.name }}" width="32" height="32"/> <span>{{ dog.name }}</span>
+      </button>
+    }
+  } @else if (clientDogs.length === 0) {
+    <div class="mat-menu-no-items">
+      Aucun chien enregistré.
+    </div>
+  }
 
-      @for (dog of dogs; track $index) {
+    <mat-divider></mat-divider>
 
-        <mat-option [value]="dog">
-          <div class="dog-option-display">
-            <img class="dog-avatar" ngSrc="dog.avatarUrl" alt="Avatar de {{ dog.name }}" fill>
-            <span>Michel</span>
-          </div>
-        </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-</div>
-</div>
+    <button mat-menu-item (click)="onAddDog()">
+      <mat-icon>add_circle_outline</mat-icon>
+      <span>Ajouter un chien</span>
+    </button>
+  </mat-menu>
+
+  <span class="spacer"></span>
+
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="center-nav" aria-label="Navigation principale">
+    @for (link of navigationLinks; track link.route) {
+      <a mat-tab-link
+         [routerLink]="link.route"
+         routerLinkActive #rla="routerLinkActive"
+         [active]="rla.isActive">
+        {{ link.label }}
+      </a>
+    }
+  </nav>
+  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
+  <span class="spacer"></span>
+
+  @if (currentUser) {
+    <button mat-icon-button class="user-avatar-button"
+            aria-label="Menu utilisateur"
+            [matMenuTriggerFor]="userMenu">
+      <img class="user-avatar"
+           ngSrc="{{currentUser?.avatarUrl || 'assets/images/avatars/default-user.png'}}" alt="Avatar utilisateur" width="40" height="40"> </button>
+    <mat-menu #userMenu="matMenu">
+      <div class="mat-menu-header user-info">
+        <div>{{ currentUser?.firstName }} {{ currentUser?.lastName }}</div>
+        <div class="user-email">{{ currentUser?.email }}</div>
+      </div>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="viewProfile()">
+        <mat-icon>account_circle</mat-icon>
+        <span>Mon Profil</span>
+      </button>
+      <button mat-menu-item (click)="accountSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Paramètres</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Déconnexion</span>
+      </button>
+    </mat-menu>
+  }
+</mat-toolbar>
