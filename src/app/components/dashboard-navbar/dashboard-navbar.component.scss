@@ -1,3 +1,64 @@
-.example-spacer {
-  flex: 1 1 auto;
+/* Appliquer un style au conteneur global du mat-form-field */
+.dog-select-container {
+  /* Ajuster la largeur si nécessaire */
+  width: 250px; // Exemple
+
+  /* Pour obtenir les coins arrondis et la bordure comme dans l'image */
+  .mat-mdc-form-field-flex {
+    border-radius: 20px !important; // Ajustez pour l'arrondi souhaité
+    border: 1px solid #ccc; // Couleur et épaisseur de la bordure
+    padding: 5px 10px !important; // Ajustez le padding interne
+    align-items: center; // Centre verticalement le contenu
+  }
+
+  /* Cacher la bordure/outline standard de mat-form-field si 'appearance="outline"' est utilisé */
+  .mat-mdc-notched-outline {
+    border: none !important; // Cache l'encoche de l'outline
+  }
+
+  /* Cacher la ligne du bas si 'appearance="fill"' ou 'standard' est utilisé */
+  .mat-mdc-form-field-underline {
+    display: none;
+  }
+
+  /* Ajuster la position de la flèche déroulante */
+  .mat-mdc-select-arrow-wrapper {
+    // Optionnel: ajustements si nécessaires
+  }
+
+  /* Supprimer le padding standard qui pourrait interférer avec notre propre padding */
+  .mat-mdc-select-value {
+    padding: 0 !important;
+  }
 }
+
+/* Style commun pour l'affichage dans le trigger et les options */
+.dog-option-display {
+  display: flex;
+  align-items: center; // Aligner l'avatar et le texte verticalement
+}
+
+/* Style pour l'avatar (image ronde) */
+.dog-avatar {
+  width: 30px; // Taille de l'avatar
+  height: 30px; // Taille de l'avatar
+  border-radius: 50%; // Rendre l'image ronde
+  margin-right: 10px; // Espace entre l'avatar et le nom
+  object-fit: cover; // Assure que l'image couvre bien l'espace sans être déformée
+}
+
+/* Optionnel : style spécifique si besoin pour les options dans le panneau déroulant */
+/* (Nécessite souvent ::ng-deep ou panelClass car le panneau est dans l'overlay) */
+/* Exemple avec panelClass: ajoutez panelClass="custom-dog-panel" à mat-select */
+/* dans le fichier CSS global (styles.scss) ou avec ::ng-deep */
+/*
+.custom-dog-panel .mat-mdc-option {
+  // Styles spécifiques aux options dans le panneau
+  // Par exemple, hauteur minimale si besoin
+  min-height: 45px;
+}
+
+.custom-dog-panel .dog-option-display {
+   // Styles spécifiques si l'affichage dans l'option doit différer légèrement
+}
+*/
