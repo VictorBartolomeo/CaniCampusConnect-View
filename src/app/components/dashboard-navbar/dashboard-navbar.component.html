@@ -1,10 +1,29 @@
+<div class="container">
+
 <div>
-  <mat-form-field>
-    <mat-select [(value)]="selected">
-      <mat-option>None</mat-option>
-      <mat-option value="option1">Option 1</mat-option>
-      <mat-option value="option2">Option 2</mat-option>
-      <mat-option value="option3">Option 3</mat-option>
+  <mat-form-field appearance="outline" class="dog-select-container">
+    <mat-select [(ngModel)]="selectedDog" placeholder="Sélectionner un chien">
+
+      @if (selectedDog) {
+
+        <mat-select-trigger>
+          <div class="dog-option-display">
+            <img class="dog-avatar" ngSrc="selectedDog.avatarUrl" alt="Avatar de {{ selectedDog.name }}" fill>
+            <span>Didier</span>
+          </div>
+        </mat-select-trigger>
+      }
+
+      @for (dog of dogs; track $index) {
+
+        <mat-option [value]="dog">
+          <div class="dog-option-display">
+            <img class="dog-avatar" ngSrc="dog.avatarUrl" alt="Avatar de {{ dog.name }}" fill>
+            <span>Michel</span>
+          </div>
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
+</div>
 </div>
