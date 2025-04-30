@@ -58,10 +58,11 @@
 
         <div class="mt-auto p-2">
 
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="User menu with profile image" class="user-avatar-container">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="User menu with profile image"
+                  class="user-avatar-container">
             <img src="img/avatars/user-default-avatar.png" class="user-avatar" alt="User profile">
           </button>
-          <mat-menu #menu="matMenu" class="w-100">
+          <mat-menu #menu="matMenu" panelClass="panel-nav-avatar">
             <p class="text-center font-weight-bold">Veronika Niche</p>
             <button mat-menu-item>
               <mat-icon>account_circle</mat-icon>
@@ -100,11 +101,10 @@
           <mat-icon aria-hidden="false" aria-label="Open sidenav" fontIcon="menu"></mat-icon>
         </button>
       }
-      <!-- Your main content goes here -->
-      <p>Main Content Area</p>
+
+      <!-- Accès aux autres pages -->
+      <router-outlet/>
 
     </mat-sidenav-content>
   </mat-sidenav-container>
-} @else {
-  <div>Please open on Stackblitz to see result</div>
 }

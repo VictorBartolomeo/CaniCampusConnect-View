@@ -13,18 +13,6 @@
   border: 1px solid #555;
 }
 
-::ng-deep.mat-menu-panel {
-  max-width: none !important;
-}
-
-:root{
-  display: flex;
-  flex-direction: column;
-}
-
-.container-shape{
-  background-color: #1B2140;
-}
 
 .user-avatar-container{
   width: 4rem;
@@ -35,4 +23,5 @@
     width: 100%;
     object-fit: cover;
   }
+
 }

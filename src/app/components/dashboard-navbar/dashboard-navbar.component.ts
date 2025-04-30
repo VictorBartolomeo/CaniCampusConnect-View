@@ -9,6 +9,8 @@ import {MatSelect} from '@angular/material/select';
 import {MatOption} from '@angular/material/core';
 import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatDivider} from '@angular/material/divider';
+import {CourseCardComponent} from '../course-card/course-card.component';
+import {RouterOutlet} from '@angular/router';
 
 interface Food {
   value: string;
@@ -19,7 +21,7 @@ interface Food {
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './dashboard-navbar.component.html',
-  imports: [MatSidenavModule, MatCheckboxModule, FormsModule, MatButtonModule, MatIcon, MatLabel, MatSelect, MatOption, MatFormField, MatMenuTrigger, MatMenu, MatMenuItem, MatDivider],
+  imports: [MatSidenavModule, MatCheckboxModule, FormsModule, MatButtonModule, MatIcon, MatLabel, MatSelect, MatOption, MatFormField, MatMenuTrigger, MatMenu, MatMenuItem, MatDivider, CourseCardComponent, RouterOutlet],
   styleUrls: ['./dashboard-navbar.component.scss']
 })
 export class DashboardNavbarComponent {
