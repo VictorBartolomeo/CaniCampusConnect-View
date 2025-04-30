@@ -1,0 +1,38 @@
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.example-events {
+  width: 300px;
+  height: 200px;
+  overflow: auto;
+  border: 1px solid #555;
+}
+
+::ng-deep.mat-menu-panel {
+  max-width: none !important;
+}
+
+:root{
+  display: flex;
+  flex-direction: column;
+}
+
+.container-shape{
+  background-color: #1B2140;
+}
+
+.user-avatar-container{
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  .user-avatar{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
