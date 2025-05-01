@@ -13,5 +13,5 @@ enum RegistrationStatus {
   "PENDING",
   "CONFIRMED",
   "CANCELED",
-  "COMPLETED"
+  "REFUSED"
 }

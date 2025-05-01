@@ -5,7 +5,6 @@ type Course = {
   startDatetime: string;
   endDatetime: string;
   maxCapacity: number;
-  reservedCapacity: number;
   price: number;
   club: null;
   coach: Coach;
