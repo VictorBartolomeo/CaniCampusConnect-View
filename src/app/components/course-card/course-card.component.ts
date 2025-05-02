@@ -12,6 +12,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
 export class CourseCardComponent implements OnInit {
   http = inject(HttpClient);
   courses: Course[] = [];
+  courseTypes: CourseType[] = [];
   isLoading: boolean = true;
 
   ngOnInit() {
