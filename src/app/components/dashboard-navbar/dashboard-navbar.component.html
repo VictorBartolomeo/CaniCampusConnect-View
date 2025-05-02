@@ -1,110 +1,109 @@
-@if (shouldRun) {
-  <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
-                 (closed)="events.push('close!')">
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
+               (closed)="events.push('close!')">
 
-      <div class="d-flex align-items-stretch flex-column vh-100">
+    <div class="d-flex align-items-stretch flex-column vh-100">
 
-        <div class="nav-top w-100 p-2">
-          <mat-form-field class="w-100">
-            <mat-label>Mes chiens</mat-label>
-            <mat-select>
-              @for (food of foods; track food) {
-                <mat-option [value]="food.value">{{ food.viewValue }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
+      <div class="nav-top w-100 p-2">
+        <mat-form-field class="w-100">
+          <mat-label>Mes chiens</mat-label>
+          <mat-select>
+            @for (food of foods; track food) {
+              <mat-option [value]="food.value">{{ food.viewValue }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-        <!--Navigation générale-->
-        <!-- Replaced mat-fab extended with mat-button -->
-        <div class="p-2">
-          <div class="d-flex flex-column justify-content-between ">
-            <h2>Général Dashboard</h2>
-            <button mat-button class="justify-content-start">
-              <mat-icon>chat</mat-icon>
-              Cours
-            </button>
-            <button mat-button class="justify-content-start">
-              <mat-icon>home</mat-icon>
-              Messagerie
-            </button>
-            <button mat-button class="justify-content-start">
-              <mat-icon>medical_information</mat-icon>
-              Carnet de santé
-            </button>
-          </div>
-          <div class="d-flex flex-column justify-content-between">
-            <h2>Général Dashboard</h2>
-            <button mat-button class="justify-content-start">
-              <mat-icon>home</mat-icon>
-              Général
-            </button>
-            <button mat-button class="justify-content-start">
-              <mat-icon>pets</mat-icon>
-              Gérer mon chien actif
-            </button>
-            <button mat-button class="justify-content-start">
-              <mat-icon>bookmark_add</mat-icon>
-              Réserver un cours
-            </button>
-            <button mat-button class="justify-content-start">
-              <mat-icon>settings</mat-icon>
-              Paramètres
-            </button>
-          </div>
-        </div>
-
-
-        <div class="mt-auto p-2">
-
-          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="User menu with profile image"
-                  class="user-avatar-container">
-            <img src="img/avatars/user-default-avatar.png" class="user-avatar" alt="User profile">
+      <!--Navigation générale-->
+      <!-- Replaced mat-fab extended with mat-button -->
+      <div class="p-2">
+        <div class="d-flex flex-column justify-content-between ">
+          <h2>Général Dashboard</h2>
+          <button mat-button class="justify-content-start">
+            <mat-icon>chat</mat-icon>
+            Cours
           </button>
-          <mat-menu #menu="matMenu" panelClass="panel-nav-avatar">
-            <p class="text-center font-weight-bold">Veronika Niche</p>
-            <button mat-menu-item>
-              <mat-icon>account_circle</mat-icon>
-              <span>Profil</span>
-            </button>
-            <button mat-menu-item disabled>
-              <mat-icon>credit_card</mat-icon>
-              <span>Payement</span>
-            </button>
-            <button mat-menu-item>
-              <mat-icon>light_mode</mat-icon>
-              <span>Apparence</span>
-            </button>
-            <button mat-menu-item>
-              <mat-icon>help</mat-icon>
-              <span>Support</span>
-            </button>
-            <mat-divider/>
-            <button mat-menu-item>
-              <mat-icon>logout</mat-icon>
-              <span>Disconnect</span>
-            </button>
-          </mat-menu>
+          <button mat-button class="justify-content-start">
+            <mat-icon>home</mat-icon>
+            Messagerie
+          </button>
+          <button mat-button class="justify-content-start">
+            <mat-icon>medical_information</mat-icon>
+            Carnet de santé
+          </button>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <h2>Général Dashboard</h2>
+          <button mat-button class="justify-content-start">
+            <mat-icon>home</mat-icon>
+            Général
+          </button>
+          <button mat-button class="justify-content-start">
+            <mat-icon>pets</mat-icon>
+            Gérer mon chien actif
+          </button>
+          <button mat-button class="justify-content-start">
+            <mat-icon>bookmark_add</mat-icon>
+            Réserver un cours
+          </button>
+          <button mat-button class="justify-content-start">
+            <mat-icon>settings</mat-icon>
+            Paramètres
+          </button>
         </div>
       </div>
 
-    </mat-sidenav>
 
-    <mat-sidenav-content>
-      @if (sidenav.opened) {
-        <button mat-button (click)="sidenav.toggle()">
-          <mat-icon aria-hidden="false" aria-label="Close sidenav" fontIcon="close"></mat-icon>
+      <div class="mt-auto p-2">
+
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="User menu with profile image"
+                class="user-avatar-container">
+          <img src="img/avatars/user-default-avatar.png" class="user-avatar" alt="User profile">
         </button>
-      } @else {
-        <button mat-button (click)="sidenav.toggle()">
-          <mat-icon aria-hidden="false" aria-label="Open sidenav" fontIcon="menu"></mat-icon>
-        </button>
-      }
+        <mat-menu #menu="matMenu" panelClass="panel-nav-avatar">
+          <p class="text-center font-weight-bold">Veronika Niche</p>
+          <button mat-menu-item>
+            <mat-icon>account_circle</mat-icon>
+            <span>Profil</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>credit_card</mat-icon>
+            <span>Payement</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>light_mode</mat-icon>
+            <span>Apparence</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>help</mat-icon>
+            <span>Support</span>
+          </button>
+          <mat-divider/>
+          <button mat-menu-item>
+            <mat-icon>logout</mat-icon>
+            <span>Disconnect</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
 
-      <!-- Accès aux autres pages -->
-      <router-outlet/>
+  </mat-sidenav>
 
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-}
+  <mat-sidenav-content>
+    @if (sidenav.opened) {
+      <button mat-button (click)="sidenav.toggle()">
+        <mat-icon aria-hidden="false" aria-label="Close sidenav" fontIcon="close"></mat-icon>
+      </button>
+    } @else {
+      <button mat-button (click)="sidenav.toggle()">
+        <mat-icon aria-hidden="false" aria-label="Open sidenav" fontIcon="menu"></mat-icon>
+      </button>
+    }
+
+    <!-- Accès aux autres pages -->
+    <router-outlet/>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+

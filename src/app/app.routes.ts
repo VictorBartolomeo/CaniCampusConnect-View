@@ -8,11 +8,11 @@ import {DashboardUserPageComponent} from './pages/dashboard-user-page/dashboard-
 import {DashboardNavbarComponent} from './components/dashboard-navbar/dashboard-navbar.component';
 
 export const routes: Routes = [
-  {path : "", redirectTo :"home", pathMatch :"full"},
-  {path : "", component: DashboardNavbarComponent,
+  {path : "dashboard", component: DashboardNavbarComponent,
     children:[
-      {path : "dashboard", component : DashboardUserPageComponent},
-      {path: "", redirectTo: "dashboard", pathMatch: "full"},
+      {path : "user", component : DashboardUserPageComponent},
+      {path : "user/:id", component : DashboardUserPageComponent},
+      {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
   {path : "home", component : LandingPageComponent},
