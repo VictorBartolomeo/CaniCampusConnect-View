@@ -1,7 +1,14 @@
- export type User = {
+import {Dog} from "./dog";
+
+export type User = {
   id: number;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  avatarUrl: string;
+  phone?: string;
+  registrationDate?: string;
+  address?: string;
+  dogs?: Dog[];
+  active?: boolean;
+
 }
