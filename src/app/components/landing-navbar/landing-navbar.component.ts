@@ -1,123 +1,50 @@
-import {Component} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {Ripple} from 'primeng/ripple';
 import {Badge} from 'primeng/badge';
 import {Menubar} from 'primeng/menubar';
-import {Avatar} from 'primeng/avatar';
 import {NgClass, NgOptimizedImage} from '@angular/common';
-import {InputText} from 'primeng/inputtext';
+import {Button} from 'primeng/button';
+import {TieredMenuModule} from 'primeng/tieredmenu';
+import {RouterLink, RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-landing-navbar',
-  imports: [RouterLink, RouterLinkActive, Ripple, Badge, Menubar, Avatar, NgClass, InputText, NgOptimizedImage],
+  imports: [RouterOutlet, RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule],
   templateUrl: './landing-navbar.component.html',
   styleUrl: './landing-navbar.component.scss'
 })
-export class LandingNavbarComponent implements NgOnInit {
+export class LandingNavbarComponent implements OnInit {
   items: MenuItem[] | undefined;
 
   ngOnInit() {
-      this.items = [
-        {
-          label: 'File',
-          icon: 'pi pi-file',
-          items: [
-            {
-              label: 'New',
-              icon: 'pi pi-plus',
-              items: [
-                {
-                  label: 'Document',
-                  icon: 'pi pi-file'
-                },
-                {
-                  label: 'Image',
-                  icon: 'pi pi-image'
-                },
-                {
-                  label: 'Video',
-                  icon: 'pi pi-video'
-                }
-              ]
-            },
-            {
-              label: 'Open',
-              icon: 'pi pi-folder-open'
-            },
-            {
-              label: 'Print',
-              icon: 'pi pi-print'
-            }
-          ]
-        },
-        {
-          label: 'Edit',
-          icon: 'pi pi-file-edit',
-          items: [
-            {
-              label: 'Copy',
-              icon: 'pi pi-copy'
-            },
-            {
-              label: 'Delete',
-              icon: 'pi pi-times'
-            }
-          ]
-        },
-        {
-          label: 'Search',
-          icon: 'pi pi-search'
-        },
-        {
-          separator: true
-        },
-        {
-          label: 'Share',
-          icon: 'pi pi-share-alt',
-          items: [
-            {
-              label: 'Slack',
-              icon: 'pi pi-slack'
-            },
-            {
-              label: 'Whatsapp',
-              icon: 'pi pi-whatsapp'
-            }
-          ]
-        }
-      ]
-    }
-    this.items = [
+    this
+      .items = [
       {
-        label: 'Home',
+        label: 'Accueil',
         icon: 'pi pi-home',
+        route : "#Accueil"
       },
       {
-        label: 'Projects',
-        icon: 'pi pi-search',
-        badge: '3',
-        items: [
-          {
-            label: 'Core',
-            icon: 'pi pi-bolt',
-            shortcut: '⌘+S',
-          },
-          {
-            label: 'Blocks',
-            icon: 'pi pi-server',
-            shortcut: '⌘+B',
-          },
-          {
-            separator: true,
-          },
-          {
-            label: 'UI Kit',
-            icon: 'pi pi-pencil',
-            shortcut: '⌘+U',
-          },
-        ],
+        label: "À propos",
+        icon: 'pi pi-info-circle',
+        route : "#À propos"
       },
-    ];
+      {
+        label: 'Nos cours',
+        icon: 'pi pi-graduation-cap',
+        route : "#Nos cours"
+      },
+      {
+        label: 'Coachs',
+        icon: 'pi pi-users',
+        route : "#Contact"
+      },
+      {
+        label: 'Contact',
+        icon: 'pi pi-phone',
+        route : "#Contact"
+      }
+    ]
   }
 }

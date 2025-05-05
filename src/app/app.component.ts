@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {LandingPageComponent} from './pages/landing-page/landing-page.component';
+import {Component, OnInit} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {PrimeNG} from 'primeng/config';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +8,12 @@ import {LandingPageComponent} from './pages/landing-page/landing-page.component'
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'CaniCampusConnect';
+
+  constructor(private primeng: PrimeNG) {}
+
+  ngOnInit() {
+    this.primeng.ripple.set(true);
+  }
 }
