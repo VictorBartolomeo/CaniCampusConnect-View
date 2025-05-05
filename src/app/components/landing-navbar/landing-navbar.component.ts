@@ -6,11 +6,11 @@ import {Menubar} from 'primeng/menubar';
 import {NgClass, NgOptimizedImage} from '@angular/common';
 import {Button} from 'primeng/button';
 import {TieredMenuModule} from 'primeng/tieredmenu';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-landing-navbar',
-  imports: [RouterOutlet, RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule],
+  imports: [RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule],
   templateUrl: './landing-navbar.component.html',
   styleUrl: './landing-navbar.component.scss'
 })
@@ -23,7 +23,7 @@ export class LandingNavbarComponent implements OnInit {
       {
         label: 'Accueil',
         icon: 'pi pi-home',
-        route : "#Accueil"
+        route : "/home/#Accueil"
       },
       {
         label: "À propos",
