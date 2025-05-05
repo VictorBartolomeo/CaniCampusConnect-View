@@ -1,18 +1,24 @@
-<div class="navbar">
-  <div class="logo"><a routerLink="/home">
+<div class="card">
+  <p-menubar [model]="items">
+    <ng-template #start>
+      <img ngSrc="/img/LOGO_RVB_POSITIF.png" alt="Logo" class="w-16" height="85" width="120" />
+    </ng-template>
 
-    <img src="/img/LOGO_RVB_BLANC.svg" alt="Logo CaniCampus">
-  </a>
-  </div>
 
-  <div class="menu">
-    <ul>
-      <li><a routerLink="/home" routerLinkActive="active">Accueil</a></li>
-      <li><a routerLink="#courses" routerLinkActive="active">Cours</a></li>
-      <li><a routerLink="#coachs" routerLinkActive="active">Coachs</a></li>
-      <li><a routerLink="#about" routerLinkActive="active">À propos</a></li>
-      <li><a routerLink="#partnairs" routerLinkActive="active">Partenaires</a></li>
-      <li><a routerLink="#contacts" routerLinkActive="active">Contacts</a></li>
-    </ul>
-  </div>
+    <ng-template #item let-item let-root="root" >
+      <a pRipple class="flex items-center p-menubar-item-link">
+        <span>{{ item.label }}</span>
+        <p-badge *ngIf="item.badge" [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge" />
+        <span *ngIf="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+        <i *ngIf="item.items" [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
+      </a>
+    </ng-template>
+    <ng-template #end>
+
+      <div class="flex items-center gap-2">
+        <p-button label="Toggle" (click)="menu.toggle($event)" />
+        <p-tieredmenu #menu [model]="items" [popup]="true" />
+      </div>
+    </ng-template>
+  </p-menubar>
 </div>
