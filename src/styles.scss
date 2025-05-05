@@ -1,4 +1,16 @@
 @import "primeicons/primeicons.css";
+@import "tailwindcss";
+
+@theme {
+  /* ---------------------------- */
+  /* ---- CUSTOM BREAKPOINTS ---- */
+  /* ---------------------------- */
+  --breakpoint-xs: 350px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+  --breakpoint-xl: 1920px;
+}
 
 :root {
   //Colors
