@@ -6,6 +6,6 @@ type Coach = {
   password: string;
   phone: string;
   acacedNumber: string;
-  registrationDate: string; // Changed to string to match the JSON
+  registrationDate: string;
   active: boolean;
 };
