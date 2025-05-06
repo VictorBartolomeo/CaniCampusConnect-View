@@ -1,4 +1,59 @@
 @import "primeicons/primeicons.css";
+$my-primary: #1B2140;
+$my-secondary: #93C01F;
+$my-secondary-20: #93C01F33;
+$my-tertiary: #5BC4F1;
+$my-muted: #64748B;
+$my-muted-foreground: #1B21407F;
+$my-muted-secondary: #93C01F33;
+$my-accent: #EA8F16;
+$my-accent-2: #F3BF00;
+$my-white: #fff;
+$my-black: #000;
+
+$my-button-corner-radius: 8.92px; // Ajout de 'px'
+$my-input-field-corner-radius: 8.92px; // Ajout de 'px'
+$my-round-radius: 50%;
+
+
+/* ---------------------------------------------------- */
+/* ---- SURCHARGE DES VARIABLES DE THÈME PRIMENG ---- */
+/* ---------------------------------------------------- */
+// Remplacez par les noms de variables exacts de votre thème PrimeNG choisi.
+// Ceci est un EXEMPLE. Consultez la documentation/source de votre thème PrimeNG.
+
+// Couleurs de base
+$primaryColor: $my-primary;
+$primaryTextColor: $my-white; // Souvent le blanc ou une couleur claire sur un fond primaire foncé
+
+// Couleur d'accentuation (souvent utilisée pour les sélections, focus, etc.)
+$accentColor: $my-accent; // Ou $my-secondary selon votre design
+// $accentTextColor: $my-white; // Texte pour la couleur d'accentuation
+
+// Surfaces (exemples, à adapter)
+$surfaceGround: #f8f9fa; // Couleur de fond générale de la page
+$surfaceA: $my-white;    // Couleur de fond des cartes, panneaux, etc. (peut être $surface0, $surface100 etc. dans les thèmes modernes)
+$surfaceB: $my-white;
+$surfaceContent: $my-white; // Pour les contenus comme les modals
+$surfaceOverlay: $my-white; // Pour les overlays comme les dropdowns
+
+// Textes
+$textColor: $my-primary; // Couleur de texte principale
+$textSecondaryColor: $my-muted; // Couleur de texte secondaire
+
+// Bordures
+$borderColor: #dee2e6; // Couleur de bordure générale (à adapter)
+
+// Rayons de bordure (exemples)
+$borderRadius: $my-input-field-corner-radius;
+$buttonBorderRadius: $my-button-corner-radius;
+$inputBorderRadius: $my-input-field-corner-radius;
+
+// Vous pouvez mapper d'autres couleurs comme $infoColor, $successColor, etc.
+// $successColor: $my-secondary;
+// $warningColor: $my-accent-2;
+// $errorColor: #FF3B30; // Votre $complete-badge
+
 @import "tailwindcss";
 
 @theme {
@@ -12,41 +67,10 @@
   --breakpoint-xl: 1920px;
 }
 
-:root {
-  //Colors
-  $black: #000;
-  $white: #fff;
-  $primary: #1B2140;
-  $secondary: #93C01F;
-  $secondary-20: #93C01F33;
-  $tertiary: #5BC4F1;
-  $muted: #64748B;
-  $muted-foreground: #1B21407F;
-  $muted-secondary: #93C01F33;
-  $accent: #EA8F16;
-  $accent-2: #F3BF00;
-
-  $calendar-current: #007AFF;
-  $calendar-selected: #007AFF26;
-  $empty-badge: #93C01F;
-  $nearly-complete-badge: #EA8F16;
-  $complete-badge: #FF3B30;
-
-  //Radius
-  $button-corner-radius: 8.92;
-  $input-field-corner-radius: 8.92;
-  $round-radius: 50%;
-
-
-}
 
 body {
   margin: 0;
   font-family: Montserrat, 'Calibri', serif;
-}
-
-.panel-nav-avatar{
-  min-width: 400px !important;
 }
 
 
