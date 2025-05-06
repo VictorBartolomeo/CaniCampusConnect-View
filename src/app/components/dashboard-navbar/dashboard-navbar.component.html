@@ -1,0 +1,45 @@
+<div class="card">
+  <p-megamenu [model]="items" [style]="{ display: 'flex' }"
+              styleClass="p-4 bg-surface-0 dark:bg-surface-900">
+
+
+    <ng-template #start>
+      <p-select [options]="dogs" [(ngModel)]="selectedDog" optionLabel="name" [filter]="true" filterBy="name"
+                [showClear]="true" placeholder="Choisir un chien" class="w-full md:w-56" styleClass="font-semibold">
+
+        <ng-template #selectedItem let-selectedOption>
+          <div class="flex items-center gap-2">
+            <img src="/img/avatars/dog-default-avatar.svg" style="width: 18px"/>
+            <div>{{ selectedOption.name }}</div>
+          </div>
+        </ng-template>
+
+        <ng-template let-dog #item>
+          <div class="flex items-center gap-2">
+            <img src="/img/avatars/dog-default-avatar.svg" style="width: 18px"/>
+            <div>{{ dog.name }}</div>
+          </div>
+        </ng-template>
+      </p-select>
+    </ng-template>
+
+
+    <ng-template #item let-item>
+      <a pRipple [routerLink]="item.route"
+         class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase"
+         style="border-radius: 2rem">
+        <i [ngClass]="item.icon"></i>
+        <span class="ml-2">{{ item.label }}</span>
+      </a>
+    </ng-template>
+
+
+    <ng-template #end>
+      <p-menu #menu [model]="avatar" [popup]="true"/>
+      <p-button rounded="false"  size="small" (click)="menu.toggle($event)" class="rounded-full avatar-button">
+        <p-avatar image="/img/avatars/user-default-avatar.png" class="" size="large"
+                  shape="circle"/>
+      </p-button>
+    </ng-template>
+  </p-megamenu>
+</div>
