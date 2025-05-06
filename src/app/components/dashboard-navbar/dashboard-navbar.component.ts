@@ -9,7 +9,6 @@ import {Select} from 'primeng/select';
 import {Dog} from '../../models/dog';
 import {HttpClient} from '@angular/common/http';
 import {RouterLink} from '@angular/router';
-import {Toast} from 'primeng/toast';
 import {Menu} from 'primeng/menu';
 import {User} from '../../models/user';
 
@@ -17,7 +16,7 @@ import {User} from '../../models/user';
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './dashboard-navbar.component.html',
-  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Toast, Menu],
+  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu],
   styleUrls: ['./dashboard-navbar.component.scss']
 })
 export class DashboardNavbarComponent implements OnInit {
@@ -29,7 +28,12 @@ export class DashboardNavbarComponent implements OnInit {
   dogs: Dog[] = [];
   selectedDog: Dog = this.dogs[0];
 
-  user: User = {} as User;
+  user: User = {
+    id: 0,
+    firstname: '',
+    lastname: '',
+    email: ''
+  };
 
 
   ngOnInit() {
@@ -49,12 +53,21 @@ export class DashboardNavbarComponent implements OnInit {
     this.http.get<User>('http://localhost:8080/user/3').subscribe({
       next: (user) => {
         this.user = user;
-      },
+        console.log(this.user.firstname);
+        console.log(this.user.lastname);
+        console.log(this.user.email);
+
+        if (this.avatar) {
+          const userNameAvatar = this.avatar.find(item => item.label === 'placeholder name'); // Trouver l'item 'Profil' par son icône
+          if (userNameAvatar) {
+            userNameAvatar.label = `${this.user.firstname} ${this.user.lastname}`;
+          }
+        }
+        },
       error: (error) => {
         console.error('Error fetching courses:', error);
       },
     });
-
 
     this.items = [
       {
@@ -81,11 +94,11 @@ export class DashboardNavbarComponent implements OnInit {
 
     this.avatar = [
       {
-        label: this.user.firstname + ' ' + this.user.lastname,
-        root: true
+        label : 'placeholder name',
+        styleClass : 'name-item'
       },
       {
-        label: 'Profil',
+        label: 'Profile',
         icon: 'pi pi-user'
       },
       {
