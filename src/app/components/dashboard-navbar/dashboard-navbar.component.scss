@@ -1,27 +1,23 @@
-.example-container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.avatar-button{
+  --p-button-primary-background : #FFFFFF;
+  --p-button-primary-hover-background : #ECECEC;
+  --p-button-primary-border-color: #FFFFFF;
+  --p-button-primary-hover-border-color: #ECECEC;
 }
 
-.example-events {
-  width: 300px;
-  height: 200px;
-  overflow: auto;
-  border: 1px solid #555;
+p-menu {
+  min-width: fit-content !important;
+  white-space: nowrap;
 }
+    :host ::ng-deep .p-menu { /* Cible p-menu globalement mais depuis ce composant */
+      .p-menu-list {
+        .p-menu-item.name-item > .p-menu-item-content { /* Cible le contenu de l'item ayant la classe */
+          margin-bottom: 10px;
+          font-weight: bold;
+          }
+        }
+      }
 
-
-.user-avatar-container{
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  .user-avatar{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-  }
-
+.select-dog .p-select-option{
+  font-weight: bold;
 }
