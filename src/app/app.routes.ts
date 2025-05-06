@@ -13,8 +13,8 @@ export const routes: Routes = [
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "course", component : CourseCardComponent},
-          // {path : "chat", component : ChatComponent},
-          // {path : "health-record", component : HealthRecordComponent}
+          {path : "chat", component : ChatComponent},
+          {path : "health-record", component : HealthRecordComponent}
         ]},
       {path : "user/:id", component : DashboardUserPageComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
