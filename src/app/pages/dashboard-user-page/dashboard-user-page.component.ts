@@ -22,9 +22,9 @@ import {Button} from 'primeng/button';
 })
 export class DashboardUserPageComponent {
   tabs = [
-    { route: 'course', label: 'Cours', icon: 'pi pi-calendar-clock' },
-    { route: 'chat', label: 'Messagerie', icon: 'pi pi-comments' },
-    { route: 'health-record', label: 'Carnet de Santé', icon: 'pi pi-chart-bar' }
+    { route: '/dashboard/user/course', label: 'Cours', icon: 'pi pi-calendar-clock' },
+    { route: '/dashboard/user/chat', label: 'Messagerie', icon: 'pi pi-comments' },
+    { route: '/dashboard/user/health-record', label: 'Carnet de Santé', icon: 'pi pi-chart-bar' }
   ];
   dates: Date[] | undefined;
 
