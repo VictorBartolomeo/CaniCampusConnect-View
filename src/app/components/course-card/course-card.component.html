@@ -2,25 +2,37 @@
   <p-carousel
     [value]="courses"
     [numVisible]="3"
-    [numScroll]="1"
+    [numScroll]="3"
     [responsiveOptions]="responsiveOptions"
-  [circular]="false">
+    [circular]="false">
     <ng-template let-course pTemplate="item">
-      <div class="course-carousel-item p-3 ">
-        <p-card class="h-full w-430 bg-[#1B2140]">
-          <p-chip label="{{course.courseType.name}}" />
-          <p class="font-medium text-[24px]">
-            {{course.title}}
-          </p>
-          <p class="font-bold text-[43px]">
-            {{ course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
-          </p>
-          <p class="font-bold text-[24px]">
-            {{ course.startDatetime | date:'HH:mm':'':'fr' }}
-          </p>
-          <p class="font-light text-[22px]">
-            {{course.coach.firstname}} {{course.coach.lastname}}
-          </p>
+      <div class="p-3 relative mx-auto h-full">
+        <p-card>
+
+          <div class="w-full h-full flex flex-col justify-between">
+            <div>
+              <p-chip label="{{course.courseType.name}}"/>
+              <p class="font-medium text-[24px]">
+                {{ course.title }}
+              </p>
+            </div>
+
+            <div>
+              <p class="font-bold text-[43px]">
+                {{ course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
+              </p>
+              <p class="font-bold text-[24px]">
+                {{ course.startDatetime | date:'HH:mm':'':'fr' }}
+              </p>
+            </div>
+
+            <div>
+              <p class="font-light text-[22px]">
+                {{ course.coach.firstname }} {{ course.coach.lastname }}
+              </p>
+            </div>
+          </div>
+
         </p-card>
       </div>
     </ng-template>
@@ -28,10 +40,10 @@
 </div>
 
 
-@if ( courses.length === 0 || !courses ){
-<div class="text-center p-4">
-  <p>Aucun cours disponible pour le moment.</p>
-</div>
+@if (courses.length === 0 || !courses) {
+  <div class="text-center p-4">
+    <p>Aucun cours disponible pour le moment.</p>
+  </div>
 
 }
 
