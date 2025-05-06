@@ -1,11 +1,35 @@
-.courses-container {
-  padding: 30px 15px;
+:host ::ng-deep .p-carousel .p-carousel-item {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 50px;
+  height: fit-content;
+  align-items: stretch; // S'assure que les items s'étirent verticalement
+}
 
-  .course-card {
-    width: 500px;
+p-carousel-item {
+  display: flex; // Permet au contenu de la carte de mieux se gérer
+  flex-direction: column; // Organise le contenu de la carte verticalement
+  width: 100%; // S'assure que la carte prend toute la largeur de son conteneur d'item
+  height: 100%; // Fait en sorte que la carte s'étire sur toute la hauteur disponible
+  //background-color: rgba(147, 192, 31, 0.2); // #93C01F avec 20% d'opacité
+  background-color: #1B2140;
+
+  .p-card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; // Permet au corps de la carte de grandir pour remplir l'espace
   }
+
+  .p-card-content {
+    flex-grow: 1; // Permet au contenu principal de grandir
+  }
+}
+
+:host ::ng-deep .course-carousel-item p-chip {
+  .p-chip-text {
+    font-size: 0.75rem;
+  }
+  .p-chip-label {
+    font-size: 0.75rem;
+  }
+  padding: 0.2rem 0.4rem;
+  height: auto;
 }

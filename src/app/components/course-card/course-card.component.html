@@ -1,0 +1,38 @@
+<div class="lg:py-10">
+  <p-carousel
+    [value]="courses"
+    [numVisible]="3"
+    [numScroll]="1"
+    [responsiveOptions]="responsiveOptions"
+  [circular]="false">
+    <ng-template let-course pTemplate="item">
+      <div class="course-carousel-item p-3 ">
+        <p-card class="h-full w-430 bg-[#1B2140]">
+          <p-chip label="{{course.courseType.name}}" />
+          <p class="font-medium text-[24px]">
+            {{course.title}}
+          </p>
+          <p class="font-bold text-[43px]">
+            {{ course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
+          </p>
+          <p class="font-bold text-[24px]">
+            {{ course.startDatetime | date:'HH:mm':'':'fr' }}
+          </p>
+          <p class="font-light text-[22px]">
+            {{course.coach.firstname}} {{course.coach.lastname}}
+          </p>
+        </p-card>
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>
+
+
+@if ( courses.length === 0 || !courses ){
+<div class="text-center p-4">
+  <p>Aucun cours disponible pour le moment.</p>
+</div>
+
+}
+
+
