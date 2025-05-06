@@ -1,2 +1,31 @@
-<app-course-card/>
+<div class="lg:px-50 lg:mt-10">
+  <div class="flex justify-between">
+    <h1 class="font-bold text-3xl">Dashboard</h1>
+    <div class="flex flex-row ">
 
+      <div class="card flex justify-center">
+        <p-datepicker [(ngModel)]="dates" selectionMode="multiple" [readonlyInput]="true"/>
+
+      </div>
+      <div class="card flex justify-center gap-4">
+        <p-button label="Télécharger le .ics" icon="pi pi-calendar" [loading]="loading" (onClick)="load()"/>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="card">
+    <p-tabs value="/dashboard">
+      <p-tablist>
+        @for (tab of tabs; track tab.route) {
+          <p-tab [value]="tab.route" [routerLink]="tab.route" class="flex items-center !gap-2 text-inherit">
+            <i [class]="tab.icon"></i>
+            <span>{{ tab.label }}</span>
+          </p-tab>
+        }
+      </p-tablist>
+    </p-tabs>
+    <router-outlet/>
+  </div>
+</div>
