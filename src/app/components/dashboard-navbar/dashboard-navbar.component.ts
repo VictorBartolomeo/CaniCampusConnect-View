@@ -8,7 +8,7 @@ import {AvatarModule} from 'primeng/avatar';
 import {Select} from 'primeng/select';
 import {Dog} from '../../models/dog';
 import {HttpClient} from '@angular/common/http';
-import {RouterLink} from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import {Menu} from 'primeng/menu';
 import {User} from '../../models/user';
 
@@ -16,7 +16,7 @@ import {User} from '../../models/user';
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './dashboard-navbar.component.html',
-  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu],
+  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet],
   styleUrls: ['./dashboard-navbar.component.scss']
 })
 export class DashboardNavbarComponent implements OnInit {
