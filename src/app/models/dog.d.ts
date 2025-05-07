@@ -1,5 +1,6 @@
 import {Registration} from "./registration.d.ts";
 import {DogWeight} from './dogweight';
+import {Vaccination, Vaccine} from './vaccination';
 
 type Dog = {
   id: number;
@@ -12,7 +13,7 @@ type Dog = {
   chipNumber?: string | null;
   breed?: Breed;
   registrations?: Registration[] | null;
-  vaccinations?: Vaccination[] | null;
+  vaccinations?: Vaccination[];
   veterinaryVisits?: VeterinaryVisit[] | null;
   medicationTreatments?: MedicationTreatment[] | null;
   dogWeights?: DogWeight[];
