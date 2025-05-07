@@ -1,22 +1,6 @@
 <div class="card p-4">
   <h2 class="text-xl font-bold mb-4">Suivi du poids</h2>
 
-  <!-- Sélecteur de chien (si vous avez plusieurs chiens) -->
-  @if (dogs.length > 1) {
-    <div class="mb-4">
-      <label for="dogSelector">Choisir un chien :</label>
-      <select id="dogSelector" class="p-2 border rounded ml-2"
-              [(ngModel)]="selectedDog"
-              (ngModelChange)="createWeightChart()">
-        @for (dog of dogs; track dog.id) {
-          <option [ngValue]="dog">
-            {{ dog.name }}
-          </option>
-        }
-      </select>
-    </div>
-  }
-
   @if (weightChartData) {
     <div class="mt-4">
       <p-chart type="line" [data]="weightChartData" [options]="weightChartOptions" height="400px"></p-chart>
