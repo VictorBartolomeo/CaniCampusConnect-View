@@ -1,0 +1,35 @@
+<h2 class="text-xl font-bold mb-4">Visites vétérinaire</h2>
+
+@if (currentDog) {
+  <h3 class="text-lg font-semibold mt-4 mb-2">{{ currentDog.name }}</h3>
+
+  @if (paginatedVisits && paginatedVisits.length > 0) {
+    <p-accordion [value]="0">
+      @for (veterinaryVisit of paginatedVisits; track veterinaryVisit.id) {
+        <p-accordion-panel [value]="veterinaryVisit.visitDate">
+          <p-accordion-header>{{ veterinaryVisit.visitDate | date:'dd/MM/yyyy' }} - {{ veterinaryVisit.reasonForVisit }}</p-accordion-header>
+          <p-accordion-content>
+            <h4 class="font-medium">{{ veterinaryVisit.veterinarian }}</h4>
+            <p>Raison de la visite : {{ veterinaryVisit.reasonForVisit }}</p>
+            <p class="m-0">Diagnostique : {{ veterinaryVisit.diagnosis }}</p>
+            <p>Traitement : {{ veterinaryVisit.treatment }}</p>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+
+    <!-- Pagination -->
+    <div class="mt-4">
+      <p-paginator
+        [rows]="pageSize"
+        [totalRecords]="totalVisits"
+        [first]="first"
+        (onPageChange)="onPageChange($event)">
+      </p-paginator>
+    </div>
+  } @else {
+    <p class="italic text-gray-600">Aucune visite vétérinaire enregistrée.</p>
+  }
+} @else {
+  <p class="italic text-gray-600">Aucun chien trouvé.</p>
+}
