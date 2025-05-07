@@ -7,13 +7,14 @@ import {GeneralConditionsUseComponent} from './pages/general-conditions-use/gene
 import {DashboardUserPageComponent} from './pages/dashboard-user-page/dashboard-user-page.component';
 import {DashboardNavbarComponent} from './components/dashboard-navbar/dashboard-navbar.component';
 import {CourseCardComponent} from './components/course-card/course-card.component';
+import {HealthRecordComponent} from './pages/health-record/health-record.component';
 
 export const routes: Routes = [
   {path : "dashboard", component: DashboardNavbarComponent,
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "course", component : CourseCardComponent},
-          {path : "chat", component : ChatComponent},
+          // {path : "chat", component : ChatComponent},
           {path : "health-record", component : HealthRecordComponent}
         ]},
       {path : "user/:id", component : DashboardUserPageComponent},
