@@ -1,62 +1,27 @@
-<div>
-  <p-table [value]="dogs" rowExpandMode="single" [expandedRowKeys]="expandedRows" dataKey="id" responsiveLayout="scroll">
-    <ng-template pTemplate="header">
+<p-table [value]="dogs" [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template #header>
+    <tr>
+      <th>Vaccin</th>
+      <th>Date de vaccination</th>
+      <th>Numéro de lot</th>
+      <th>Rappel de vaccin</th>
+      <th>Vétérinaire</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-dog>
+    @for (vaccination of dog.vaccinations; track vaccination.id) {
       <tr>
-        <th style="width: 4rem"></th> <!-- Colonne pour le bouton d'expansion/réduction -->
-        <th>Vaccin</th>
-        <th>Date de vaccination</th>
-        <th>Numéro de lot</th>
-        <th>Rappel de vaccin</th>
-
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-dogs let-expanded="expanded">
-      <tr>
-        <td>
-          <button type="button" pButton pRipple [pRowToggler]="dogs"
-                  class="p-button-text p-button-rounded p-button-plain"
-                  [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+        <td>{{ vaccination.vaccine.name }}</td>
+        <td>{{ vaccination.vaccinationDate | date : "dd/MM/yyyy" }}</td>
+        <td>{{ vaccination.batchNumber }}</td>
+        <td [ngClass]="{
+            'text-yellow-500 font-bold': isReminderSoon(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay)),
+            'text-red-500 font-bold': isReminderOverdue(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay))
+          }">
+          {{ calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay) | date:'dd/MM/yyyy' }}
         </td>
-        <td>{{ dogs.vaccination.vaccine.name }}</td>
-        <td>{{ dogs.vaccination.date | date:'dd/MM/yyyy' }}</td>
-        <td>{{ dogs.chipNumber }}</td>
-        <td>{{ dogs.chipNumber }}</td>
+        <td>{{ vaccination.veterinarian }}</td>
       </tr>
-    </ng-template>
-
-    <ng-template pTemplate="rowexpansion" let-dog>
-      <tr>
-        <!-- Le colspan doit correspondre au nombre total de colonnes dans la rangée principale du chien -->
-        <td [attr.colspan]="4">
-          <div class="p-3">
-            <h5 class="text-lg font-semibold mb-2">Vaccinations pour {{ dog.name }}:</h5>
-            <!-- Tableau imbriqué pour les vaccinations du chien courant (dog) -->
-            <p-table [value]="dog.vaccinations" dataKey="id" *ngIf="dog.vaccinations && dog.vaccinations.length > 0">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Date Vaccination</th>
-                  <th>Date Rappel</th>
-                  <th>Numéro de Lot</th>
-                  <th>Vétérinaire</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-dogs>
-                <tr>
-                  <td>{{ dogs.vaccinations.vaccinationDate | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ dogs.vaccinations.reminderDate | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ dogs.vaccinations.batchNumber }}</td>
-                  <td>{{ dogs.vaccinations.veterinarian }}</td>
-                </tr>
-              </ng-template>
-            </p-table>
-            @if (dog.vaccinations && dog.vaccinations.length > 0){
-              <div class="p-3 text-center text-gray-500">
-                Aucune vaccination enregistrée pour cet animal.
-              </div>
-            }
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
+    }
+  </ng-template>
+</p-table>
