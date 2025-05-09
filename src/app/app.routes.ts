@@ -6,11 +6,18 @@ import {RegisterPageComponent} from './pages/register-page/register-page.compone
 import {GeneralConditionsUseComponent} from './pages/general-conditions-use/general-conditions-use.component';
 import {DashboardUserPageComponent} from './pages/dashboard-user-page/dashboard-user-page.component';
 import {DashboardNavbarComponent} from './components/dashboard-navbar/dashboard-navbar.component';
+import {CourseCardComponent} from './components/course-card/course-card.component';
+import {HealthRecordComponent} from './pages/health-record/health-record.component';
+import {CourseComponent} from './pages/course/course.component';
 
 export const routes: Routes = [
   {path : "dashboard", component: DashboardNavbarComponent,
     children:[
-      {path : "user", component : DashboardUserPageComponent},
+      {path : "user", component : DashboardUserPageComponent, children:[
+          {path : "course", component : CourseComponent},
+          // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe
+          {path : "health-record", component : HealthRecordComponent}
+        ]},
       {path : "user/:id", component : DashboardUserPageComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}

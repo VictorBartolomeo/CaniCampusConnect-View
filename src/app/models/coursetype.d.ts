@@ -1,5 +1,6 @@
 type CourseType = {
   id: number,
   name: string,
-  description: string
+  description: string,
+  ageRange : AgeRange;
 }

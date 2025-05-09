@@ -1,0 +1,20 @@
+  <h2 class="text-xl font-bold mb-4">Suivi du poids</h2>
+<div class="card p-4">
+
+  @if (weightChartData) {
+    <div class="mt-4">
+      <p-chart type="line"
+               [data]="weightChartData"
+               [options]="weightChartOptions"
+               height="400px"></p-chart>
+    </div>
+  }
+
+  @if (selectedDog && (!selectedDog.dogWeights || selectedDog.dogWeights.length === 0)) {
+    <div class="mt-4 p-4 bg-yellow-100 text-yellow-800 rounded">
+      Aucune donnée de poids enregistrée pour ce chien.
+    </div>
+  }
+
+</div>
+

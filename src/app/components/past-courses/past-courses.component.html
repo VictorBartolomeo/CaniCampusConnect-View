@@ -1,0 +1,34 @@
+<div class="flex justify-between items-center mb-4">
+  <h2 class="text-xl font-bold">Cours passés</h2>
+  <div>
+    <span class="mr-2">Voir les cours avant: </span>
+    <p-calendar class="z-10" [(ngModel)]="filterDate" (onSelect)="onDateSelect()" dateFormat="dd/mm/yy"></p-calendar>
+  </div>
+</div>
+
+<p-table
+  [value]="pastCourses"
+  [paginator]="true"
+  [rows]="4"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="{first} à {last} sur {totalRecords} cours"
+  [tableStyle]="{'min-width': '50rem'}">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>Cours</th>
+      <th>Date</th>
+      <th>Coach</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-course>
+    <tr>
+      <td class="text-center">
+        <i class="pi pi-check-circle text-green-500 text-xl"></i>
+      </td>
+      <td>{{ course.title }}</td>
+      <td>{{ course.startDatetime | date : "dd/MM/yyyy" }}</td>
+      <td>{{ course.coach.firstname + ' ' + course.coach.lastname }}</td>
+    </tr>
+  </ng-template>
+</p-table>
