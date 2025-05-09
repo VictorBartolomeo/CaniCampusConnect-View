@@ -58,7 +58,7 @@ export class RegisterCourseComponent implements OnInit {
   }
 
   //POPUP CONFIRM
-  constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {
+  constructor(private readonly confirmationService: ConfirmationService, private readonly messageService: MessageService) {
   }
 
   showCourseDialog(course: Course) {
@@ -66,11 +66,11 @@ export class RegisterCourseComponent implements OnInit {
     this.dialogVisible = true;
   }
 
-
-  confirm(event: Event) {
+  confirm(course: Course,event: Event) {
+    this.selectedCourseForDialog=course;
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: 'Inscrire ' + this.dogs[0].name + ' au cours de ' + this.courses[0].title + ' ?',
+      message: 'Inscrire ' + this.dogs[0].name + ' au cours de ' + course.title + ' ?',
       icon: 'pi pi-exclamation-triangle',
       rejectButtonProps: {
         icon: 'pi pi-times',
@@ -81,6 +81,7 @@ export class RegisterCourseComponent implements OnInit {
         icon: 'pi pi-check',
         label: 'Confirmer',
       },
+
       accept: () => {
         this.messageService.add({
           severity: 'info',
@@ -100,41 +101,8 @@ export class RegisterCourseComponent implements OnInit {
     });
   }
 
-  openConfirmPopup(course: Course, event: Event) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget, // Cible l'icône cliquée
-      message: `Êtes-vous sûr de vouloir interagir avec le cours "${course.title}" ?`,
-      icon: 'pi pi-question-circle', // Ou une classe pour votre icône FontAwesome si configurée
-      acceptLabel: 'Oui',
-      rejectLabel: 'Non',
-      accept: () => {
-        // Logique à exécuter si l'utilisateur confirme
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Confirmé',
-          detail: `Action confirmée pour ${course.title}`,
-          life: 3000
-        });
-        // Exemple: this.inscrireAuCours(course);
-      },
-      reject: () => {
-        // Logique à exécuter si l'utilisateur annule
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Annulé',
-          detail: `Action annulée pour ${course.title}`,
-          life: 3000
-        });
-      }
-    });
-  }
-
   //MODALE
   visible: boolean = false;
-
-  showDialog() {
-    this.visible = true;
-  }
 
   protected readonly faPaw = faPaw;
   protected readonly faEye = faEye;
