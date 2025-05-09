@@ -82,25 +82,22 @@ export class WeightChartComponent implements OnInit{
       return;
     }
 
-    // Tri des enregistrements par date
     const sortedWeights = [...this.selectedDog.dogWeights].sort((a, b) => {
       return new Date(a.measurementDate).getTime() - new Date(b.measurementDate).getTime();
     });
 
-    // Formatage des dates pour l'affichage
     const labels = sortedWeights.map(record => {
       const date = new Date(record.measurementDate);
       return date.toLocaleDateString();
     });
 
-    // Récupération des valeurs de poids
     const weightValues = sortedWeights.map(record => record.weightValue);
 
     this.weightChartData = {
       labels: labels,
       datasets: [
         {
-          label: `Évolution du poids de ${this.selectedDog.name || 'votre chien'}`,
+          label: `${this.selectedDog.name || 'votre chien'}`,
           data: weightValues,
           fill: false,
           borderColor: '#42A5F5',
