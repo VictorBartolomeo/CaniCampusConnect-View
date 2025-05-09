@@ -1,11 +1,14 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarMonthModule, CalendarMonthViewDay, CalendarView} from 'angular-calendar';
 import {HttpClient} from '@angular/common/http';
+import {TableModule} from 'primeng/table';
+import {Course} from '../../models/course';
 
 @Component({
   selector: 'app-calendar',
   imports: [
-    CalendarMonthModule
+    CalendarMonthModule,
+    TableModule
   ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss'
