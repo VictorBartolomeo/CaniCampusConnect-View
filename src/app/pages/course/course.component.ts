@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import {RouterOutlet} from '@angular/router';
+import {Component} from '@angular/core';
 import {CourseCardComponent} from '../../components/course-card/course-card.component';
+import {PastCoursesComponent} from '../../components/past-courses/past-courses.component';
 
 @Component({
   selector: 'app-course',
   imports: [
-    RouterOutlet,
-    CourseCardComponent
+    CourseCardComponent,
+    PastCoursesComponent
   ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.scss'
