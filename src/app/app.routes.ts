@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 import {LandingPageComponent} from './pages/landing-page/landing-page.component';
 import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {LoginPageComponent} from './pages/login-page/login-page.component';
@@ -6,9 +6,9 @@ import {RegisterPageComponent} from './pages/register-page/register-page.compone
 import {GeneralConditionsUseComponent} from './pages/general-conditions-use/general-conditions-use.component';
 import {DashboardUserPageComponent} from './pages/dashboard-user-page/dashboard-user-page.component';
 import {DashboardNavbarComponent} from './components/dashboard-navbar/dashboard-navbar.component';
-import {CourseCardComponent} from './components/course-card/course-card.component';
 import {HealthRecordComponent} from './pages/health-record/health-record.component';
 import {CourseComponent} from './pages/course/course.component';
+import {RegisterCourseComponent} from './pages/register-course/register-course.component';
 
 export const routes: Routes = [
   {path : "dashboard", component: DashboardNavbarComponent,
@@ -18,6 +18,7 @@ export const routes: Routes = [
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe
           {path : "health-record", component : HealthRecordComponent}
         ]},
+      {path : "reserve-course", component : RegisterCourseComponent},
       {path : "user/:id", component : DashboardUserPageComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
