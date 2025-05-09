@@ -9,17 +9,17 @@
     rowHover="true"
     stripedRows="true"
   >
-    <ng-template pTemplate="header"> <!-- Corrected from #header to pTemplate="header" -->
+    <ng-template pTemplate="header">
       <tr>
         <th>Cours</th>
         <th>Description</th>
-        <th>Coach</th> <!-- Assuming this was meant to be Coach, not number of places -->
+        <th>Coach</th>
         <th>Date</th>
         <th>Jauge</th>
         <th></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-course> <!-- Corrected from #body to pTemplate="body" -->
+    <ng-template pTemplate="body" let-course>
       <tr>
         <td class="font-bold">{{ course.title }}</td>
         <td>{{ course.description }}</td>
@@ -28,7 +28,7 @@
         <td> {{course.registrations.length}} / {{ course.maxCapacity }}</td>
         <td class="flex gap-5">
           <div>
-            <p-toast position="bottom-center"/> <!-- Note: p-toast is usually best placed once globally -->
+            <p-toast position="bottom-center"/>
             <p-confirmpopup>
               <ng-template #content let-message>
                 <div
@@ -40,19 +40,20 @@
               </ng-template>
             </p-confirmpopup>
             <fa-icon class="cursor-pointer text-2xl hover:opacity-80"
-                     [icon]="faPaw" (click)="openConfirmPopup(course, $event)" label="Save" ></fa-icon> <!-- Modified method name and added $event -->
+                     [icon]="faPaw" (click)="confirm(course, $event)" label="Save" ></fa-icon> <!-- Modified method name and added $event -->
           </div>
           <div>
-            <!-- Pass the course to showDialog and ensure selectedCourseForDialog is used in the dialog -->
             <fa-icon class="cursor-pointer text-2xl hover:opacity-80" [icon]="faEye" (click)="showCourseDialog(course)" label="Show" ></fa-icon>
-            <p-dialog header="Détails du cours: {{ selectedCourseForDialog?.title }}" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
-              <div *ngIf="selectedCourseForDialog">
+            <p-dialog header="{{ selectedCourseForDialog?.title }}" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
+              @if (selectedCourseForDialog) {
+              <div class="flex flex-col gap-4 p-4" style="height: 30rem">
                 <p><strong>Description:</strong> {{ selectedCourseForDialog.description }}</p>
                 <p><strong>Coach:</strong> {{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}</p>
                 <p><strong>Date:</strong> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}</p>
+                <p><strong>Horaires:</strong> {{selectedCourseForDialog.startDatetime | date : "HH:mm"}} - {{selectedCourseForDialog.endDatetime| date: "HH:mm"}}</p>
                 <p><strong>Jauge:</strong> {{selectedCourseForDialog.registrations.length}} / {{ selectedCourseForDialog.maxCapacity }}</p>
-                <!-- Ajoutez d'autres détails du cours que vous souhaitez afficher -->
               </div>
+              }
               <ng-template pTemplate="footer">
                 <button pButton type="button" label="Fermer" icon="pi pi-times" (click)="dialogVisible = false" class="p-button-text"></button>
               </ng-template>
