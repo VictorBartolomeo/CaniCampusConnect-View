@@ -49,12 +49,9 @@ $borderRadius: $my-input-field-corner-radius;
 $buttonBorderRadius: $my-button-corner-radius;
 $inputBorderRadius: $my-input-field-corner-radius;
 
-// Vous pouvez mapper d'autres couleurs comme $infoColor, $successColor, etc.
-// $successColor: $my-secondary;
-// $warningColor: $my-accent-2;
-// $errorColor: #FF3B30; // Votre $complete-badge
 
 @import "tailwindcss";
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
 
 @theme {
   /* ---------------------------- */
