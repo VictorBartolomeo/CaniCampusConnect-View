@@ -1,13 +1,15 @@
 <div class="card px-10 mt-10">
   <h1 class="text-3xl font-bold mb-10">Consulter les cours disponibles</h1>
+  <p>Vous ne voyez que les cours pour <strong>{{dogs[0].name}}</strong> (catégorie : {{getDogAgeCategory(dogs[0])}}) - Vous voyez aussi les cours avec projection de l'age à la date du cours.</p>
   <p-table
-    [value]="courses"
+    [value]="filteredCourses"
     [paginator]="true"
     [rows]="10"
     [tableStyle]="{ 'min-width': '50rem' }"
     [rowsPerPageOptions]="[5, 10, 20]"
     rowHover="true"
     stripedRows="true"
+    styleClass="mt-10"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -47,7 +49,7 @@
             <p-dialog header="{{ selectedCourseForDialog?.title }}" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [maximizable]="true">
               @if (selectedCourseForDialog) {
               <div class="flex flex-col gap-4 p-4" style="height: 30rem">
-                <p><strong>Description:</strong> {{ selectedCourseForDialog.description }}</p>
+                <p class="max-w-[100px] truncate"><strong>Description:</strong> {{ selectedCourseForDialog.description | slice:0:10 }}</p>
                 <p><strong>Coach:</strong> {{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}</p>
                 <p><strong>Date:</strong> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}</p>
                 <p><strong>Horaires:</strong> {{selectedCourseForDialog.startDatetime | date : "HH:mm"}} - {{selectedCourseForDialog.endDatetime| date: "HH:mm"}}</p>
