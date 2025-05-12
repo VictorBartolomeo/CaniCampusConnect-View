@@ -6,7 +6,7 @@ type Registration = {
   course: Course;
   dog: Dog;
   registrationDate: string | null;
-  status: RegistrationStatus;
+  status: RegistrationStatus | null;
 }
 
 enum RegistrationStatus {
