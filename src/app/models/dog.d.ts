@@ -3,13 +3,21 @@ import {DogWeight} from './dogweight';
 import {Vaccination} from './vaccination';
 import {VeterinaryVisit} from './veterinaryvisit';
 
-type Dog = {
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  STERILIZED_MALE = 'STERILIZED_MALE',
+  STERILIZED_FEMALE = 'STERILIZED_FEMALE'
+}
+
+
+export type Dog = {
   id: number;
   name: string;
   birthDate: Date;
-  isMale?: boolean;
+  gender: string;
   chipNumber?: string | null;
-  breed: Breed;
+  breeds: Breed[];
   registrations?: Registration[] | null;
   vaccinations?: Vaccination[];
   veterinaryVisits?: VeterinaryVisit[];
