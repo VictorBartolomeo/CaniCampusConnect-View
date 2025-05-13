@@ -4,14 +4,7 @@ import {Vaccination} from './vaccination';
 import {VeterinaryVisit} from './veterinaryvisit';
 import {MedicationTreatment} from './medicationtreatment';
 import {Breed} from './breed';
-
-export enum Gender {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-  STERILIZED_MALE = 'STERILIZED_MALE',
-  STERILIZED_FEMALE = 'STERILIZED_FEMALE'
-}
-
+import {Gender} from './gender';
 
 export type Dog = {
   id: number;
