@@ -1,17 +1,13 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Dog, Gender} from '../../models/dog';
+import {Dog} from '../../models/dog';
 import {InputText} from 'primeng/inputtext';
 import {FormsModule} from '@angular/forms';
 import {Select} from 'primeng/select';
 import {IftaLabel} from 'primeng/iftalabel';
 import {NgIf} from '@angular/common';
+import {Gender} from '../../models/gender';
 
-
-interface GenderOption {
-  label: string;
-  value: Gender;
-}
 
 @Component({
   selector: 'app-dog-form',
@@ -29,16 +25,6 @@ export class DogFormComponent implements OnInit {
   http = inject(HttpClient)
   dogs: Dog[] = [];
   selectedDog: Dog | null = null;
-  genderOptions: GenderOption[];
-
-  constructor() {
-    this.genderOptions = [
-      { label: 'Mâle', value: Gender.MALE },
-      { label: 'Femelle', value: Gender.FEMALE },
-      { label: 'Mâle stérilisé', value: Gender.STERILIZED_MALE },
-      { label: 'Femelle stérilisée', value: Gender.STERILIZED_FEMALE }
-    ];
-  }
 
 
 
@@ -71,5 +57,5 @@ export class DogFormComponent implements OnInit {
   }
 
 
-  protected readonly Gender = Gender;
+  // protected readonly Gender = Gender;
 }
