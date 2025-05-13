@@ -1,7 +1,7 @@
-<h2 >Calendrier</h2>
+<h2 class="font-bold text-xl mb-2">Calendrier</h2>
 <div class="row text-center">
   <div class="col-md-4">
-    <div class="flex flex-row gap-4 justify-between">
+    <div class="flex flex-row gap-4 justify-evenly mb-4">
       <p-button
         mwlCalendarPreviousView
         [view]="view"
@@ -19,12 +19,12 @@
       </p-button>
     </div>
   </div>
+
   <div class="col-md-4">
     <h3 class="text-center text-xl font-bold">
-      {{ viewDate | calendarDate:(view + 'ViewTitle'):locale:weekStartsOn }}
+      {{ viewDate | calendarDate:(view + 'ViewTitle'):locale:weekStartsOn | uppercase}}
     </h3>
   </div>
-
 
   <div>
     <mwl-calendar-month-view
@@ -32,7 +32,7 @@
       [events]="events"
       [locale]="locale"
       [weekStartsOn]="weekStartsOn"
-      [weekendDays]="weekendDays"
-    >
+      [weekendDays]="weekendDays">
     </mwl-calendar-month-view>
   </div>
+</div>
