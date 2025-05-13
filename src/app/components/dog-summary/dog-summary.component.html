@@ -6,11 +6,11 @@
     <ng-template #title> {{selectedDog?.name}} </ng-template>
     <ng-template #subtitle> {{getDogAge(selectedDog?.birthDate)}} </ng-template>
     <div class="mb-4">
-, votre {{selectedDog?.isMale ? 'chien' : 'chienne'}} est
-      un {{selectedDog?.breed?.name}}.
+Votre {{selectedDog?.gender===Gender.MALE || selectedDog?.gender===Gender.MALE ? 'chien' : 'chienne'}} est
+      un {{selectedDog?.breeds?.name}}.
       @if (getLastWeight()) {
       <span>
-        {{selectedDog?.isMale ? 'Il ' : 'Elle ' }} pèse à ce jour {{getLastWeight()?.weightValue}} {{getLastWeight()?.unit === 'KILOGRAM' ? 'kg' : 'lbs'}}.
+        {{selectedDog?.gender===Gender.MALE || selectedDog?.gender===Gender.STERILIZED_MALE ? 'Il ' : 'Elle ' }} pèse à ce jour {{getLastWeight()?.weightValue}} {{getLastWeight()?.unit === 'KILOGRAM' ? 'kg' : 'lbs'}}.
       </span>
       }
     <div class="mb-4">

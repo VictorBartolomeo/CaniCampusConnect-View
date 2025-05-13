@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {Card} from 'primeng/card';
 import {Button} from 'primeng/button';
 import {HttpClient} from '@angular/common/http';
-import {Dog} from '../../models/dog';
+import {Dog, Gender} from '../../models/dog';
 import {differenceInMonths, differenceInYears} from 'date-fns';
 import {User} from '../../models/user';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
@@ -171,4 +171,5 @@ export class DogSummaryComponent implements OnInit{
 
 
   protected readonly differenceInYears = differenceInYears;
+  protected readonly Gender = Gender;
 }
