@@ -2,6 +2,8 @@ import {Registration} from "./registration.d.ts";
 import {DogWeight} from './dogweight';
 import {Vaccination} from './vaccination';
 import {VeterinaryVisit} from './veterinaryvisit';
+import {MedicationTreatment} from './medicationtreatment';
+import {Breed} from './breed';
 
 export enum Gender {
   MALE = 'MALE',
@@ -15,8 +17,8 @@ export type Dog = {
   id: number;
   name: string;
   birthDate: Date;
-  gender: string;
-  chipNumber?: string | null;
+  gender: Gender;
+  chipNumber: string;
   breeds: Breed[];
   registrations?: Registration[] | null;
   vaccinations?: Vaccination[];
