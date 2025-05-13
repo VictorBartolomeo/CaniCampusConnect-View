@@ -1,16 +1,19 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {
-  CalendarCommonModule, CalendarDateFormatter, CalendarDayModule,
+  CalendarCommonModule,
+  CalendarDateFormatter,
+  CalendarDayModule,
   CalendarEvent,
   CalendarMonthModule,
-  CalendarMonthViewDay,
-  CalendarView, CalendarWeekModule, DAYS_OF_WEEK
+  CalendarView,
+  CalendarWeekModule,
+  DAYS_OF_WEEK
 } from 'angular-calendar';
 import {HttpClient} from '@angular/common/http';
 import {TableModule} from 'primeng/table';
 import {Course} from '../../models/course';
-import {NgSwitch, NgSwitchCase} from '@angular/common';
 import {CustomDateFormatter} from './custom-date-formatter.provider';
+import {Button} from 'primeng/button';
 
 @Component({
   selector: 'app-calendar',
@@ -18,10 +21,9 @@ import {CustomDateFormatter} from './custom-date-formatter.provider';
     CalendarMonthModule,
     TableModule,
     CalendarCommonModule,
-    NgSwitch,
     CalendarWeekModule,
     CalendarDayModule,
-    NgSwitchCase
+    Button
   ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss',
