@@ -1,0 +1,26 @@
+<div class="card flex justify-center">
+  <!-- Ajout de *ngIf="selectedDog" ici -->
+  <div *ngIf="selectedDog" class="flex flex-col gap-4">
+    <h1 class="text-xl font-bold">Modifier</h1>
+    <p-iftalabel>
+      <!-- Puisque selectedDog est garanti non-null ici, on peut retirer le ?. -->
+      <input pInputText id="dogsName" [(ngModel)]="selectedDog.name"/>
+      <!-- Accès à Gender via la propriété Gender que vous avez exposée dans le composant -->
+      <label for="dogsName">{{ selectedDog.gender === Gender.MALE || selectedDog.gender === Gender.STERILIZED_MALE ? 'Nom du chien' : 'Nom de la chienne' }}</label>
+    </p-iftalabel>
+
+    <p-select [options]="genderOptions"
+              id="dogsGender"
+              [(ngModel)]="selectedDog.gender"
+    optionLabel="label"
+    optionValue="value"
+    placeholder="Sélectionner un genre"
+    class="w-full md:w-56"/>
+  </div>
+
+  <!-- Optionnel: Afficher un message pendant le chargement -->
+  <div *ngIf="!selectedDog" class="flex justify-center items-center p-4">
+    <p>Chargement des informations du chien...</p>
+    <!-- Ou un spinner, par exemple avec les composants PrimeNG: <p-progressSpinner></p-progressSpinner> -->
+  </div>
+</div>
