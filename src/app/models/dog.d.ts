@@ -1,6 +1,6 @@
 import {Registration} from "./registration.d.ts";
 import {DogWeight} from './dogweight';
-import {Vaccination, Vaccine} from './vaccination';
+import {Vaccination} from './vaccination';
 import {VeterinaryVisit} from './veterinaryvisit';
 
 type Dog = {
