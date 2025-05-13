@@ -1,4 +1,4 @@
-import {ApplicationConfig, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {providePrimeNG} from 'primeng/config';
@@ -6,19 +6,28 @@ import Aura from '@primeng/themes/aura';
 
 import {routes} from './app.routes';
 import {provideHttpClient} from '@angular/common/http';
+import {provideAnimations} from '@angular/platform-browser/animations';
+import {CalendarModule, DateAdapter} from 'angular-calendar';
+import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({eventCoalescing: true}),
-    { provide: LOCALE_ID, useValue: 'fr-FR' },
+    {provide: LOCALE_ID, useValue: 'fr-FR'},
     provideRouter(routes),
     provideHttpClient(),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: Aura,
-        options :{prefix: 'my'}
+        options: {prefix: 'my'}
       }
-    })
+    }),
+    provideAnimations(),
+    importProvidersFrom(
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    })),
   ]
 };

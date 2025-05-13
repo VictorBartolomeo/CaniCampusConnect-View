@@ -1,32 +1,42 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {CalendarEvent, CalendarMonthModule, CalendarMonthViewDay, CalendarView} from 'angular-calendar';
+import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+  CalendarCommonModule,
+  CalendarDateFormatter,
+  CalendarDayModule,
+  CalendarEvent,
+  CalendarMonthModule,
+  CalendarView,
+  CalendarWeekModule,
+  DAYS_OF_WEEK
+} from 'angular-calendar';
 import {HttpClient} from '@angular/common/http';
 import {TableModule} from 'primeng/table';
 import {Course} from '../../models/course';
+import {CustomDateFormatter} from './custom-date-formatter.provider';
+import {Button} from 'primeng/button';
+import {UpperCasePipe} from '@angular/common';
 
 @Component({
   selector: 'app-calendar',
   imports: [
     CalendarMonthModule,
-    TableModule
+    TableModule,
+    CalendarCommonModule,
+    CalendarWeekModule,
+    CalendarDayModule,
+    Button,
+    UpperCasePipe
   ],
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss'
+  styleUrl: './calendar.component.scss',
+  providers: [{provide: CalendarDateFormatter, useClass: CustomDateFormatter}],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CalendarComponent implements OnInit {
   http = inject(HttpClient);
   courses: Course[] = [];
-  events: CalendarEvent<{ incrementsBadgeTotal: boolean }>[] = [];
-  view: CalendarView = CalendarView.Month;
-  viewDate: Date = new Date();
 
-  beforeMonthViewRender({ body }: { body: CalendarMonthViewDay[] }): void {
-    body.forEach((day) => {
-      day.badgeTotal = day.events.filter(
-        (event) => event.meta.incrementsBadgeTotal
-      ).length;
-    });
-  }
+
 
   ngOnInit() {
     this.http.get<Course[]>('http://localhost:8080/courses').subscribe({
@@ -34,20 +44,24 @@ export class CalendarComponent implements OnInit {
         this.courses = courses;
         console.log(courses);
 
-        // Maintenant nous pouvons créer les événements une fois que les cours sont chargés
         this.events = this.courses.map(course => ({
           title: course.title,
-          color: { primary: '#1e90ff', secondary: '#D1E8FF' }, // Définition de la couleur bleue
+          color: {primary: '#1e90ff', secondary: '#D1E8FF'}, // Définition de la couleur bleue
           start: new Date(course.startDatetime),
-          meta: {
-            incrementsBadgeTotal: true,
-          },
+          end: new Date(course.endDatetime),
         }));
+
       },
       error: (error) => {
         console.error('Error fetching courses:', error);
       },
     });
   }
+  view: CalendarView = CalendarView.Month;
+  viewDate = new Date();
+  events: CalendarEvent[] = [];
+  locale: string = 'fr';
+  weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
+  weekendDays: number[] = [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY];
 
 }
