@@ -1,6 +1,7 @@
+<h2 >Calendrier</h2>
 <div class="row text-center">
   <div class="col-md-4">
-    <div class="flex flex-row gap-4">
+    <div class="flex flex-row gap-4 justify-between">
       <p-button
         mwlCalendarPreviousView
         [view]="view"
@@ -19,7 +20,7 @@
     </div>
   </div>
   <div class="col-md-4">
-    <h3>
+    <h3 class="text-center text-xl font-bold">
       {{ viewDate | calendarDate:(view + 'ViewTitle'):locale:weekStartsOn }}
     </h3>
   </div>
