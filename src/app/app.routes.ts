@@ -9,15 +9,17 @@ import {DashboardNavbarComponent} from './components/dashboard-navbar/dashboard-
 import {HealthRecordComponent} from './pages/health-record/health-record.component';
 import {CourseComponent} from './pages/course/course.component';
 import {RegisterCourseComponent} from './pages/register-course/register-course.component';
+import {ManageDogsPageComponent} from './pages/manage-dogs-page/manage-dogs-page.component';
 
 export const routes: Routes = [
   {path : "dashboard", component: DashboardNavbarComponent,
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "course", component : CourseComponent},
-          // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe
+          // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
           {path : "health-record", component : HealthRecordComponent}
         ]},
+      {path : "manage-dog", component : ManageDogsPageComponent },
       {path : "reserve-course", component : RegisterCourseComponent},
       {path : "user/:id", component : DashboardUserPageComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
