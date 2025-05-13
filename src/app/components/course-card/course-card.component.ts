@@ -5,6 +5,7 @@ import {Chip} from 'primeng/chip';
 import {DatePipe} from '@angular/common';
 import {Carousel} from 'primeng/carousel';
 import {PrimeTemplate} from 'primeng/api';
+import {Course} from '../../models/course';
 
 @Component({
   selector: 'app-course-card',

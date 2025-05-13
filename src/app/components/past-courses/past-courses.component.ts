@@ -1,9 +1,10 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {TableModule} from 'primeng/table';
-import {CurrencyPipe, DatePipe} from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {Calendar} from 'primeng/calendar';
 import {FormsModule} from '@angular/forms';
+import {Course} from '../../models/course';
 
 
 @Component({
@@ -11,7 +12,6 @@ import {FormsModule} from '@angular/forms';
   imports: [
     TableModule,
     DatePipe,
-    CurrencyPipe,
     Calendar,
     FormsModule
   ],

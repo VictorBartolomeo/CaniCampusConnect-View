@@ -6,13 +6,10 @@ import {VeterinaryVisit} from './veterinaryvisit';
 type Dog = {
   id: number;
   name: string;
-  birthDate?: string | null;
+  birthDate: Date;
   isMale?: boolean;
-  isSociable?: boolean;
-  isInHeat?: boolean;
-  isCrossbreed?: boolean;
   chipNumber?: string | null;
-  breed?: Breed;
+  breed: Breed;
   registrations?: Registration[] | null;
   vaccinations?: Vaccination[];
   veterinaryVisits?: VeterinaryVisit[];

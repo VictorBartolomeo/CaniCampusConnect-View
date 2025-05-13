@@ -1,3 +1,8 @@
+import {Coach} from './coach'
+import {Registration} from './registration';
+import {Club} from './club'
+import {CourseType} from './courseType';
+
 type Course = {
   id: number;
   title: string;
@@ -6,7 +11,8 @@ type Course = {
   endDatetime: Date;
   maxCapacity: number;
   price: number;
-  club: null;
+  registrations: Registration[];
+  club: Club;
   coach: Coach;
   courseType: CourseType;
 };
