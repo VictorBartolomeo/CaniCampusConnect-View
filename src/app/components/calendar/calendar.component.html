@@ -1,29 +1,21 @@
 <div class="row text-center">
   <div class="col-md-4">
-    <div class="btn-group">
-      <div
-        class="btn btn-primary"
+    <div class="flex flex-row gap-4">
+      <p-button
         mwlCalendarPreviousView
         [view]="view"
-        [(viewDate)]="viewDate"
-      >
-        Previous
-      </div>
-      <div
-        class="btn btn-outline-secondary"
-        mwlCalendarToday
-        [(viewDate)]="viewDate"
-      >
-        Today
-      </div>
-      <div
-        class="btn btn-primary"
-        mwlCalendarNextView
-        [view]="view"
-        [(viewDate)]="viewDate"
-      >
-        Next
-      </div>
+        [(viewDate)]="viewDate">
+        Précédent
+      </p-button>
+      <p-button mwlCalendarToday
+                [(viewDate)]="viewDate">
+        Aujourd'hui
+      </p-button>
+      <p-button mwlCalendarNextView
+                [view]="view"
+                [(viewDate)]="viewDate">
+        Suivant
+      </p-button>
     </div>
   </div>
   <div class="col-md-4">
@@ -33,13 +25,13 @@
   </div>
 
 
-<div>
-  <mwl-calendar-month-view
-    [viewDate]="viewDate"
-    [events]="events"
-    [locale]="locale"
-    [weekStartsOn]="weekStartsOn"
-    [weekendDays]="weekendDays"
-  >
-  </mwl-calendar-month-view>
-</div>
+  <div>
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      [locale]="locale"
+      [weekStartsOn]="weekStartsOn"
+      [weekendDays]="weekendDays"
+    >
+    </mwl-calendar-month-view>
+  </div>
