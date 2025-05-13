@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {
   CalendarCommonModule,
   CalendarDateFormatter,
@@ -14,6 +14,7 @@ import {TableModule} from 'primeng/table';
 import {Course} from '../../models/course';
 import {CustomDateFormatter} from './custom-date-formatter.provider';
 import {Button} from 'primeng/button';
+import {UpperCasePipe} from '@angular/common';
 
 @Component({
   selector: 'app-calendar',
@@ -23,11 +24,13 @@ import {Button} from 'primeng/button';
     CalendarCommonModule,
     CalendarWeekModule,
     CalendarDayModule,
-    Button
+    Button,
+    UpperCasePipe
   ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss',
   providers: [{provide: CalendarDateFormatter, useClass: CustomDateFormatter}],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CalendarComponent implements OnInit {
   http = inject(HttpClient);
