@@ -7,6 +7,7 @@ import {differenceInMonths, differenceInYears} from 'date-fns';
 import {User} from '../../models/user';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
+import {Gender} from '../../models/gender';
 
 @Component({
   selector: 'app-dog-summary',
@@ -87,88 +88,89 @@ export class DogSummaryComponent implements OnInit{
       return `${years} an(s)`;
     }
   }
-  analyzeDogHealth(): void {
-    if (!this.selectedDog) return;
-
-    // Analyser les types de problèmes les plus fréquents
-    this.findMostCommonIssues();
-
-    // Vérifier le statut des vaccins
-    this.checkVaccinationStatus();
-
-    // Vérifier s'il y a des traitements en cours
-    this.checkActiveTreatments();
-  }
-
-  findMostCommonIssues(): void {
-    if (!this.selectedDog?.veterinaryVisits?.length) return;
-
-    // Grouper les visites par type de diagnostic
-    const issueCount: {[key: string]: number} = {};
-
-    this.selectedDog.veterinaryVisits.forEach(visit => {
-      const issueType = this.categorizeIssue(visit.diagnosis);
-      issueCount[issueType] = (issueCount[issueType] || 0) + 1;
-    });
-
-    // Convertir en tableau et trier par fréquence
-    this.mostCommonIssues = Object.entries(issueCount)
-      .sort((a, b) => b[1] - a[1])
-      .map(entry => entry[0])
-      .slice(0, 3); // Top 3 des problèmes
-  }
-
-  categorizeIssue(diagnosis: string): string {
-    // Version simplifiée qui retourne simplement le premier mot du diagnostic
-    // (Dans une version plus avancée, on pourrait faire une catégorisation plus intelligente)
-    const firstWord = diagnosis.split(' ')[0];
-    return firstWord;
-  }
-
-  checkVaccinationStatus(): void {
-    if (!this.selectedDog?.vaccinations?.length) return;
-
-    const now = new Date();
-
-    // Un vaccin est considéré comme à jour si sa date d'expiration est dans le futur
-    this.vaccinesUpToDate = this.selectedDog.vaccinations.every(vacc => {
-      const vaccDate = new Date(vacc.vaccinationDate);
-      const expiryDate = new Date(vaccDate);
-      expiryDate.setMonth(expiryDate.getMonth() + vacc.vaccine.renewDelay);
-      return expiryDate > now;
-    });
-  }
-
-  checkActiveTreatments(): void {
-    if (!this.selectedDog?.medicationTreatments?.length) return;
-
-    const now = new Date();
-
-    // Un traitement est actif s'il n'a pas de date de fin ou si sa date de fin est dans le futur
-    this.hasActiveTreatment = this.selectedDog.medicationTreatments.some(treatment => {
-      return treatment.endDate === null || new Date(treatment.endDate) > now;
-    });
-  }
-
-  goToTreatments(): void {
-    if (this.selectedDog) {
-      this.router.navigate(['/dashboard/health-record', this.selectedDog.id]);
-    }
-  }
-
-  getLastWeight() {
-    if (!this.selectedDog?.dogWeights?.length) return null;
-
-    // Trier les poids par date de mesure (du plus récent au plus ancien)
-    const sortedWeights = [...this.selectedDog.dogWeights].sort((a, b) =>
-      new Date(b.measurementDate).getTime() - new Date(a.measurementDate).getTime()
-    );
-
-    return sortedWeights[0];
-  }
-
-
-
-
-  protected readonly differenceInYears = differenceInYears;
+  // analyzeDogHealth(): void {
+  //   if (!this.selectedDog) return;
+  //
+  //   // Analyser les types de problèmes les plus fréquents
+  //   this.findMostCommonIssues();
+  //
+  //   // Vérifier le statut des vaccins
+  //   this.checkVaccinationStatus();
+  //
+  //   // Vérifier s'il y a des traitements en cours
+  //   this.checkActiveTreatments();
+  // }
+  //
+  // findMostCommonIssues(): void {
+  //   if (!this.selectedDog?.veterinaryVisits?.length) return;
+  //
+  //   // Grouper les visites par type de diagnostic
+  //   const issueCount: {[key: string]: number} = {};
+  //
+  //   this.selectedDog.veterinaryVisits.forEach(visit => {
+  //     const issueType = this.categorizeIssue(visit.diagnosis);
+  //     issueCount[issueType] = (issueCount[issueType] || 0) + 1;
+  //   });
+  //
+  //   // Convertir en tableau et trier par fréquence
+  //   this.mostCommonIssues = Object.entries(issueCount)
+  //     .sort((a, b) => b[1] - a[1])
+  //     .map(entry => entry[0])
+  //     .slice(0, 3); // Top 3 des problèmes
+  // }
+  //
+  // categorizeIssue(diagnosis: string): string {
+  //   // Version simplifiée qui retourne simplement le premier mot du diagnostic
+  //   // (Dans une version plus avancée, on pourrait faire une catégorisation plus intelligente)
+  //   const firstWord = diagnosis.split(' ')[0];
+  //   return firstWord;
+  // }
+  //
+  // checkVaccinationStatus(): void {
+  //   if (!this.selectedDog?.vaccinations?.length) return;
+  //
+  //   const now = new Date();
+  //
+  //   // Un vaccin est considéré comme à jour si sa date d'expiration est dans le futur
+  //   this.vaccinesUpToDate = this.selectedDog.vaccinations.every(vacc => {
+  //     const vaccDate = new Date(vacc.vaccinationDate);
+  //     const expiryDate = new Date(vaccDate);
+  //     expiryDate.setMonth(expiryDate.getMonth() + vacc.vaccine.renewDelay);
+  //     return expiryDate > now;
+  //   });
+  // }
+  //
+  // checkActiveTreatments(): void {
+  //   if (!this.selectedDog?.medicationTreatments?.length) return;
+  //
+  //   const now = new Date();
+  //
+  //   // Un traitement est actif s'il n'a pas de date de fin ou si sa date de fin est dans le futur
+  //   this.hasActiveTreatment = this.selectedDog.medicationTreatments.some(treatment => {
+  //     return treatment.endDate === null || new Date(treatment.endDate) > now;
+  //   });
+  // }
+  //
+  // goToTreatments(): void {
+  //   if (this.selectedDog) {
+  //     this.router.navigate(['/dashboard/health-record', this.selectedDog.id]);
+  //   }
+  // }
+  //
+  // getLastWeight() {
+  //   if (!this.selectedDog?.dogWeights?.length) return null;
+  //
+  //   // Trier les poids par date de mesure (du plus récent au plus ancien)
+  //   const sortedWeights = [...this.selectedDog.dogWeights].sort((a, b) =>
+  //     new Date(b.measurementDate).getTime() - new Date(a.measurementDate).getTime()
+  //   );
+  //
+  //   return sortedWeights[0];
+  // }
+  //
+  //
+  //
+  //
+  // protected readonly differenceInYears = differenceInYears;
+  // protected readonly Gender = Gender;
 }
