@@ -46,7 +46,7 @@ export class AuthService {
       console.log('JWT décodé:', body);
 
       this.role = body.role;
-      this.userId = body.id || body.userId || body.sub; // Essaie différentes propriétés courantes pour l'ID
+      this.userId = body.userId;
       this.connected = true;
     } catch (e) {
       console.error('Erreur lors du décodage du JWT:', e);

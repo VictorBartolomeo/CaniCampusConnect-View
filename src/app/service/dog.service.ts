@@ -23,12 +23,13 @@ export class DogService {
     private http: HttpClient,
     private authService: AuthService
   ) {
-    // Charger les chiens quand le service est initialisé
     this.loadUserDogs();
   }
 
   public loadUserDogs(): void {
     const userId = this.authService.getUserId();
+    console.log('ID utilisateur récupéré:', userId);
+
     if (!userId) {
       console.warn('Impossible de charger les chiens : userId non disponible.');
       this.userDogsSubject.next([]);
@@ -38,39 +39,11 @@ export class DogService {
 
     this.http.get<Dog[]>(`${this.apiUrl}/owner/${userId}/dogs`).pipe(
       tap(dogs => {
+        console.log('Chiens récupérés:', dogs);
         this.userDogsSubject.next(dogs || []);
+        this.setActiveDog(dogs[0]);
+      }))}
 
-        // Vérifier si un chien actif existe déjà en localStorage
-        const savedActiveDogId = localStorage.getItem('activeDogId');
-
-        if (dogs && dogs.length > 0) {
-          const currentActiveDog = this.activeDogSubject.value;
-
-          // Si un ID de chien actif est sauvegardé, on l'utilise
-          if (savedActiveDogId) {
-            const savedDog = dogs.find(d => d.id === +savedActiveDogId);
-            if (savedDog) {
-              this.setActiveDog(savedDog);
-              return;
-            }
-          }
-
-          // Sinon, on vérifie si le chien actuel existe encore dans la liste
-          if (!currentActiveDog || !dogs.find(d => d.id === currentActiveDog.id)) {
-            this.setActiveDog(dogs[0]); // Par défaut le premier chien
-          }
-        } else {
-          this.setActiveDog(null);
-        }
-      }),
-      catchError(err => {
-        console.error('Erreur lors du chargement des chiens:', err);
-        this.userDogsSubject.next([]);
-        this.setActiveDog(null);
-        return of([]); // Retourne un Observable vide en cas d'erreur
-      })
-    ).subscribe();
-  }
 
   setActiveDog(dog: Dog | null): void {
     this.activeDogSubject.next(dog);
