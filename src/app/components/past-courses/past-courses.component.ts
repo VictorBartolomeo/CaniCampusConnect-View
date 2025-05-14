@@ -5,6 +5,7 @@ import {DatePipe} from '@angular/common';
 import {Calendar} from 'primeng/calendar';
 import {FormsModule} from '@angular/forms';
 import {Course} from '../../models/course';
+import {DatePicker} from 'primeng/datepicker';
 
 
 @Component({
@@ -13,7 +14,8 @@ import {Course} from '../../models/course';
     TableModule,
     DatePipe,
     Calendar,
-    FormsModule
+    FormsModule,
+    DatePicker
   ],
   templateUrl: './past-courses.component.html',
   styleUrl: './past-courses.component.scss'
