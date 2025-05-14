@@ -52,7 +52,7 @@ export class DogFormComponent implements OnInit {
   formBuilder = inject(FormBuilder);
   form = this.formBuilder.group({
     name: ['', Validators.required],
-    breed: [[] as Breed[], Validators.minLength(1), Validators.required],
+    breed: [[] as Breed[], [Validators.minLength(1), Validators.required]],
     chipNumber: ['', Validators.required],
     birthDate: [null as Date | null, Validators.required],
     avatar: [null]
