@@ -55,19 +55,23 @@ export class DogFormComponent implements OnInit {
   form = this.formBuilder.group({
     name: ['', Validators.required],
     breed: [[] as Breed[], Validators.minLength(1)],
-    chipNumber: [''],
+    chipNumber: ['', Validators.required],
     birthDate: [null as Date | null, Validators.required],
+    avatar: [null]
   })
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(parameter => {
-      if (parameter['id']) {
-        this.http.get<Dog>(`http://localhost:8080/dog/${parameter['id']}`)
-          .subscribe(dog => {
-            this.form.patchValue(dog)
-            this.updatedDog = dog;
-          })
-      }
+    this.http.get<Dog>(`http://localhost:8080/dog/1`).subscribe(dogFromServer => {
+      const formDataToPatch = {
+        ...dogFromServer,
+        birthDate: dogFromServer.birthDate ? new Date(dogFromServer.birthDate) : null,
+      };
+      this.form.patchValue(formDataToPatch);
+
+      this.updatedDog = {
+        ...dogFromServer,
+        birthDate: formDataToPatch.birthDate
+      } as Dog;
     });
 
     this.http.get<Breed[]>('http://localhost:8080/breeds').subscribe({
@@ -113,7 +117,10 @@ export class DogFormComponent implements OnInit {
     }
   }
 
-  onUpload(event: UploadEvent) {
+  onUpload(event
+           :
+           UploadEvent
+  ) {
     this.messageService.add({severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode'});
   }
 
