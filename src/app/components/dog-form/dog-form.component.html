@@ -1,4 +1,4 @@
-<div class="card flex justify-center">
+<div class="card flex justify-center w-full">
   <form [formGroup]="form" (ngSubmit)=onSubmitEdit()>
 
     <div class="flex flex-col gap-4">
@@ -6,14 +6,14 @@
       <h1 class="text-xl font-bold">Modifier le profil du chien {{ updatedDog?.name }}</h1>
 
       <label for="name">Nom du chien</label>
-      <input type="text" pInputText formControlName="name"/>
+      <input class="w-full" type="text" pInputText formControlName="name"/>
 
 
         <label class="block mb-2" for="breed">Races</label>
           <p-multiselect [options]="dogBreeds"
                          formControlName="breed"
-                         optionLabel="race"
-                         placeholder="Select Cities"
+                         optionLabel="label"
+                         placeholder="Race.s du chien"
                          [maxSelectedLabels]="3"
                          styleClass="w-full md:w-80"></p-multiselect>
 
@@ -29,14 +29,14 @@
         dateFormat="dd/mm/yy"
         [maxDate]="today"></p-datepicker>
 
-      <label for="avatar">Avatar</label>
-      <p-fileupload #fu mode="basic" chooseLabel="Choose"
-                    chooseIcon="pi pi-upload" name="demo[]"
-                    url="{{updatedDog?.avatarUrl}}"
-                    accept="image/*"
-                    maxFileSize="1000000" (onUpload)="onUpload($event)"
-                    formControlName="avatar"/>
-      <p-button label="Upload" (onClick)="fu.upload()" severity="secondary"/>
+<!--      <label for="avatar">Avatar</label>-->
+<!--      <p-fileupload #fu mode="basic" chooseLabel="Choose"-->
+<!--                    chooseIcon="pi pi-upload" name="demo[]"-->
+<!--                    url="{{updatedDog?.avatarUrl}}"-->
+<!--                    accept="image/*"-->
+<!--                    maxFileSize="1000000" (onUpload)="onUpload($event)"-->
+<!--                    formControlName="avatar"/>-->
+<!--      <p-button label="Upload" (onClick)="fu.upload()" severity="secondary"/>-->
 
       <button pButton type="submit">Mettre à jour
       </button>
