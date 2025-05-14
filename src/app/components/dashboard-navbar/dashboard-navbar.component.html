@@ -3,7 +3,7 @@
               styleClass="p-4 bg-surface-0 dark:bg-surface-900">
 
     <ng-template pTemplate="start">
-      <p-dropdown
+      <p-select
         [options]="(userDogs$ | async) || []"
         [(ngModel)]="selectedDogId"
         optionLabel="name"
@@ -28,7 +28,7 @@
             <div>{{ dog.name }}</div>
           </div>
         </ng-template>
-      </p-dropdown>
+      </p-select>
     </ng-template>
 
     <ng-template pTemplate="item" let-item>

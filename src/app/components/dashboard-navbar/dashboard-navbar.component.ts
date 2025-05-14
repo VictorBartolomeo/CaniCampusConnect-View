@@ -99,7 +99,8 @@ export class DashboardNavbarComponent implements OnInit {
       },
       {
         label: 'Déconnexion',
-        icon: 'pi pi-sign-out'
+        icon: 'pi pi-sign-out',
+        route: '/login'
       }
     ];
   }
