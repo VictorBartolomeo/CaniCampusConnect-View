@@ -3,7 +3,6 @@ import {RouterOutlet} from '@angular/router';
 import {PrimeNG} from 'primeng/config';
 
 
-
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
@@ -12,9 +11,11 @@ import {PrimeNG} from 'primeng/config';
 })
 export class AppComponent implements OnInit {
   title = 'CaniCampusConnect';
+  apiUrl = 'http://localhost:8080';
 
 
-  constructor(private primeng: PrimeNG) {}
+  constructor(private primeng: PrimeNG) {
+  }
 
   ngOnInit() {
     this.primeng.ripple.set(true);
