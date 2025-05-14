@@ -1,0 +1,52 @@
+<p-button (click)="showDialog()" label="Ajouter un chien" icon="pi pi-plus" />
+
+<p-dialog header="Header" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem', height: '80vh' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+  <ng-template #header>
+    <div class="flex flex-column items-center justify-center gap-2">
+      <p class="text-xl font-bold">Mettre nom de l'utilisateur : Ajouter un nouveau chien</p>
+    </div>
+  </ng-template>
+  <form [formGroup]="form" (ngSubmit)="onSubmitCreate()" id="dogAddForm">
+    <span class="text-surface-500 dark:text-surface-400 block mb-8">Renseignez les informations</span>
+
+    <div class="flex items-center gap-4 mb-4">
+      <label for="name" class="font-semibold w-24">Nom du chien</label>
+      <input pInputText id="name" class="flex-auto" autocomplete="off" formControlName="name" />
+    </div>
+
+    <div class="flex items-center gap-4 mb-2">
+      <label for="breed" class="font-semibold w-24">Race</label>
+      <p-multiselect [options]="dogBreeds"
+                     formControlName="breed"
+                     optionLabel="label"
+                     placeholder="Race.s du chien"
+                     [maxSelectedLabels]="3"
+                     styleClass="flex-auto"
+                     inputId="breed"></p-multiselect>
+    </div>
+
+    <div class="flex items-center gap-4 mb-2">
+      <label for="chipNumber" class="font-semibold w-24">Numéro de puce</label>
+      <input pInputText id="chipNumber" class="flex-auto" autocomplete="off" formControlName="chipNumber" />
+    </div>
+
+    <div class="flex items-center gap-4 mb-2">
+      <label for="birthDate" class="font-semibold w-24">Date de naissance</label>
+      <p-datepicker
+        formControlName="birthDate"
+        inputId="birthDate"
+      showIcon
+      iconDisplay="input"
+      dateFormat="dd/mm/yy"
+      [maxDate]="today"
+      styleClass="flex-auto"></p-datepicker>
+    </div>
+
+    <!--            TODO Ajouter ici le genre du chien-->
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Cancel" [text]="true" severity="secondary" (click)="visible = false" />
+    <p-button type="submit" form="form" label="Save" [outlined]="true" severity="secondary" />
+  </ng-template>
+</p-dialog>
