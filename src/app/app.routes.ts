@@ -16,9 +16,11 @@ export const routes: Routes = [
   {path : "dashboard", component: DashboardNavbarComponent,
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
+          {path : "", redirectTo: "course", pathMatch: "full"},
           {path : "course", component : CourseComponent},
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
           {path : "health-record", component : HealthRecordComponent}
+
         ]},
       {path : "manage-dog", component : ManageDogsPageComponent },
       {path : "reserve-course", component : RegisterCourseComponent},
