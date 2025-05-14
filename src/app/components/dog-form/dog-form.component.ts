@@ -10,7 +10,7 @@ import {CommonModule} from '@angular/common';
 import {ButtonModule} from 'primeng/button';
 import {DatePickerModule} from 'primeng/datepicker';
 import {ActivatedRoute} from '@angular/router';
-import {FileUpload, UploadEvent} from 'primeng/fileupload';
+import {UploadEvent} from 'primeng/fileupload';
 import {MessageService} from 'primeng/api';
 import {MultiSelect} from 'primeng/multiselect';
 
@@ -30,7 +30,6 @@ interface BreedsSelect {
     ButtonModule,
     DatePickerModule,
     ReactiveFormsModule,
-    FileUpload,
     MultiSelect
   ],
   templateUrl: './dog-form.component.html',
@@ -44,7 +43,6 @@ export class DogFormComponent implements OnInit {
   dogBreeds: BreedsSelect[] = [];
   today: Date;
   updatedDog: Dog | null = null;
-  activatedRoute = inject(ActivatedRoute);
   messageService = inject(MessageService);
 
   constructor() {
@@ -54,7 +52,7 @@ export class DogFormComponent implements OnInit {
   formBuilder = inject(FormBuilder);
   form = this.formBuilder.group({
     name: ['', Validators.required],
-    breed: [[] as Breed[], Validators.minLength(1)],
+    breed: [[] as Breed[], [Validators.minLength(1), Validators.required]],
     chipNumber: ['', Validators.required],
     birthDate: [null as Date | null, Validators.required],
     avatar: [null]
@@ -117,14 +115,10 @@ export class DogFormComponent implements OnInit {
     }
   }
 
-  onUpload(event
-           :
-           UploadEvent
-  ) {
-    this.messageService.add({severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode'});
-  }
-
-  addDog() {
-    //méthode d'ajout d'un chien
-  }
+  // onUpload(event
+  //          :
+  //          UploadEvent
+  // ) {
+  //   this.messageService.add({severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode'});
+  // }
 }

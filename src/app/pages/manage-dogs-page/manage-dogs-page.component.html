@@ -1,11 +1,20 @@
 <div>
 
-<p-splitter [panelSizes]="[25, 75]" [style]="{ height: '100%' }" styleClass="mb-8">
-  <ng-template #panel>
-    <div class="flex items-center justify-center h-full p-20"><app-dog-summary/></div>
-  </ng-template>
-  <ng-template #panel>
-    <div class="flex items-center justify-center h-full py-20">  <app-dog-form/></div>
-  </ng-template>
-</p-splitter>
+  <p-splitter [panelSizes]="[25, 75]" [style]="{ height: '92vh' }" styleClass="">
+    <ng-template #panel>
+      <div class="flex items-center justify-center h-full p-50">
+        <app-dog-summary/>
+      </div>
+    </ng-template>
+    <ng-template #panel>
+      <div class="flex items-center justify-center h-full py-10">
+        <app-dog-form/>
+      </div>
+    </ng-template>
+  </p-splitter>
+
+  <div class="absolute bottom-10 right-10">
+    <app-dog-add-form/>
+  </div>
 </div>
+

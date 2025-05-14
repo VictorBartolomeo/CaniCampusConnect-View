@@ -12,6 +12,7 @@ import {RegisterCourseComponent} from './pages/register-course/register-course.c
 import {ManageDogsPageComponent} from './pages/manage-dogs-page/manage-dogs-page.component';
 
 export const routes: Routes = [
+  {path : "", redirectTo: "home", pathMatch: "full"},
   {path : "dashboard", component: DashboardNavbarComponent,
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
