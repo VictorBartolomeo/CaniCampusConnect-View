@@ -2,7 +2,6 @@ import {Component, inject, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {TableModule} from 'primeng/table';
 import {DatePipe} from '@angular/common';
-import {Calendar} from 'primeng/calendar';
 import {FormsModule} from '@angular/forms';
 import {Course} from '../../models/course';
 import {DatePicker} from 'primeng/datepicker';
@@ -13,7 +12,6 @@ import {DatePicker} from 'primeng/datepicker';
   imports: [
     TableModule,
     DatePipe,
-    Calendar,
     FormsModule,
     DatePicker
   ],
