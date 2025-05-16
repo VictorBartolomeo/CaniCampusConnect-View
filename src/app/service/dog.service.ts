@@ -1,15 +1,16 @@
 // dog.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { AuthService } from './auth.service';
-import { Dog } from '../models/dog';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, Observable, of} from 'rxjs';
+import {tap, catchError} from 'rxjs/operators';
+import {AuthService} from './auth.service';
+import {Dog} from '../models/dog';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DogService {
+
 
   public userDogsSubject = new BehaviorSubject<Dog[]>([]);
   public userDogs$: Observable<Dog[]> = this.userDogsSubject.asObservable();
@@ -30,24 +31,17 @@ export class DogService {
     const userId = this.authService.getUserId();
     console.log('ID utilisateur récupéré:', userId);
 
-    if (!userId) {
-      console.warn('Impossible de charger les chiens : userId non disponible.');
-      this.userDogsSubject.next([]);
-      this.activeDogSubject.next(null);
-      return;
-    }
-
-    this.http.get<Dog[]>(`${this.apiUrl}/owner/${userId}/dogs`).pipe(
-      tap(dogs => {
-        console.log('Chiens récupérés:', dogs);
-        this.userDogsSubject.next(dogs || []);
+    this.http.get<Dog[]>(`${this.apiUrl}/owner/${userId}/dogs`).subscribe({
+      next: (dogs) => {
+        this.userDogsSubject.next(dogs);
         this.setActiveDog(dogs[0]);
-      }))}
+      }
+    })
+  }
 
 
   setActiveDog(dog: Dog | null): void {
     this.activeDogSubject.next(dog);
-    // Sauvegarder l'ID du chien actif dans le localStorage pour persistance
     if (dog) {
       localStorage.setItem('activeDogId', dog.id.toString());
     } else {
@@ -57,5 +51,18 @@ export class DogService {
 
   getActiveDog(): Dog | null {
     return this.activeDogSubject.value;
+  }
+
+  getDogDetails(dogId: number): Observable<Dog> {
+    return this.http.get<Dog>(`${this.apiUrl}/dog/${dogId}`).pipe(
+      tap(dog => {
+        // Optionnel: mettre à jour le chien actif avec les données détaillées
+        this.setActiveDog(dog);
+      }),
+      catchError(error => {
+        console.error('Erreur lors de la récupération des détails du chien:', error);
+        return of(null as any);
+      })
+    );
   }
 }
