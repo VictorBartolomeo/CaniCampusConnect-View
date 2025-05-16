@@ -11,6 +11,7 @@ import {CourseComponent} from './pages/course/course.component';
 import {RegisterCourseComponent} from './pages/register-course/register-course.component';
 import {ManageDogsPageComponent} from './pages/manage-dogs-page/manage-dogs-page.component';
 import {loggedGuard} from './service/logged.guard';
+import {SettingsComponent} from './pages/settings/settings.component';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
@@ -28,6 +29,7 @@ export const routes: Routes = [
         ]},
       {path : "manage-dog", component : ManageDogsPageComponent },
       {path : "reserve-course", component : RegisterCourseComponent},
+      {path : "settings", component : SettingsComponent},
       {path : "user/:id", component : DashboardUserPageComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
