@@ -1,0 +1,117 @@
+<div class="flex justify-content-center">
+  <div class="w-11 md:w-10 lg:w-9 p-4">
+    <p-toast></p-toast>
+
+    <h1 class="text-2xl font-bold mb-4 text-center">Paramètres utilisateur</h1>
+
+    <div class="grid">
+      <!-- Colonne de gauche : Informations personnelles -->
+      <div class="col-12 lg:col-6 pr-0 lg:pr-3">
+        <p-card header="Informations personnelles" styleClass="h-full">
+          <form [formGroup]="userForm" (ngSubmit)="onUserFormSubmit()">
+            <div class="p-fluid">
+              <div class="field mb-4">
+                <label for="firstname" class="block mb-2">Prénom</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-user"></i>
+                  <input pInputText id="firstname" formControlName="firstname" class="w-full" />
+                </span>
+                @if (userForm.get('firstname')?.invalid && userForm.get('firstname')?.touched) {
+                  <small class="p-error">Prénom requis</small>
+                }
+              </div>
+
+              <div class="field mb-4">
+                <label for="lastname" class="block mb-2">Nom</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-id-card"></i>
+                  <input pInputText id="lastname" formControlName="lastname" class="w-full" />
+                </span>
+                @if (userForm.get('lastname')?.invalid && userForm.get('lastname')?.touched) {
+                  <small class="p-error">Nom requis</small>
+                }
+              </div>
+
+              <div class="field mb-4">
+                <label for="email" class="block mb-2">Email</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-envelope"></i>
+                  <input pInputText id="email" type="email" formControlName="email" class="w-full" />
+                </span>
+                @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+                  <small class="p-error">Email valide requis</small>
+                }
+              </div>
+
+              <div class="field mb-4">
+                <label for="phone" class="block mb-2">Téléphone</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-phone"></i>
+                  <p-inputMask id="phone" mask="99 99 99 99 99" formControlName="phone" placeholder="06 12 34 56 78" styleClass="w-full"></p-inputMask>
+                </span>
+              </div>
+
+              <div class="field mb-4">
+                <label for="address" class="block mb-2">Adresse</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-map-marker"></i>
+                  <input pInputText id="address" formControlName="address" class="w-full" />
+                </span>
+              </div>
+
+              <div class="field flex justify-content-center mt-4">
+                <p-button type="submit" label="Enregistrer" icon="pi pi-save" [loading]="loading" [disabled]="userForm.invalid"></p-button>
+              </div>
+            </div>
+          </form>
+        </p-card>
+      </div>
+
+      <!-- Colonne de droite : Changement de mot de passe -->
+      <div class="col-12 lg:col-6 pl-0 lg:pl-3 mt-4 lg:mt-0">
+        <p-card header="Changer le mot de passe" styleClass="h-full">
+          <form [formGroup]="passwordForm" (ngSubmit)="onPasswordFormSubmit()">
+            <div class="p-fluid">
+              <div class="field mb-4">
+                <label for="currentPassword" class="block mb-2">Mot de passe actuel</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-lock"></i>
+                  <p-password id="currentPassword" formControlName="currentPassword" [feedback]="false" [toggleMask]="true" styleClass="w-full"></p-password>
+                </span>
+                @if (passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+                  <small class="p-error">Mot de passe actuel requis</small>
+                }
+              </div>
+
+              <div class="field mb-4">
+                <label for="newPassword" class="block mb-2">Nouveau mot de passe</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-lock-open"></i>
+                  <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" styleClass="w-full"></p-password>
+                </span>
+                @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+                  <small class="p-error">Le mot de passe doit contenir au moins 8 caractères</small>
+                }
+              </div>
+
+              <div class="field mb-4">
+                <label for="confirmPassword" class="block mb-2">Confirmer le mot de passe</label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-check-circle"></i>
+                  <p-password id="confirmPassword" formControlName="confirmPassword" [feedback]="false" [toggleMask]="true" styleClass="w-full"></p-password>
+                </span>
+                @if (passwordForm.hasError('notSame') && passwordForm.get('confirmPassword')?.touched) {
+                  <small class="p-error">Les mots de passe ne correspondent pas</small>
+                }
+              </div>
+
+              <div class="field flex justify-content-center mt-4">
+                <p-button type="submit" label="Changer le mot de passe" icon="pi pi-key" [loading]="loading" [disabled]="passwordForm.invalid"></p-button>
+              </div>
+            </div>
+          </form>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
