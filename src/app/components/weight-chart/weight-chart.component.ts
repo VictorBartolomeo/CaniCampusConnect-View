@@ -1,8 +1,9 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UIChart} from "primeng/chart";
 import {Dog} from '../../models/dog';
-import {HttpClient} from '@angular/common/http';
+import {Subscription} from 'rxjs';
+import {DogService} from '../../service/dog.service';
 
 @Component({
   selector: 'app-weight-chart',
@@ -15,31 +16,28 @@ import {HttpClient} from '@angular/common/http';
   styleUrl: './weight-chart.component.scss'
 })
 export class WeightChartComponent implements OnInit{
-  dogs: Dog[] = [];
   selectedDog?: Dog;
   weightChartData: any;
   weightChartOptions: any;
+  private subscription!: Subscription;
 
-  http = inject(HttpClient);
+  constructor(private dogService: DogService) {}
 
   ngOnInit() {
-    this.http.get<Dog[]>('http://localhost:8080/owner/3/dogs').subscribe({
-      next: (dogs) => {
-        this.dogs = dogs;
-        console.log('Dogs received:', dogs);
-
-        if (dogs.length > 0) {
-          console.log('First dog dogWeights:', dogs[0].dogWeights);
-          this.selectedDog = dogs[0];
-          this.createWeightChart();
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching dogs:', error);
-      },
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      if (dog) {
+        this.selectedDog = dog;
+        this.createWeightChart();
+      }
     });
 
     this.setupChartOptions();
+
+  }
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 
   setupChartOptions() {
@@ -75,6 +73,8 @@ export class WeightChartComponent implements OnInit{
       }
     };
   }
+
+
 
   createWeightChart() {
     if (!this.selectedDog || !this.selectedDog.dogWeights || this.selectedDog.dogWeights.length === 0) {

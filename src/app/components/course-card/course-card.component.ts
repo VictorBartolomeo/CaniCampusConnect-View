@@ -6,6 +6,8 @@ import {DatePipe} from '@angular/common';
 import {Carousel} from 'primeng/carousel';
 import {PrimeTemplate} from 'primeng/api';
 import {Course} from '../../models/course';
+import {Subscription} from 'rxjs';
+import {DogService} from '../../service/dog.service';
 
 @Component({
   selector: 'app-course-card',
@@ -20,20 +22,27 @@ import {Course} from '../../models/course';
   styleUrl: './course-card.component.scss',
 })
 export class CourseCardComponent implements OnInit {
-  http = inject(HttpClient);
   courses: Course[] = [];
   responsiveOptions: any[] | undefined;
+  private subscription!: Subscription;
+  private currentDogId: number | null = null;
+
+  constructor(
+    private http: HttpClient,
+    private dogService: DogService
+  ) {}
+
 
   ngOnInit() {
-    this.http.get<Course[]>('http://localhost:8080/courses').subscribe({
-      next: (courses) => {
-        this.courses = courses;
-        console.log(courses);
-      },
-      error: (error) => {
-        console.error('Error fetching courses:', error);
-      },
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      if (dog && dog.id !== this.currentDogId) {
+        this.currentDogId = dog.id;
+        this.loadCoursesForDog(dog.id);
+      }
     });
+
+
+
     this.responsiveOptions = [
       {
         breakpoint: '1400px',
@@ -57,4 +66,23 @@ export class CourseCardComponent implements OnInit {
       }
     ]
   }
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  loadCoursesForDog(dogId: number) {
+    // Charger les cours spécifiques au chien
+    this.http.get<Course[]>(`http://localhost:8080/dog/${dogId}/courses`).subscribe({
+      next: (courses) => {
+        this.courses = courses;
+        console.log('Courses for dog:', courses);
+      },
+      error: (error) => {
+        console.error(`Error fetching courses for dog ${dogId}:`, error);
+      },
+    });
+  }
+
 }
