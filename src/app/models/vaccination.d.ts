@@ -6,7 +6,7 @@ type Vaccine = {
   renewDelay: number;
 }
 
-type Vaccination = {
+export type Vaccination = {
   vaccinationDate: Date;
   reminderDate: Date;
   batchNumber : string;

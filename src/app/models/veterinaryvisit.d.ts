@@ -1,6 +1,6 @@
 import {Dog} from "./dog";
 
-type VeterinaryVisit = {
+export type VeterinaryVisit = {
   visitDate: Date;
   diagnosis: string;
   reasonForVisit : string;

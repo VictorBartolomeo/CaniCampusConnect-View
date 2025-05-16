@@ -1,4 +1,4 @@
-type Club = {
+export type Club = {
   id: number;
   name: string;
   address: string;

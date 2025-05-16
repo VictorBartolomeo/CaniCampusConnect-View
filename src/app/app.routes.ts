@@ -10,10 +10,14 @@ import {HealthRecordComponent} from './pages/health-record/health-record.compone
 import {CourseComponent} from './pages/course/course.component';
 import {RegisterCourseComponent} from './pages/register-course/register-course.component';
 import {ManageDogsPageComponent} from './pages/manage-dogs-page/manage-dogs-page.component';
+import {loggedGuard} from './service/logged.guard';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
-  {path : "dashboard", component: DashboardNavbarComponent,
+  {path : "home", component : LandingPageComponent},
+  {path : "login", component : LoginPageComponent},
+  {path : "register", component : RegisterPageComponent},
+  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard],
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "", redirectTo: "course", pathMatch: "full"},
@@ -28,9 +32,6 @@ export const routes: Routes = [
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
-  {path : "home", component : LandingPageComponent},
-  {path : "login", component : LoginPageComponent},
-  {path : "register", component : RegisterPageComponent},
   {path : "CGU", component : GeneralConditionsUseComponent},
   {path : "**", component : NotFoundComponent}
 ];

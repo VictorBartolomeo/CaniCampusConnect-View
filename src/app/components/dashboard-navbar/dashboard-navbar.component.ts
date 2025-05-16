@@ -11,63 +11,47 @@ import {HttpClient} from '@angular/common/http';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {Menu} from 'primeng/menu';
 import {User} from '../../models/user';
+import {AuthService} from '../../service/auth.service';
+import {DogService} from '../../service/dog.service';
+import {Observable} from 'rxjs';
+import {DropdownModule} from 'primeng/dropdown';
+import {Ripple} from 'primeng/ripple';
+import {tap} from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './dashboard-navbar.component.html',
-  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet],
+  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet, DropdownModule, Ripple],
   styleUrls: ['./dashboard-navbar.component.scss']
 })
 export class DashboardNavbarComponent implements OnInit {
-  http = inject(HttpClient);
 
   items: MegaMenuItem[] | undefined;
   avatar: MegaMenuItem[] | undefined;
 
-  dogs: Dog[] = [];
-  selectedDog: Dog = this.dogs[0];
+  userDogs$: Observable<Dog[]>;
+  activeDog$: Observable<Dog | null>;
+  selectedDogId: number | null = null;
 
-  user: User = {
-    id: 0,
-    firstname: '',
-    lastname: '',
-    email: ''
-  };
+
+  constructor(
+    private authService: AuthService,
+    public dogService: DogService
+  ) {
+    this.userDogs$ = this.dogService.userDogs$;
+    this.activeDog$ = this.dogService.activeDog$;
+    this.activeDog$.subscribe(dog => {
+      this.selectedDogId = dog?.id || null;
+    });
+  }
 
 
   ngOnInit() {
 
-    this.http.get<Dog[]>('http://localhost:8080/owner/3/dogs').subscribe({
-      next: (dogs) => {
-        this.dogs = dogs;
-        if (this.dogs.length > 0) {
-          this.selectedDog = this.dogs[0];
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching courses:', error);
-      },
-    });
-
-    this.http.get<User>('http://localhost:8080/user/3').subscribe({
-      next: (user) => {
-        this.user = user;
-        console.log(this.user.firstname);
-        console.log(this.user.lastname);
-        console.log(this.user.email);
-
-        if (this.avatar) {
-          const userNameAvatar = this.avatar.find(item => item.label === 'placeholder name'); // Trouver l'item 'Profil' par son icône
-          if (userNameAvatar) {
-            userNameAvatar.label = `${this.user.firstname} ${this.user.lastname}`;
-          }
-        }
-        },
-      error: (error) => {
-        console.error('Error fetching courses:', error);
-      },
-    });
+    if (this.authService.getUserId()) {
+      this.dogService.loadUserDogs();
+    }
 
     this.items = [
       {
@@ -94,8 +78,8 @@ export class DashboardNavbarComponent implements OnInit {
 
     this.avatar = [
       {
-        label : 'placeholder name',
-        styleClass : 'name-item'
+        label: 'placeholder name',
+        styleClass: 'name-item'
       },
       {
         label: 'Profile',
@@ -115,10 +99,29 @@ export class DashboardNavbarComponent implements OnInit {
       },
       {
         label: 'Déconnexion',
-        icon: 'pi pi-sign-out'
+        icon: 'pi pi-sign-out',
+        route: '/login'
       }
     ];
   }
 
+  onDogChange(dogId: number): void {
+    if (!dogId) return;
+
+    // Charger les détails complets du chien sélectionné
+    this.dogService.getDogDetails(dogId).subscribe({
+      next: (dogDetails) => {
+        // Les détails du chien sont maintenant disponibles via activeDog$ pour tous les composants
+        console.log('Chien sélectionné avec succès:', dogDetails.name);
+      },
+      error: (err) => console.error('Erreur lors du chargement des détails du chien:', err)
+    });
+
+  }
+
+
 
 }
+
+
+
