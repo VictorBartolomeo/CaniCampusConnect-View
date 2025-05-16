@@ -15,25 +15,30 @@ import {DogService} from '../../service/dog.service';
   templateUrl: './weight-chart.component.html',
   styleUrl: './weight-chart.component.scss'
 })
-export class WeightChartComponent implements OnInit{
-  selectedDog?: Dog;
+export class WeightChartComponent implements OnInit {
+  selectedDog: Dog | null = null;
   weightChartData: any;
   weightChartOptions: any;
   private subscription!: Subscription;
 
-  constructor(private dogService: DogService) {}
+  constructor(private dogService: DogService) {
+  }
 
   ngOnInit() {
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       if (dog) {
         this.selectedDog = dog;
         this.createWeightChart();
+        console.log('Données de poids mises à jour pour:', dog.name);
+      } else {
+        this.selectedDog = null;
+        this.weightChartData = null;
       }
     });
 
     this.setupChartOptions();
-
   }
+
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -73,7 +78,6 @@ export class WeightChartComponent implements OnInit{
       }
     };
   }
-
 
 
   createWeightChart() {

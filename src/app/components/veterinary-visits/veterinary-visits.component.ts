@@ -4,6 +4,8 @@ import {Dog} from '../../models/dog';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primeng/accordion';
 import {DatePipe} from '@angular/common';
 import {Paginator} from 'primeng/paginator';
+import {Subscription} from 'rxjs';
+import {DogService} from '../../service/dog.service';
 
 @Component({
   selector: 'app-veterinary-visits',
@@ -19,9 +21,11 @@ import {Paginator} from 'primeng/paginator';
   styleUrl: './veterinary-visits.component.scss'
 })
 export class VeterinaryVisitsComponent implements OnInit {
-  http = inject(HttpClient);
-  dogs: Dog[] = [];
   currentDog: Dog | null = null;
+  private subscription!: Subscription;
+
+  constructor(private dogService: DogService) {}
+
 
   // Pagination
   pageSize = 5;
@@ -31,31 +35,31 @@ export class VeterinaryVisitsComponent implements OnInit {
   paginatedVisits: any[] = [];
 
   ngOnInit() {
-    this.http.get<Dog[]>('http://localhost:8080/owner/3/dogs').subscribe({
-      next: (dogs) => {
-        this.dogs = dogs;
+    // S'abonner aux changements du chien actif
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      this.currentDog = dog;
 
-        // Si au moins un chien existe, prendre le premier
-        if (this.dogs.length > 0) {
-          this.currentDog = this.dogs[0];
+      if (dog && dog.veterinaryVisits) {
+        // Trier les visites par date décroissante
+        this.sortedVisits = [...dog.veterinaryVisits]
+          .sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
 
-          // Trier les visites par date décroissante
-          if (this.currentDog.veterinaryVisits && this.currentDog.veterinaryVisits.length > 0) {
-            this.sortedVisits = [...this.currentDog.veterinaryVisits]
-              .sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
-
-            this.totalVisits = this.sortedVisits.length;
-            this.updatePaginatedVisits();
-          }
-        }
-
-        console.log(dogs);
-      },
-      error: (error) => {
-        console.error('Error fetching dogs:', error);
-      },
+        this.totalVisits = this.sortedVisits.length;
+        this.updatePaginatedVisits();
+        console.log('Visites vétérinaires mises à jour:', this.sortedVisits);
+      } else {
+        this.sortedVisits = [];
+        this.paginatedVisits = [];
+        this.totalVisits = 0;
+      }
     });
   }
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
 
   updatePaginatedVisits() {
     this.paginatedVisits = this.sortedVisits.slice(this.first, this.first + this.pageSize);

@@ -3,6 +3,9 @@ import {HttpClient} from '@angular/common/http';
 import {Dog} from '../../models/dog';
 import {TableModule} from 'primeng/table';
 import {DatePipe, NgClass} from '@angular/common';
+import {Vaccination} from '../../models/vaccination';
+import {Subscription} from 'rxjs';
+import {DogService} from '../../service/dog.service';
 
 
 @Component({
@@ -19,21 +22,35 @@ import {DatePipe, NgClass} from '@angular/common';
 
 
 export class VaccinationTableComponent implements OnInit {
-  http = inject(HttpClient)
-  dogs: Dog[] = [];
+  currentDog: Dog | null = null;
+  vaccinations: Vaccination[] = [];
+  private subscription!: Subscription;
+
+  constructor(
+    private dogService: DogService
+  ) {
+  }
 
   ngOnInit() {
-    this.http.get<Dog[]>('http://localhost:8080/owner/3/dogs').subscribe({
-      next: (dogs) => {
-        this.dogs = dogs;
-        console.log(dogs);
-      },
-      error: (error) => {
-        console.error('Error fetching courses:', error);
-      },
-    });
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      if (dog) {
+        this.currentDog = dog;
 
+        this.vaccinations = dog.vaccinations || [];
+        console.log('Vaccinations mises à jour:', this.vaccinations);
+      } else {
+        this.vaccinations = [];
+      }
+    });
   }
+
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
 
   calculateReminderDate(vaccinationDate: Date | string, renewDelayInMonths: number): Date {
     const date = new Date(vaccinationDate);
@@ -57,6 +74,4 @@ export class VaccinationTableComponent implements OnInit {
     const reminder = new Date(reminderDate);
     return reminder < now;
   }
-
-
 }

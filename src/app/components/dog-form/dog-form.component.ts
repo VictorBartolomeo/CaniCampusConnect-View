@@ -1,18 +1,18 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Dog} from '../../models/dog';
-import {InputText} from 'primeng/inputtext';
-import {FormBuilder, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {IftaLabelModule} from 'primeng/iftalabel';
-import {Breed} from '../../models/breed';
-import {DropdownModule} from 'primeng/dropdown';
-import {CommonModule} from '@angular/common';
-import {ButtonModule} from 'primeng/button';
-import {DatePickerModule} from 'primeng/datepicker';
-import {ActivatedRoute} from '@angular/router';
-import {UploadEvent} from 'primeng/fileupload';
-import {MessageService} from 'primeng/api';
-import {MultiSelect} from 'primeng/multiselect';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { InputText } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelect } from 'primeng/multiselect';
+import { DatePickerModule } from 'primeng/datepicker';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { MessageService } from 'primeng/api';
+import { Dog } from '../../models/dog';
+import { Breed } from '../../models/breed';
+import { DogService } from '../../service/dog.service';
+import { Subscription } from 'rxjs';
 
 interface BreedsSelect {
   label: string;
@@ -36,16 +36,15 @@ interface BreedsSelect {
   styleUrl: './dog-form.component.scss',
   providers: [MessageService]
 })
-
-export class DogFormComponent implements OnInit {
-  http = inject(HttpClient)
-  dogs: Dog[] = [];
+export class DogFormComponent implements OnInit, OnDestroy {
+  http = inject(HttpClient);
   dogBreeds: BreedsSelect[] = [];
   today: Date;
   updatedDog: Dog | null = null;
   messageService = inject(MessageService);
+  private subscription!: Subscription;
 
-  constructor() {
+  constructor(private dogService: DogService, private fb: FormBuilder) {
     this.today = new Date();
   }
 
@@ -56,22 +55,33 @@ export class DogFormComponent implements OnInit {
     chipNumber: ['', Validators.required],
     birthDate: [null as Date | null, Validators.required],
     avatar: [null]
-  })
+  });
 
   ngOnInit() {
-    this.http.get<Dog>(`http://localhost:8080/dog/1`).subscribe(dogFromServer => {
-      const formDataToPatch = {
-        ...dogFromServer,
-        birthDate: dogFromServer.birthDate ? new Date(dogFromServer.birthDate) : null,
-      };
-      this.form.patchValue(formDataToPatch);
+    // Charger les races de chiens
+    this.loadBreeds();
 
-      this.updatedDog = {
-        ...dogFromServer,
-        birthDate: formDataToPatch.birthDate
-      } as Dog;
+    // S'abonner aux changements du chien actif
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      if (dog) {
+        // Mettre à jour le formulaire avec les données du chien actif
+        this.patchFormWithDogData(dog);
+        console.log('Dog form updated for dog:', dog.name);
+      } else {
+        // Réinitialiser le formulaire si aucun chien n'est sélectionné
+        this.form.reset();
+        this.updatedDog = null;
+      }
     });
+  }
 
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  loadBreeds() {
     this.http.get<Breed[]>('http://localhost:8080/breeds').subscribe({
       next: (breeds) => {
         this.dogBreeds = breeds.map(breed => ({
@@ -85,40 +95,70 @@ export class DogFormComponent implements OnInit {
     });
   }
 
+  patchFormWithDogData(dog: Dog) {
+    this.updatedDog = { ...dog };
+    const formDataToPatch = {
+      ...dog,
+      birthDate: dog.birthDate ? new Date(dog.birthDate) : null,
+      breed: dog.breeds || []
+    };
+
+    this.form.patchValue(formDataToPatch);
+  }
+
   onSubmitEdit() {
+    if (this.form.invalid) {
+      this.messageService.add({severity: 'error', summary: 'Erreur', detail: 'Veuillez remplir tous les champs obligatoires.'});
+      this.form.markAllAsTouched();
+      return;
+    }
+
     if (this.updatedDog) {
+      // Préparer les données pour la mise à jour
+      const formData = this.form.value;
 
-      const ownerId = 3;
+      // Mettre à jour l'objet dog avec les nouvelles valeurs du formulaire
+      const dogToUpdate = {
+        ...this.updatedDog,
+        name: formData.name || this.updatedDog.name,
+        breeds: formData.breed || this.updatedDog.breeds,
+        chipNumber: formData.chipNumber || this.updatedDog.chipNumber,
+        birthDate: formData.birthDate || this.updatedDog.birthDate,
+        // Autres propriétés à mettre à jour
+      };
+
+      const ownerId = 3; // Vous pourriez récupérer cela depuis un service d'authentification
       const dogId = this.updatedDog.id;
-
-
       const endpointUrl = `http://localhost:8080/owner/${ownerId}/dogs/${dogId}`;
 
-      this.http.put<Dog>(endpointUrl, this.updatedDog).subscribe({
+      this.http.put<Dog>(endpointUrl, dogToUpdate).subscribe({
         next: (updatedDogFromServer) => {
           console.log('Chien mis à jour avec succès:', updatedDogFromServer);
 
-          this.updatedDog = {
-            ...updatedDogFromServer,
-            birthDate: new Date(updatedDogFromServer.birthDate)
-          };
-
-          // Mettre à jour le chien dans la liste this.dogs pour refléter les changements
-          const index = this.dogs.findIndex(d => d.id === updatedDogFromServer.id);
-          if (index !== -1) {
-            this.dogs[index] = this.updatedDog;
-          }
+          // Mettre à jour le chien actif dans le service pour que tous les composants soient notifiés
+          this.dogService.getDogDetails(updatedDogFromServer.id).subscribe({
+            next: (refreshedDog) => {
+              this.messageService.add({severity: 'success', summary: 'Succès', detail: 'Les informations du chien ont été mises à jour.'});
+            },
+            error: (error) => {
+              console.error('Erreur lors du rafraîchissement des détails du chien:', error);
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Erreur lors de la mise à jour du chien:', error);
+          this.messageService.add({severity: 'error', summary: 'Erreur', detail: 'Une erreur est survenue lors de la mise à jour du chien.'});
         }
       });
     } else {
       console.error('Aucun chien sélectionné ou ID du chien manquant. La mise à jour ne peut pas continuer.');
+      this.messageService.add({severity: 'error', summary: 'Erreur', detail: 'Aucun chien sélectionné pour la mise à jour.'});
     }
   }
 
-  // onUpload(event
-  //          :
-  //          UploadEvent
-  // ) {
-  //   this.messageService.add({severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode'});
-  // }
+  // Méthode pour réinitialiser le formulaire
+  resetForm() {
+    this.form.reset();
+    this.updatedDog = null;
+  }
 }

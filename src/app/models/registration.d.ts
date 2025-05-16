@@ -1,17 +1,18 @@
 import {Dog} from './dog';
 import {Course} from './course';
+import {RegistrationStatus} from './registrationstatus.enum';
 
-type Registration = {
+export type Registration = {
   registrationId: number;
   course: Course;
   dog: Dog;
-  registrationDate: string | null;
-  status: RegistrationStatus | null;
+  registrationDate: string;
+  status: RegistrationStatus;
 }
 
-enum RegistrationStatus {
-  "PENDING",
-  "CONFIRMED",
-  "CANCELED",
-  "REFUSED"
-}
+// export enum RegistrationStatus {
+//   "PENDING",
+//   "CONFIRMED",
+//   "CANCELLED",
+//   "REFUSED"
+// }

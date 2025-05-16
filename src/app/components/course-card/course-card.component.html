@@ -1,50 +1,53 @@
 <div class="lg:py-10">
   <p-carousel
-    [value]="courses"
+    [value]="registrations"
     [numVisible]="3"
     [numScroll]="3"
     [responsiveOptions]="responsiveOptions"
     [circular]="false">
-    <ng-template let-course pTemplate="item">
+    <ng-template let-registration pTemplate="item">
       <div class="p-3 relative mx-auto h-full">
         <p-card>
-
           <div class="w-full h-full flex flex-col justify-between">
+            <div class="mb-2">
+              <p-chip
+                [label]="getStatusLabel(registration.status)"
+                [ngClass]="getStatusClass(registration.status)"/>
+            </div>
+
             <div>
-              <p-chip label="{{course.courseType?.name}}"/>
+              <p-chip label="{{registration.course.courseType?.name}}"/>
               <p class="font-medium text-[24px]">
-                {{ course.title }}
+                {{ registration.course.title }}
               </p>
             </div>
 
             <div>
               <p class="font-bold text-[43px]">
-                {{ course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
+                {{ registration.course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
               </p>
               <p class="font-bold text-[24px]">
-                {{ course.startDatetime | date:'HH:mm':'':'fr' }}
+                {{ registration.course.startDatetime | date:'HH:mm':'':'fr' }}
               </p>
             </div>
 
             <div>
               <p class="font-light text-[22px]">
-                {{ course.coach.firstname }} {{ course.coach.lastname }}
+                {{ registration.course.coach.firstname }} {{ registration.course.coach.lastname }}
+              </p>
+              <p class="text-sm text-gray-600">
+                Inscrit le: {{ registration.registrationDate | date:'dd/MM/yyyy':'':'fr' }}
               </p>
             </div>
           </div>
-
         </p-card>
       </div>
     </ng-template>
   </p-carousel>
 </div>
 
-
-@if (courses.length === 0 || !courses) {
+@if (registrations.length === 0 || !registrations) {
   <div class="text-center p-4">
-    <p>Aucun cours disponible pour le moment.</p>
+    <p>Aucune inscription aux cours pour ce chien.</p>
   </div>
-
 }
-
-

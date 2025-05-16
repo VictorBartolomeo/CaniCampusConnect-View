@@ -1,13 +1,17 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Card} from 'primeng/card';
 import {Chip} from 'primeng/chip';
-import {DatePipe} from '@angular/common';
+import {DatePipe, NgClass} from '@angular/common';
 import {Carousel} from 'primeng/carousel';
-import {PrimeTemplate} from 'primeng/api';
 import {Course} from '../../models/course';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../service/dog.service';
+import {Dog} from '../../models/dog';
+import {PrimeTemplate} from 'primeng/api';
+import {Registration} from '../../models/registration';
+import {RegistrationStatus} from '../../models/registrationstatus.enum';
+
 
 @Component({
   selector: 'app-course-card',
@@ -16,32 +20,32 @@ import {DogService} from '../../service/dog.service';
     Chip,
     DatePipe,
     Carousel,
+    NgClass,
     PrimeTemplate
   ],
   templateUrl: './course-card.component.html',
   styleUrl: './course-card.component.scss',
 })
 export class CourseCardComponent implements OnInit {
-  courses: Course[] = [];
+
+  registrations: Registration[] = [];
   responsiveOptions: any[] | undefined;
   private subscription!: Subscription;
   private currentDogId: number | null = null;
 
   constructor(
-    private http: HttpClient,
     private dogService: DogService
   ) {}
-
 
   ngOnInit() {
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       if (dog && dog.id !== this.currentDogId) {
         this.currentDogId = dog.id;
-        this.loadCoursesForDog(dog.id);
+        this.loadRegistrationsForDog(dog);
+      } else if (!dog) {
+        this.registrations = [];
       }
     });
-
-
 
     this.responsiveOptions = [
       {
@@ -66,23 +70,62 @@ export class CourseCardComponent implements OnInit {
       }
     ]
   }
+
   ngOnDestroy() {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
   }
 
-  loadCoursesForDog(dogId: number) {
-    // Charger les cours spécifiques au chien
-    this.http.get<Course[]>(`http://localhost:8080/dog/${dogId}/courses`).subscribe({
-      next: (courses) => {
-        this.courses = courses;
-        console.log('Courses for dog:', courses);
-      },
-      error: (error) => {
-        console.error(`Error fetching courses for dog ${dogId}:`, error);
-      },
-    });
+  loadRegistrationsForDog(dog: Dog) {
+    if (dog.registrations && dog.registrations.length > 0) {
+      this.registrations = dog.registrations;
+      console.log('Inscriptions aux cours pour le chien:', this.registrations);
+    } else {
+      this.registrations = [];
+      console.log('Aucune inscription aux cours disponible pour ce chien');
+    }
   }
 
+  getStatusClass(status: RegistrationStatus | null): string {
+    if (!status) return 'status-unknown';
+
+    switch(status) {
+      case RegistrationStatus.CONFIRMED:
+        return 'status-confirmed';
+      case RegistrationStatus.PENDING:
+        return 'status-pending';
+      case RegistrationStatus.CANCELLED:
+        return 'status-canceled';
+      case RegistrationStatus.REFUSED:
+        return 'status-refused';
+      default:
+        return 'status-unknown';
+    }
+  }
+
+  getStatusLabel(status: RegistrationStatus | null): string {
+    if (!status) return 'Non défini';
+
+    switch(status) {
+      case RegistrationStatus.CONFIRMED:
+        return 'CONFIRMÉ';
+      case RegistrationStatus.PENDING:
+        return 'EN ATTENTE';
+      case RegistrationStatus.CANCELLED:
+        return 'ANNULÉ';
+      case RegistrationStatus.REFUSED:
+        return 'REFUSÉ';
+      default:
+        return 'INCONNU';
+    }
+  }
+
+  formatCoachName(course: Course): string {
+    if (course.coach) {
+      return `${course.coach.firstname} ${course.coach.lastname}`;
+    }
+    return 'Non spécifié';
+  }
 }
+

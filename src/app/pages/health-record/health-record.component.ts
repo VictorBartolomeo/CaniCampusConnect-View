@@ -7,6 +7,8 @@ import {FormsModule} from '@angular/forms';
 import {WeightChartComponent} from '../../components/weight-chart/weight-chart.component';
 import {VaccinationTableComponent} from '../../components/vaccination-table/vaccination-table.component';
 import {VeterinaryVisitsComponent} from '../../components/veterinary-visits/veterinary-visits.component';
+import {DogService} from '../../service/dog.service';
+import {Subscription} from 'rxjs';
 
 
 @Component({
@@ -19,5 +21,22 @@ import {VeterinaryVisitsComponent} from '../../components/veterinary-visits/vete
 })
 export class HealthRecordComponent {
 
+  currentDog: Dog | null = null;
+  private subscription!: Subscription;
 
+  constructor(private dogService: DogService) {}
+
+  ngOnInit() {
+    // S'abonner aux changements du chien actif
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      this.currentDog = dog;
+      console.log('Health record updated for dog:', dog?.name);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 }

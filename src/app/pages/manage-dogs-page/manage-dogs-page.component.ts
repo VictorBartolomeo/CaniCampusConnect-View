@@ -3,6 +3,9 @@ import {DogSummaryComponent} from '../../components/dog-summary/dog-summary.comp
 import {DogFormComponent} from '../../components/dog-form/dog-form.component';
 import {Splitter} from 'primeng/splitter';
 import {DogAddFormComponent} from '../../components/dog-add-form/dog-add-form.component';
+import {DogService} from '../../service/dog.service';
+import {Subscription} from 'rxjs';
+import {Dog} from '../../models/dog';
 
 @Component({
   selector: 'app-manage-dogs-page',
@@ -16,5 +19,23 @@ import {DogAddFormComponent} from '../../components/dog-add-form/dog-add-form.co
   styleUrl: './manage-dogs-page.component.scss'
 })
 export class ManageDogsPageComponent {
+  currentDog: Dog | null = null;
+  private subscription!: Subscription;
+
+  constructor(private dogService: DogService) {}
+
+  ngOnInit() {
+    // S'abonner aux changements du chien actif
+    this.subscription = this.dogService.activeDog$.subscribe(dog => {
+      this.currentDog = dog;
+      console.log('Manage Dogs page updated for dog:', dog?.name);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 
 }

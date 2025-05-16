@@ -3,7 +3,7 @@ import {Registration} from './registration';
 import {Club} from './club'
 import {CourseType} from './courseType';
 
-type Course = {
+export type Course = {
   id: number;
   title: string;
   description: string;
