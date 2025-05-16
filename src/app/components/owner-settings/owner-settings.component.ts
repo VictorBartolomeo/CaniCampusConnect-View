@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import {UserService} from '../../service/user.service';
-import {MessageService} from 'primeng/api';
-import {ButtonModule} from 'primeng/button';
-import {InputTextModule} from 'primeng/inputtext';
-import {InputMaskModule} from 'primeng/inputmask';
-import {PasswordModule} from 'primeng/password';
-import {CardModule} from 'primeng/card';
-import {ToastModule} from 'primeng/toast';
-import {CommonModule} from '@angular/common';
-import {Owner} from '../../models/owner';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { UserService } from '../../service/user.service';
+import { MessageService } from 'primeng/api';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
+import { ToastModule } from 'primeng/toast';
+import { Owner } from '../../models/owner';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-owner-settings',
@@ -19,18 +19,17 @@ import {Owner} from '../../models/owner';
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
-    InputMaskModule,
-    PasswordModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    IconField,
+    InputIcon
   ],
   providers: [MessageService],
   templateUrl: './owner-settings.component.html',
   styleUrl: './owner-settings.component.scss'
 })
-export class UserSettingsComponent implements OnInit {
+export class OwnerSettingsComponent implements OnInit {
   userForm!: FormGroup;
-  passwordForm!: FormGroup;
   loading = false;
   owner: Owner | null = null;
 
@@ -38,37 +37,23 @@ export class UserSettingsComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private messageService: MessageService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.initForms();
+    this.initForm();
     this.loadUserData();
   }
 
-  initForms(): void {
-    // Formulaire des informations utilisateur (Owner)
+  initForm(): void {
+    // Regex pour valider le format du numéro de téléphone français
+    const phoneRegex = /^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/;
+
     this.userForm = this.fb.group({
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      address: ['']
+      phone: ['', [Validators.pattern(phoneRegex)]],
     });
-
-    // Formulaire de changement de mot de passe
-    this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', Validators.required]
-    }, {validators: this.checkPasswords});
-  }
-
-  // Validation personnalisée pour vérifier que les mots de passe correspondent
-  checkPasswords(group: FormGroup) {
-    const pass = group.get('newPassword')?.value;
-    const confirmPass = group.get('confirmPassword')?.value;
-    return pass === confirmPass ? null : {notSame: true};
   }
 
   loadUserData(): void {
@@ -81,7 +66,6 @@ export class UserSettingsComponent implements OnInit {
           lastname: owner.lastname,
           email: owner.email,
           phone: owner.phone || '',
-          address: owner.address || ''
         });
         this.loading = false;
       },
@@ -97,7 +81,7 @@ export class UserSettingsComponent implements OnInit {
     });
   }
 
-  onUserFormSubmit(): void {
+  onSubmit(): void {
     if (this.userForm.valid) {
       this.loading = true;
       this.userService.updateUser(this.userForm.value).subscribe({
@@ -118,40 +102,6 @@ export class UserSettingsComponent implements OnInit {
           });
           this.loading = false;
           console.error('Erreur lors de la mise à jour des données:', error);
-        }
-      });
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Attention',
-        detail: 'Veuillez corriger les erreurs dans le formulaire'
-      });
-    }
-  }
-
-  onPasswordFormSubmit(): void {
-    if (this.passwordForm.valid) {
-      this.loading = true;
-      const {currentPassword, newPassword} = this.passwordForm.value;
-
-      this.userService.updatePassword(currentPassword, newPassword).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Succès',
-            detail: 'Mot de passe mis à jour avec succès'
-          });
-          this.passwordForm.reset();
-          this.loading = false;
-        },
-        error: (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: 'Impossible de mettre à jour le mot de passe'
-          });
-          this.loading = false;
-          console.error('Erreur lors de la mise à jour du mot de passe:', error);
         }
       });
     } else {
