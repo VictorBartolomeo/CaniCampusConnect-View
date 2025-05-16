@@ -7,7 +7,6 @@ export type Owner = {
   email: string;
   phone?: string;
   registrationDate?: string;
-  address?: string;
   dogs?: Dog[];
   active?: boolean;
 
