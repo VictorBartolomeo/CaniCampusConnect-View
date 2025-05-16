@@ -5,6 +5,7 @@ import {CalendarComponent} from '../../components/calendar/calendar.component';
 
 @Component({
   selector: 'app-course',
+  standalone: true,
   imports: [
     CourseCardComponent,
     PastCoursesComponent,
