@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {Button, ButtonIcon} from 'primeng/button';
+import {Button} from 'primeng/button';
 import {Dialog} from 'primeng/dialog';
 import {InputText} from 'primeng/inputtext';
 import {DatePicker} from 'primeng/datepicker';
@@ -18,7 +18,6 @@ interface BreedsSelect {
   imports: [
     Button,
     Dialog,
-    ButtonIcon,
     InputText,
     DatePicker,
     ReactiveFormsModule,
