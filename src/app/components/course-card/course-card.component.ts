@@ -80,17 +80,28 @@ export class CourseCardComponent implements OnInit {
 
   loadRegistrationsForDog(dog: Dog) {
     if (dog.registrations && dog.registrations.length > 0) {
-      this.registrations = dog.registrations.sort((a, b) => {
-        const dateA = new Date(a.course.startDatetime).getTime();
-        const dateB = new Date(b.course.startDatetime).getTime();
-        return dateA - dateB;
-      });
-      console.log('Inscriptions aux cours pour le chien (triées par date):', this.registrations);
+      // Récupérer la date actuelle
+      const currentDate = new Date();
+
+      // Filtrer uniquement les cours à venir
+      this.registrations = dog.registrations
+        .filter(registration => {
+          const courseStartDate = new Date(registration.course.startDatetime);
+          return courseStartDate >= currentDate;
+        })
+        .sort((a, b) => {
+          const dateA = new Date(a.course.startDatetime).getTime();
+          const dateB = new Date(b.course.startDatetime).getTime();
+          return dateA - dateB;
+        });
+
+      console.log('Inscriptions aux cours à venir pour le chien (triées par date):', this.registrations);
     } else {
       this.registrations = [];
       console.log('Aucune inscription aux cours disponible pour ce chien');
     }
   }
+
 
 
   getStatusClass(status: RegistrationStatus | null): string {
