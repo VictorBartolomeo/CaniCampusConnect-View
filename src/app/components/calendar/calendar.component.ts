@@ -76,22 +76,28 @@ export class CalendarComponent implements OnInit, OnDestroy {
       this.registrations = dog.registrations;
       console.log('Inscriptions aux cours pour le chien dans le calendrier:', this.registrations);
 
-      // Mettre à jour les événements du calendrier avec les inscriptions du chien
-      this.events = this.registrations.map(registration => ({
-        title: `${registration.course.title} - ${registration.status}`,
-        color: this.getEventColor(registration.status),
-        start: new Date(registration.course.startDatetime),
-        end: new Date(registration.course.endDatetime),
-        meta: {
-          registration: registration
-        }
-      }));
+      this.events = this.registrations.map(registration => {
+        const startDate = new Date(registration.course.startDatetime);
+
+        return {
+          title: `${registration.course.title} - ${registration.status}`,
+          color: this.getEventColor(registration.status),
+          start: startDate,
+          allDay: false,
+          meta: {
+            registration: registration,
+            startTime: startDate.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+            endTime: new Date(registration.course.endDatetime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+          }
+        };
+      });
     } else {
       this.registrations = [];
       this.events = [];
       console.log('Aucune inscription aux cours disponible pour ce chien dans le calendrier');
     }
   }
+
 
   getEventColor(status: string): { primary: string; secondary: string } {
     // Personnaliser les couleurs en fonction du statut de l'inscription
