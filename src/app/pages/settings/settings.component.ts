@@ -1,14 +1,22 @@
 import { Component } from '@angular/core';
-import {UserSettingsComponent} from '../../components/owner-settings/owner-settings.component';
+import {OwnerSettingsComponent} from '../../components/owner-settings/owner-settings.component';
+import {PasswordFormComponent} from '../../components/password-form/password-form.component';
+import {Toast} from 'primeng/toast';
+import {MessageService} from 'primeng/api';
+import {UserService} from '../../service/user.service';
 
 @Component({
   selector: 'app-settings',
   imports: [
-    UserSettingsComponent
+    OwnerSettingsComponent,
+    PasswordFormComponent,
+    Toast
   ],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss'
+  styleUrl: './settings.component.scss',
+  providers: [MessageService]
 })
 export class SettingsComponent {
 
+  protected readonly UserService = UserService;
 }
