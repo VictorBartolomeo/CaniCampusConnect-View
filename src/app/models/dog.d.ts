@@ -5,6 +5,7 @@ import {VeterinaryVisit} from './veterinaryvisit';
 import {MedicationTreatment} from './medicationtreatment';
 import {Breed} from './breed';
 import {Gender} from './gender';
+import {Course} from './course';
 
 export type Dog = {
   id: number;
@@ -19,4 +20,5 @@ export type Dog = {
   medicationTreatments?: MedicationTreatment[] | null;
   dogWeights?: DogWeight[];
   avatarUrl?: string | null;
+  courses?: Course[];
 }
