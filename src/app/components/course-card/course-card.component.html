@@ -10,16 +10,18 @@
         <p-card>
           <div class="w-full h-full flex flex-col justify-between">
             <div class="mb-2">
-              <p-chip
-                [label]="getStatusLabel(registration.status)"
-                [ngClass]="getStatusClass(registration.status)"/>
+              <div class="inline-flex items-center rounded-full text-sm"
+                   [ngClass]="getStatusClass(registration.status)">
+                <i [class]="getStatusIcon(registration.status)" class="mr-1"></i>
+                <span>{{ getStatusLabel(registration.status) }}</span>
+              </div>
             </div>
 
             <div>
-              <p-chip label="{{registration.course.courseType?.name}}"/>
               <p class="font-medium text-[24px]">
                 {{ registration.course.title }}
               </p>
+              <p-chip label="{{registration.course.courseType?.name}}" class="mt-1"/>
             </div>
 
             <div>
@@ -35,9 +37,6 @@
               <p class="font-light text-[22px]">
                 {{ registration.course.coach.firstname }} {{ registration.course.coach.lastname }}
               </p>
-              <p class="text-sm text-gray-600">
-                Inscrit le: {{ registration.registrationDate | date:'dd/MM/yyyy':'':'fr' }}
-              </p>
             </div>
           </div>
         </p-card>
@@ -48,6 +47,6 @@
 
 @if (registrations.length === 0 || !registrations) {
   <div class="text-center p-4">
-    <p>Aucune inscription aux cours pour ce chien.</p>
+    <p>Aucune inscription aux cours pour {{activeDog?.name}}.</p>
   </div>
 }
