@@ -30,6 +30,7 @@ export class CourseCardComponent implements OnInit {
 
   registrations: Registration[] = [];
   responsiveOptions: any[] | undefined;
+  activeDog: Dog | null = null;
   private subscription!: Subscription;
   private currentDogId: number | null = null;
 
@@ -79,13 +80,18 @@ export class CourseCardComponent implements OnInit {
 
   loadRegistrationsForDog(dog: Dog) {
     if (dog.registrations && dog.registrations.length > 0) {
-      this.registrations = dog.registrations;
-      console.log('Inscriptions aux cours pour le chien:', this.registrations);
+      this.registrations = dog.registrations.sort((a, b) => {
+        const dateA = new Date(a.course.startDatetime).getTime();
+        const dateB = new Date(b.course.startDatetime).getTime();
+        return dateA - dateB;
+      });
+      console.log('Inscriptions aux cours pour le chien (triées par date):', this.registrations);
     } else {
       this.registrations = [];
       console.log('Aucune inscription aux cours disponible pour ce chien');
     }
   }
+
 
   getStatusClass(status: RegistrationStatus | null): string {
     if (!status) return 'status-unknown';
@@ -120,12 +126,19 @@ export class CourseCardComponent implements OnInit {
         return 'INCONNU';
     }
   }
-
-  formatCoachName(course: Course): string {
-    if (course.coach) {
-      return `${course.coach.firstname} ${course.coach.lastname}`;
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'CONFIRMED':
+        return 'pi pi-check-circle'; // Icône de cercle avec une coche
+      case 'PENDING':
+        return 'pi pi-clock'; // Icône d'horloge
+      case 'CANCELLED':
+        return 'pi pi-times-circle'; // Icône de cercle avec une croix
+      default:
+        return 'pi pi-question-circle'; // Icône de cercle avec un point d'interrogation
     }
-    return 'Non spécifié';
   }
+
+
 }
 
