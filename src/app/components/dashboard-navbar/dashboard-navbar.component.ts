@@ -16,6 +16,7 @@ import {DogService} from '../../service/dog.service';
 import {Observable} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
+import {tap} from 'rxjs/operators';
 
 
 @Component({
@@ -43,7 +44,6 @@ export class DashboardNavbarComponent implements OnInit {
     this.activeDog$.subscribe(dog => {
       this.selectedDogId = dog?.id || null;
     });
-
   }
 
 
@@ -106,16 +106,19 @@ export class DashboardNavbarComponent implements OnInit {
   }
 
   onDogChange(dogId: number): void {
-    // On a besoin de récupérer la liste actuelle des chiens
-    const dogs = this.dogService.getActiveDog()?.id
-      ? this.dogService.userDogsSubject.getValue() // Si on a besoin d'accéder directement à la liste
-      : [];
+    if (!dogId) return;
 
-    const selectedDog = dogs.find(d => d.id === +dogId);
-    if (selectedDog) {
-      this.dogService.setActiveDog(selectedDog);
-    }
+    // Charger les détails du chien sélectionné depuis l'API /dog/{dogId}
+    this.dogService.getDogDetails(dogId).subscribe({
+      next: (dogDetails) => {
+        // Les détails du chien sont maintenant disponibles via activeDog$
+        console.log('Détails du chien chargés:', dogDetails);
+      },
+      error: (err) => console.error('Erreur lors du chargement des détails du chien:', err)
+    });
   }
+
+
 
 }
 
