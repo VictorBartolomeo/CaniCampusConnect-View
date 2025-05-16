@@ -1,6 +1,6 @@
 <h2 class="text-xl font-bold mb-4">Vaccinations</h2>
-<p-table [value]="dogs" [tableStyle]="{ 'min-width': '50rem' }">
-  <ng-template #header>
+<p-table [value]="vaccinations" [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template pTemplate="header">
     <tr>
       <th>Vaccin</th>
       <th>Date de vaccination</th>
@@ -9,20 +9,24 @@
       <th>Vétérinaire</th>
     </tr>
   </ng-template>
-  <ng-template #body let-dog>
-    @for (vaccination of dog.vaccinations; track vaccination.id) {
-      <tr>
-        <td>{{ vaccination.vaccine.name }}</td>
-        <td>{{ vaccination.vaccinationDate | date : "dd/MM/yyyy" }}</td>
-        <td>{{ vaccination.batchNumber }}</td>
-        <td [ngClass]="{
-            'text-yellow-500 font-bold': isReminderSoon(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay)),
-            'text-red-500 font-bold': isReminderOverdue(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay))
-          }">
-          {{ calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay) | date:'dd/MM/yyyy' }}
-        </td>
-        <td>{{ vaccination.veterinarian }}</td>
-      </tr>
-    }
+  <ng-template pTemplate="body" let-vaccination>
+    <tr>
+      <td>{{ vaccination.vaccine.name }}</td>
+      <td>{{ vaccination.vaccinationDate | date : "dd/MM/yyyy" }}</td>
+      <td>{{ vaccination.batchNumber }}</td>
+      <td [ngClass]="{
+          'text-yellow-500 font-bold': isReminderSoon(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay)),
+          'text-red-500 font-bold': isReminderOverdue(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay))
+        }">
+        {{ calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay) | date:'dd/MM/yyyy' }}
+      </td>
+      <td>{{ vaccination.veterinarian }}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5" class="text-center p-4">Aucune vaccination enregistrée pour ce chien.</td>
+    </tr>
   </ng-template>
 </p-table>
+
