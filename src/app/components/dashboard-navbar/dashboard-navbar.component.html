@@ -2,9 +2,10 @@
   <p-megaMenu [model]="items" [style]="{ display: 'flex' }"
               styleClass="p-4 bg-surface-0 dark:bg-surface-900">
 
+    {{(dogService.userDogsSubject | async)?.length}}
     <ng-template pTemplate="start">
       <p-select
-        [options]="(userDogs$ | async) || []"
+        [options]="(dogService.userDogsSubject | async) || []"
         [(ngModel)]="selectedDogId"
         optionLabel="name"
         optionValue="id"
