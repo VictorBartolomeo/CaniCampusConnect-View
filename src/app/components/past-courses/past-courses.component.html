@@ -1,34 +1,48 @@
-<div class="flex justify-between items-center mb-4">
-  <h2 class="text-xl font-bold">Cours passés</h2>
-  <div>
-    <span class="mr-2">Voir les cours avant: </span>
-    <p-datePicker class="z-10" [(ngModel)]="filterDate" (onSelect)="onDateSelect()" dateFormat="dd/mm/yy"></p-datePicker>
-  </div>
-</div>
+<div class="card">
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="font-bold text-xl">Historique des cours</h2>
 
-<p-table
-  [value]="pastCourses"
-  [paginator]="true"
-  [rows]="4"
-  [showCurrentPageReport]="true"
-  currentPageReportTemplate="{first} à {last} sur {totalRecords} cours"
-  [tableStyle]="{'min-width': '50rem'}">
-  <ng-template pTemplate="header">
-    <tr>
-      <th></th>
-      <th>Cours</th>
-      <th>Date</th>
-      <th>Coach</th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-course>
-    <tr>
-      <td class="text-center">
-        <i class="pi pi-check-circle text-green-500 text-xl"></i>
-      </td>
-      <td>{{ course.title }}</td>
-      <td>{{ course.startDatetime | date : "dd/MM/yyyy" }}</td>
-      <td>{{ course.coach.firstname + ' ' + course.coach.lastname }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+    <div class="flex items-center">
+      <label for="dateFilter" class="mr-2">Filtrer à partir du :</label>
+      <p-calendar id="dateFilter" [(ngModel)]="dateFilter" [showIcon]="true" (onSelect)="onDateFilterChange()"
+                  dateFormat="dd/mm/yy" inputStyleClass="w-full" placeholder="Sélectionner une date">
+      </p-calendar>
+      @if (dateFilter) {
+        <button pButton pButtonIcon="pi pi-times" class="p-button-text p-button-rounded p-button-sm ml-2"
+                (click)="clearDateFilter()"></button>
+      }
+    </div>
+  </div>
+
+  <p-table [value]="filteredRegistrations" styleClass="p-datatable-striped" [tableStyle]="{'min-width': '50rem'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Date</th>
+        <th>Heure</th>
+        <th>Titre</th>
+        <th>Type de cours</th>
+        <th>Coach</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-registration>
+      <tr>
+        <td>{{ registration.course.startDatetime | date:'d MMMM yyyy':'':'fr' }}</td>
+        <td>{{ registration.course.startDatetime | date:'HH:mm':'':'fr' }} - {{ registration.course.endDatetime | date:'HH:mm':'':'fr' }}</td>
+        <td>{{ registration.course.title }}</td>
+        <td>{{ registration.course.courseType?.name }}</td>
+        <td>{{ registration.course.coach.firstname }} {{ registration.course.coach.lastname }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center">
+          @if (activeDog && !dateFilter) {
+            <p>{{ activeDog.name }} n'a pas encore participé à des cours.</p>
+          } @else if (activeDog && dateFilter) {
+            <p>Aucun cours trouvé pour {{ activeDog.name }} à partir du {{ dateFilter | date:'dd/MM/yyyy':'':'fr' }}.</p>
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
