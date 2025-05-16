@@ -108,14 +108,15 @@ export class DashboardNavbarComponent implements OnInit {
   onDogChange(dogId: number): void {
     if (!dogId) return;
 
-    // Charger les détails du chien sélectionné depuis l'API /dog/{dogId}
+    // Charger les détails complets du chien sélectionné
     this.dogService.getDogDetails(dogId).subscribe({
       next: (dogDetails) => {
-        // Les détails du chien sont maintenant disponibles via activeDog$
-        console.log('Détails du chien chargés:', dogDetails);
+        // Les détails du chien sont maintenant disponibles via activeDog$ pour tous les composants
+        console.log('Chien sélectionné avec succès:', dogDetails.name);
       },
       error: (err) => console.error('Erreur lors du chargement des détails du chien:', err)
     });
+
   }
 
 
