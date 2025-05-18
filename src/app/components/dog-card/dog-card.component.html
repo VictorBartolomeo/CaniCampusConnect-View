@@ -8,7 +8,12 @@
         alt="Photo de {{dog.name}}"
       />
       <div class="absolute bottom-0 left-0 p-4 bg-black bg-opacity-50 w-full">
-        <h2 class="text-white text-2xl font-bold">{{dog.name}}</h2>
+        <h2 class="text-white text-2xl font-bold flex items-center gap-2">
+          {{dog.name}}
+          <fa-icon [icon]="getGenderIcon().icon"
+                   [class]="getGenderIcon().color"
+                   [title]="dog.gender"></fa-icon>
+        </h2>
         <div class="flex gap-2 items-center text-white text-sm">
           <span>{{getDogAge(dog.birthDate)}}</span>
           <span class="text-xl">•</span>
@@ -19,74 +24,52 @@
   </ng-template>
 
   <!-- Corps de la carte -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
+  <div class="space-y-4 p-3">
     <!-- Informations principales -->
-    <div class="space-y-4">
-      <div class="flex items-center gap-2">
-        <i class="pi pi-id-card text-blue-600"></i>
-        <span class="font-semibold">Numéro de puce:</span>
-        <span>{{dog.chipNumber}}</span>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <i class="pi pi-weight text-blue-600"></i>
-        <span class="font-semibold">Dernier poids:</span>
-        <span>{{latestWeight ? latestWeight.weightValue + ' kg (' + (latestWeight.measurementDate | date:'dd/MM/yyyy') + ')' : 'Non enregistré'}}</span>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <i class="pi pi-graduation-cap text-blue-600"></i>
-        <span class="font-semibold">Type de cours préféré:</span>
-        <p-tag [value]="mostCommonCourseType || 'Aucun cours suivi'"
-               [severity]="mostCommonCourseType ? 'info' : 'secondary'"></p-tag>
-      </div>
+    <div class="flex items-center gap-2">
+      <i class="pi pi-id-card text-blue-600"></i>
+      <span class="font-semibold">Numéro de puce: {{dog.chipNumber || 'Non renseigné'}}</span>
     </div>
 
-    <!-- Informations de suivi -->
-    <div class="space-y-4">
-      <div class="flex items-center gap-2">
-        <i class="pi pi-heart text-blue-600"></i>
-        <span class="font-semibold">Traitement en cours:</span>
-        <p-badge [value]="hasMedication ? 'Oui' : 'Non'"
-                 [severity]="hasMedication ? 'warn' : 'success'"
-                 [pTooltip]="hasMedication ? 'Ce chien suit actuellement un traitement' : 'Aucun traitement en cours'"></p-badge>
-      </div>
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="getGenderIcon().icon" [class]="getGenderIcon().color"></fa-icon>
+      <span class="font-semibold">Genre: {{dog.gender}}</span>
+    </div>
 
-      <div class="flex items-center gap-2">
-        <i class="pi pi-shield text-blue-600"></i>
-        <span class="font-semibold">Vaccins à jour:</span>
-        <p-badge [value]="areVaccinesUpToDate ? 'À jour' : 'À vérifier'"
-                 [severity]="areVaccinesUpToDate ? 'success' : 'danger'"
-                 [pTooltip]="areVaccinesUpToDate ? 'Tous les vaccins sont à jour' : 'Certains vaccins doivent être renouvelés'"></p-badge>
-      </div>
+    <div class="flex items-center gap-2">
+      <fa-icon [icon]="weightIcon" class="text-blue-600"></fa-icon>
+      <span class="font-semibold">Dernier poids: {{latestWeight ? latestWeight.weightValue + ' kg (' + (latestWeight.measurementDate | date:'dd/MM/yyyy') + ')' : 'Non enregistré'}}</span>
+    </div>
 
-      <div class="flex items-center gap-2">
-        <i class="pi pi-user text-blue-600"></i>
-        <span class="font-semibold">Coach préféré:</span>
-        <span>{{favoriteCoach || 'Aucun coach'}}</span>
-      </div>
+    <div class="flex items-center gap-2">
+      <i class="pi pi-graduation-cap text-blue-600"></i>
+      <span class="font-semibold">Type de cours préféré:</span>
+      <p-tag [value]="mostCommonCourseType || 'Aucun cours suivi'"
+             [severity]="mostCommonCourseType ? 'info' : 'secondary'"></p-tag>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <i class="pi pi-heart text-blue-600"></i>
+      <span class="font-semibold">Traitement en cours:</span>
+      <p-badge [value]="hasMedication ? 'Oui' : 'Non'"
+               [severity]="hasMedication ? 'warn' : 'success'"
+               [pTooltip]="hasMedication ? 'Ce chien suit actuellement un traitement' : 'Aucun traitement en cours'"></p-badge>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <i class="pi pi-shield text-blue-600"></i>
+      <span class="font-semibold">Vaccins à jour:</span>
+      <p-badge [value]="areVaccinesUpToDate ? 'À jour' : 'À vérifier'"
+               [severity]="areVaccinesUpToDate ? 'success' : 'danger'"
+               [pTooltip]="areVaccinesUpToDate ? 'Tous les vaccins sont à jour' : 'Certains vaccins doivent être renouvelés'"></p-badge>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <i class="pi pi-user text-blue-600"></i>
+      <span class="font-semibold">Coach préféré: {{favoriteCoach || 'Aucun coach'}}</span>
     </div>
   </div>
 
-  <!-- Amis du chien -->
-  <div class="mt-4 p-2">
-    <h3 class="text-lg font-semibold mb-2 flex items-center gap-2">
-      <i class="pi pi-users text-blue-600"></i>
-      Meilleurs amis
-    </h3>
-    <div *ngIf="bestFriends.length > 0" class="flex flex-wrap gap-2">
-      <p-tag *ngFor="let friend of bestFriends"
-             [value]="friend.name"
-             [pTooltip]="friend.count + ' cours ensemble'"
-             severity="info"
-             class="rounded-full"></p-tag>
-    </div>
-    <div *ngIf="bestFriends.length === 0" class="text-gray-500 italic">
-      Pas encore d'amis canins
-    </div>
-  </div>
-
-  <!-- Footer avec boutons d'action -->
   <ng-template pTemplate="footer">
     <div class="flex justify-between gap-2">
       <p-button

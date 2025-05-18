@@ -10,6 +10,9 @@ import { RouterModule } from '@angular/router';
 import { Dog } from '../../models/dog';
 import { DogService } from '../../service/dog.service';
 import { differenceInMonths, differenceInYears } from 'date-fns';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faWeightScale, faMars, faVenus, faMarsStroke, faVenusDouble } from '@fortawesome/free-solid-svg-icons';
+import { Gender } from '../../models/gender.enum';
 
 @Component({
   selector: 'app-dog-card',
@@ -22,7 +25,8 @@ import { differenceInMonths, differenceInYears } from 'date-fns';
     AvatarModule,
     TooltipModule,
     BadgeModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule
   ],
   templateUrl: './dog-card.component.html',
   styleUrl: './dog-card.component.scss'
@@ -30,12 +34,21 @@ import { differenceInMonths, differenceInYears } from 'date-fns';
 export class DogCardComponent implements OnInit {
   @Input() dog!: Dog;
 
+  // Icônes
+  weightIcon = faWeightScale;
+  maleIcon = faMars;
+  femaleIcon = faVenus;
+  sterilizedMaleIcon = faMarsStroke;
+  sterilizedFemaleIcon = faVenusDouble;
+
+  // Enum Gender pour être utilisé dans le template
+  genderEnum = Gender;
+
   latestWeight: any | undefined;
   hasMedication: boolean = false;
   areVaccinesUpToDate: boolean = false;
   favoriteCoach: string | null = null;
   mostCommonCourseType: string | null = null;
-  bestFriends: { name: string, count: number }[] = [];
 
   constructor(public dogService: DogService) {}
 
@@ -46,7 +59,44 @@ export class DogCardComponent implements OnInit {
       this.checkVaccines();
       this.determineFavoriteCoach();
       this.determineMostCommonCourseType();
-      this.determineBestFriends();
+    }
+  }
+
+  // Retourne l'icône et la couleur en fonction du genre
+  getGenderIcon(): { icon: any, color: string } {
+    if (!this.dog || !this.dog.gender) {
+      return {
+        icon: this.maleIcon,
+        color: 'text-gray-400'
+      };
+    }
+
+    switch (this.dog.gender) {
+      case Gender.MALE:
+        return {
+          icon: this.maleIcon,
+          color: 'text-blue-600'
+        };
+      case Gender.STERILIZED_MALE:
+        return {
+          icon: this.sterilizedMaleIcon,
+          color: 'text-blue-600'
+        };
+      case Gender.FEMALE:
+        return {
+          icon: this.femaleIcon,
+          color: 'text-pink-600'
+        };
+      case Gender.STERILIZED_FEMALE:
+        return {
+          icon: this.sterilizedFemaleIcon,
+          color: 'text-pink-600'
+        };
+      default:
+        return {
+          icon: this.maleIcon,
+          color: 'text-gray-400'
+        };
     }
   }
 
@@ -153,37 +203,6 @@ export class DogCardComponent implements OnInit {
         this.mostCommonCourseType = type;
       }
     });
-  }
-
-  private determineBestFriends() {
-    if (!this.dog.registrations || this.dog.registrations.length === 0) return;
-
-    const friendDogCount: Record<string, { id: number, name: string, count: number }> = {};
-
-    this.dog.registrations.forEach(reg => {
-      if (reg.course?.registrations) {
-        reg.course.registrations
-          .filter(otherReg => otherReg.dog?.id !== this.dog.id)
-          .forEach(otherReg => {
-            if (otherReg.dog) {
-              const dogId = String(otherReg.dog.id);
-              if (!friendDogCount[dogId]) {
-                friendDogCount[dogId] = {
-                  id: otherReg.dog.id,
-                  name: otherReg.dog.name,
-                  count: 0
-                };
-              }
-              friendDogCount[dogId].count += 1;
-            }
-          });
-      }
-    });
-
-    this.bestFriends = Object.values(friendDogCount)
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 3)
-      .map(friend => ({ name: friend.name, count: friend.count }));
   }
 
   // Méthode pour sélectionner ce chien comme chien actif
