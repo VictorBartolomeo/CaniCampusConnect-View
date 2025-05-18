@@ -1,37 +1,83 @@
-<div class="mb-4 p-8 flex items-center justify-center">
-  <p-card [style]="{ width: '25rem', overflow: 'hidden' }">
-    <ng-template #header>
-      <img alt="Card" class="w-full" src="https://primefaces.org/cdn/primeng/images/card-ng.jpg" />
-    </ng-template>
-    <ng-template #title> {{dog?.name}} </ng-template>
-    <ng-template #subtitle> {{getDogAge(dog?.birthDate)}} </ng-template>
-    <div class="mb-4">
-
-
-
-    <!--      @if (getLastWeight()) {-->
-<!--      <span>-->
-<!--        il pèse à ce jour {{getLastWeight()?.weightValue}} {{getLastWeight()?.unit === 'KILOGRAM' ? 'kg' : 'lbs'}}.-->
-<!--      </span>-->
-<!--      }-->
-<!--    <div class="mb-4">-->
-<!--      <div class="flex items-center mb-2">-->
-<!--        <i class="pi" [ngClass]="{'pi-check-circle text-green-500': vaccinesUpToDate, 'pi-times-circle text-red-500': !vaccinesUpToDate}"></i>-->
-<!--        <span class="ml-2">Vaccins {{vaccinesUpToDate ? 'à jour' : 'à renouveler'}}</span>-->
-<!--      </div>-->
-
-<!--      <div *ngIf="hasActiveTreatment" class="flex items-center cursor-pointer hover:text-blue-600" (click)="goToTreatments()">-->
-<!--        <i class="pi pi-info-circle text-blue-500"></i>-->
-<!--        <span class="ml-2">Traitement en cours</span>-->
-<!--        <i class="pi pi-arrow-right ml-2"></i>-->
-<!--      </div>-->
+@if (dog) {
+  <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full">
+    <!-- En-tête avec image et nom du chien -->
+    <div class="relative h-40 w-full bg-gradient-to-r from-blue-500 to-indigo-600">
+      <img
+        [src]="dog.avatarUrl || '/img/avatars/golden.png'"
+        class="object-cover h-full w-full"
+        alt="Photo de {{dog.name}}"
+      />
+      <div class="absolute bottom-0 left-0 p-3 bg-black bg-opacity-50 w-full">
+        <h2 class="text-white text-xl font-bold flex items-center gap-2">
+          {{dog.name}}
+          <fa-icon [icon]="getGenderIcon().icon"
+                   [class]="getGenderIcon().color"
+                   [title]="getGenderDisplayName()"></fa-icon>
+        </h2>
+        <div class="flex gap-2 items-center text-white text-sm">
+          <span>{{getDogAge(dog.birthDate)}}</span>
+          <span class="text-xl">•</span>
+          <span>{{getBreedNames()}}</span>
+        </div>
+      </div>
     </div>
 
-    <ng-template #footer>
-      <div class="flex gap-4 mt-1">
-        <p-button label="Cancel" severity="secondary" class="w-full" [outlined]="true" styleClass="w-full" />
-        <p-button label="Save" class="w-full" styleClass="w-full" />
+    <!-- Corps de la carte -->
+    <div class="space-y-3 p-3">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-id-card text-blue-600"></i>
+        <span class="font-semibold text-sm">Numéro de puce: {{dog.chipNumber || 'Non renseigné'}}</span>
       </div>
-    </ng-template>
-  </p-card>
-</div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-calendar text-blue-600"></i>
+        <span class="font-semibold text-sm">Date de naissance: {{formatDate(dog.birthDate) || 'Non renseignée'}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="getGenderIcon().icon" [class]="getGenderIcon().mainColor"></fa-icon>
+        <span class="font-semibold text-sm">Genre: {{getGenderDisplayName()}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="weightIcon" class="text-blue-600"></fa-icon>
+        <span class="font-semibold text-sm">Dernier poids: {{getLatestWeight()}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-heart text-blue-600"></i>
+        <span class="font-semibold text-sm">État de santé:
+          <span [class]="getHealthStatus().color">{{getHealthStatus().label}}</span>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-shield text-blue-600"></i>
+        <span class="font-semibold text-sm">Vaccinations:
+          <span [class]="getVaccinationStatus().color">{{getVaccinationStatus().label}}</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="px-3 pb-3">
+      <p-button
+        icon="pi pi-pencil"
+        label="Modifier les informations"
+        styleClass="p-button-sm p-button-outlined w-full"
+        (onClick)="showEditForm()"></p-button>
+    </div>
+  </div>
+} @else {
+  <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full p-4 flex flex-col justify-center items-center">
+    <div class="text-center p-4">
+      <i class="pi pi-exclamation-triangle text-3xl text-yellow-500 mb-3"></i>
+      <h3 class="text-lg font-semibold mb-2">Aucun chien sélectionné</h3>
+      <p class="text-gray-600 text-sm mb-4">Veuillez sélectionner un chien dans la liste pour afficher ses informations.</p>
+      <p-button
+        label="Ajouter un chien"
+        icon="pi pi-plus"
+        styleClass="p-button-sm"
+        (onClick)="navigateToAddDog()"></p-button>
+    </div>
+  </div>
+}
