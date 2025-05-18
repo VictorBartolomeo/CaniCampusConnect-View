@@ -27,7 +27,7 @@
         <td>{{ course.description }}</td>
         <td>{{ course.coach.firstname }} {{ course.coach.lastname }}</td>
         <td>{{ course.startDatetime | date : "dd MMMM yyyy" }}</td>
-        <td> {{course.registrations.length}} / {{ course.maxCapacity }}</td>
+        <td>{{course.registrations?.length || 0}} / {{course.maxCapacity}}</td>
         <td class="flex gap-5">
           <div>
             <p-toast position="bottom-center"/>
@@ -42,7 +42,7 @@
               </ng-template>
             </p-confirmpopup>
             <fa-icon class="cursor-pointer text-2xl hover:opacity-80"
-                     [icon]="faPaw" (click)="confirm(course, $event)" label="Save" ></fa-icon> <!-- Modified method name and added $event -->
+                     [icon]="faPaw" (click)="confirm(course, $event)" label="Save" ></fa-icon>
           </div>
           <div>
             <fa-icon class="cursor-pointer text-2xl hover:opacity-80" [icon]="faEye" (click)="showCourseDialog(course)" label="Show" ></fa-icon>
@@ -53,7 +53,7 @@
                 <p><strong>Coach:</strong> {{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}</p>
                 <p><strong>Date:</strong> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}</p>
                 <p><strong>Horaires:</strong> {{selectedCourseForDialog.startDatetime | date : "HH:mm"}} - {{selectedCourseForDialog.endDatetime| date: "HH:mm"}}</p>
-                <p><strong>Jauge:</strong> {{selectedCourseForDialog.registrations.length}} / {{ selectedCourseForDialog.maxCapacity }}</p>
+                <p><strong>Jauge:</strong> {{selectedCourseForDialog.registrations?.length || 0}} / {{selectedCourseForDialog.maxCapacity}}</p>
               </div>
               }
               <ng-template pTemplate="footer">
