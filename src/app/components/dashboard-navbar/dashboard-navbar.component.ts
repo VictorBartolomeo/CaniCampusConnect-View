@@ -79,11 +79,13 @@ export class DashboardNavbarComponent implements OnInit {
     this.avatar = [
       {
         label: 'placeholder name',
-        styleClass: 'name-item'
+        styleClass: 'name-item',
+        disabled:true
       },
       {
         label: 'Profile',
-        icon: 'pi pi-user'
+        icon: 'pi pi-user',
+        routerLink: ["/dashboard/owner-profile"]
       },
       {
         label: 'Payements',

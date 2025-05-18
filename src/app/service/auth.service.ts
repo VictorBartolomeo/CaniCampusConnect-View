@@ -2,6 +2,7 @@ import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Owner} from '../models/owner';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,12 @@ export class AuthService {
   getUserId(): number | null {
     return this.userId;
   }
+
+  getUserInfo(): Observable<Owner> {
+    const userId = this.getUserId();
+    return this.http.get<Owner>(`${this.apiUrl}/owner/${userId}`);
+  }
+
 
   checkJwtStatus() {
     const jwt = localStorage.getItem('jwt');

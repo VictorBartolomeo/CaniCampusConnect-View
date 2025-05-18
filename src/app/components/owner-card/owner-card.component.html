@@ -1,0 +1,72 @@
+@if (owner) {
+<p-card styleClass="shadow-md rounded-md overflow-hidden max-w-xl mx-auto">
+  <ng-template pTemplate="header">
+    <div class="relative h-36 w-full bg-primary">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <p-avatar
+          [image]="'/img/avatars/user-default-avatar.png'"
+          size="large"
+          shape="circle"
+          styleClass="border-2 border-white shadow-md"></p-avatar>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="text-center mb-3">
+    <h2 class="text-xl font-bold mb-1">{{getFullName()}}</h2>
+    @if (owner) {
+      <p class="text-gray-600 text-sm">{{owner.email}}</p>
+      <p-tag
+        severity="info"
+        [value]="'Membre depuis ' + membershipDuration"
+        styleClass="mt-2"></p-tag>
+    }
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="flex justify-center items-center p-3 rounded-md my-3 surface-hover">
+    <div class="flex flex-col items-center">
+      <span class="text-2xl font-bold text-primary">{{userDogs.length}}</span>
+      <span class="text-gray-600 text-sm">Chien{{userDogs.length !== 1 ? 's' : ''}}</span>
+    </div>
+  </div>
+
+  @if (owner) {
+    <div class="mt-3">
+      <h3 class="text-base font-semibold mb-2">Informations personnelles</h3>
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-envelope text-primary"></i>
+          <span class="font-medium text-sm">Email:</span>
+          <span class="text-sm">{{owner.email}}</span>
+        </div>
+
+        @if (owner.phone) {
+          <div class="flex items-center gap-2">
+            <i class="pi pi-phone text-primary"></i>
+            <span class="font-medium text-sm">Téléphone:</span>
+            <span class="text-sm">{{owner.phone}}</span>
+          </div>
+        }
+
+        <div class="flex items-center gap-2">
+          <i class="pi pi-calendar text-primary"></i>
+          <span class="font-medium text-sm">Inscrit le:</span>
+          <span class="text-sm">{{getFormattedDate(owner.registrationDate)}}</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-center">
+      <p-button
+        icon="pi pi-pencil"
+        label="Modifier mon profil"
+        styleClass="p-button-outlined p-button-sm"
+        [routerLink]="['/dashboard/settings']"></p-button>
+    </div>
+  </ng-template>
+</p-card>
+}
