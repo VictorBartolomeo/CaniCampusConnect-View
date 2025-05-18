@@ -10,6 +10,8 @@ import { ToastModule } from 'primeng/toast';
 import { Owner } from '../../models/owner';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
+import {differenceInMonths, differenceInYears, format, formatDistanceToNow, parseISO} from 'date-fns';
+import {fr} from 'date-fns/locale';
 
 @Component({
   selector: 'app-owner-settings',
@@ -32,6 +34,9 @@ export class OwnerSettingsComponent implements OnInit {
   userForm!: FormGroup;
   loading = false;
   owner: Owner | null = null;
+  memberSinceText: string = '';
+  registrationDateFormatted: string = '';
+
 
   constructor(
     private fb: FormBuilder,
@@ -56,17 +61,56 @@ export class OwnerSettingsComponent implements OnInit {
     });
   }
 
+  getMemberSinceText(registrationDate: string): string {
+    if (!registrationDate) return '';
+
+    const regDate = parseISO(registrationDate);
+    const now = new Date();
+
+    const years = differenceInYears(now, regDate);
+    const totalMonths = differenceInMonths(now, regDate);
+    const months = totalMonths % 12;
+
+    // Formater la date d'inscription pour l'affichage
+    this.registrationDateFormatted = format(regDate, 'dd/MM/yyyy', { locale: fr });
+
+    // Si moins de 12 mois, afficher seulement les mois
+    if (totalMonths < 12) {
+      return `Membre depuis ${totalMonths} mois`;
+    }
+    // Sinon, afficher les années et les mois
+    else {
+      let result = `Membre depuis ${years} an${years > 1 ? 's' : ''}`;
+      if (months > 0) {
+        result += ` et ${months} mois`;
+      }
+      return result;
+    }
+  }
+
+
   loadUserData(): void {
     this.loading = true;
     this.userService.getCurrentUser().subscribe({
       next: (owner) => {
         this.owner = owner;
+        console.log('Données utilisateur chargées:', owner);
+
+        if (owner.registrationDate) {
+          this.memberSinceText = this.getMemberSinceText(owner.registrationDate);
+        }
+
+
+        // Utiliser updateValueAndValidity pour s'assurer que le formulaire est correctement mis à jour
         this.userForm.patchValue({
-          firstname: owner.firstname,
-          lastname: owner.lastname,
-          email: owner.email,
+          firstname: owner.firstname || '',
+          lastname: owner.lastname || '',
+          email: owner.email || '',
           phone: owner.phone || '',
         });
+
+        // Force la validation du formulaire après le patch
+        this.userForm.updateValueAndValidity();
         this.loading = false;
       },
       error: (error) => {
@@ -80,6 +124,7 @@ export class OwnerSettingsComponent implements OnInit {
       }
     });
   }
+
 
   onSubmit(): void {
     if (this.userForm.valid) {
