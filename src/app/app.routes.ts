@@ -12,6 +12,7 @@ import {RegisterCourseComponent} from './pages/register-course/register-course.c
 import {ManageDogsPageComponent} from './pages/manage-dogs-page/manage-dogs-page.component';
 import {loggedGuard} from './service/logged.guard';
 import {SettingsComponent} from './pages/settings/settings.component';
+import {OwnerProfileComponent} from './pages/owner-profile/owner-profile.component';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
@@ -24,13 +25,13 @@ export const routes: Routes = [
           {path : "", redirectTo: "course", pathMatch: "full"},
           {path : "course", component : CourseComponent},
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
-          {path : "health-record", component : HealthRecordComponent}
+          {path : "health-record", component : HealthRecordComponent, canActivate:[loggedGuard], }
 
         ]},
       {path : "manage-dog", component : ManageDogsPageComponent },
       {path : "reserve-course", component : RegisterCourseComponent},
       {path : "settings", component : SettingsComponent},
-      {path : "user/:id", component : DashboardUserPageComponent},
+      {path: "owner-profile", component: OwnerProfileComponent, canActivate:[loggedGuard]},
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
