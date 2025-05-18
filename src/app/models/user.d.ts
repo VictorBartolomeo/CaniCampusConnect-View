@@ -10,5 +10,4 @@ export type User = {
   address?: string;
   dogs?: Dog[];
   active?: boolean;
-
 }
