@@ -1,19 +1,30 @@
-<div class="p-4">
-  <h1 class="text-2xl font-bold mb-6">Mon profil et mes chiens</h1>
+<div class="p-3 max-w-6xl mx-auto">
+  <h1 class="text-xl font-bold mb-4 text-center">Mon profil et mes chiens</h1>
 
-  <div *ngIf="loading" class="flex justify-center p-8">
-    <i class="pi pi-spin pi-spinner text-4xl text-blue-500"></i>
+  <div class="mb-5">
+    <app-owner-card></app-owner-card>
   </div>
 
-  <div *ngIf="!loading && userDogs.length === 0" class="p-8 text-center bg-white rounded-lg shadow-md">
-    <p class="text-xl mb-4">Vous n'avez pas encore ajouté de chien à votre profil.</p>
-    <p-button
-      label="Ajouter un chien"
-      icon="pi pi-plus"
-      routerLink="/dashboard/manage-dog"></p-button>
-  </div>
+  <p-divider styleClass="my-4" align="center">
+    <span class="text-base font-medium">Mes chiens</span>
+  </p-divider>
 
-  <div *ngIf="!loading && userDogs.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <app-dog-card *ngFor="let dog of userDogs" [dog]="dog"></app-dog-card>
-  </div>
+  @if (userDogs.length === 0) {
+    <div class="p-6 text-center bg-white rounded-md shadow-sm mx-auto max-w-lg">
+      <p class="text-lg mb-3">Vous n'avez pas encore ajouté de chien à votre profil.</p>
+      <p-button
+        label="Ajouter un chien"
+        icon="pi pi-plus"
+        size="small"
+        routerLink="/dashboard/manage-dog"></p-button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      @for (dog of userDogs; track dog.id) {
+        <div class="w-full">
+          <app-dog-card [dog]="dog"></app-dog-card>
+        </div>
+      }
+    </div>
+  }
 </div>

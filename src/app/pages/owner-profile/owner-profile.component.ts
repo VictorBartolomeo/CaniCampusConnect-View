@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DogCardComponent } from '../../components/dog-card/dog-card.component';
+import { OwnerCardComponent } from '../../components/owner-card/owner-card.component';
 import { DogService } from '../../service/dog.service';
 import { Dog } from '../../models/dog';
 import { Subscription } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
+import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-owner-profile',
@@ -13,15 +15,16 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     DogCardComponent,
+    OwnerCardComponent,
     ButtonModule,
-    RouterModule
+    RouterModule,
+    DividerModule
   ],
   templateUrl: './owner-profile.component.html',
   styleUrl: './owner-profile.component.scss'
 })
 export class OwnerProfileComponent implements OnInit, OnDestroy {
   userDogs: Dog[] = [];
-  loading: boolean = true;
   private subscription!: Subscription;
 
   constructor(public dogService: DogService) {}
@@ -29,7 +32,6 @@ export class OwnerProfileComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.dogService.userDogsSubject.subscribe(dogs => {
       this.userDogs = dogs;
-      this.loading = false;
     });
 
     // Recharger les chiens pour s'assurer d'avoir les données les plus récentes
