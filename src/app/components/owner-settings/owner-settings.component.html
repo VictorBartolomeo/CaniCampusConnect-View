@@ -1,4 +1,11 @@
 <p-card header="Informations personnelles" styleClass="h-full border-1 border-gray-300" [style]="{'max-width': '700px', 'margin': '0 auto', 'padding': '1.5rem'}">
+  @if (memberSinceText) {
+  <div class="text-center mb-4 text-gray-600 italic">
+    <p>
+    {{ memberSinceText }} (date d'inscription : {{owner?.registrationDate | date:'dd/MM/yyyy'}})
+    </p>
+  </div>
+  }
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col h-full">
     <div class="p-fluid px-4 flex-grow flex flex-col justify-between">
       <div class="space-y-6">
