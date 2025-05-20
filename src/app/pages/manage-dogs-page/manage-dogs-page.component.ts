@@ -6,6 +6,7 @@ import {DogAddFormComponent} from '../../components/dog-add-form/dog-add-form.co
 import {DogService} from '../../service/dog.service';
 import {Subscription} from 'rxjs';
 import {Dog} from '../../models/dog';
+import {NgStyle} from '@angular/common';
 
 @Component({
   selector: 'app-manage-dogs-page',
@@ -13,7 +14,8 @@ import {Dog} from '../../models/dog';
     DogSummaryComponent,
     DogFormComponent,
     Splitter,
-    DogAddFormComponent
+    DogAddFormComponent,
+    NgStyle
   ],
   templateUrl: './manage-dogs-page.component.html',
   styleUrl: './manage-dogs-page.component.scss'
