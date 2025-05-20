@@ -1,6 +1,6 @@
 <div>
 
-  <p-splitter [panelSizes]="[25, 75]" [style]="{ height: '100%' }" styleClass="">
+  <p-splitter [panelSizes]="[25, 75]" [style]="{height: 'calc(100vh - 80px)' }" styleClass="">
     <ng-template #panel>
       <div class="flex items-center justify-center h-full p-10">
         <app-dog-summary/>
