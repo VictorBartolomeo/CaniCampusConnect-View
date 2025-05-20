@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../service/user.service';
-import { MessageService } from 'primeng/api';
-import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { CardModule } from 'primeng/card';
-import { ToastModule } from 'primeng/toast';
-import { Owner } from '../../models/owner';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import {differenceInMonths, differenceInYears, format, formatDistanceToNow, parseISO} from 'date-fns';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {UserService} from '../../service/user.service';
+import {MessageService} from 'primeng/api';
+import {CommonModule} from '@angular/common';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {CardModule} from 'primeng/card';
+import {ToastModule} from 'primeng/toast';
+import {Owner} from '../../models/owner';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {differenceInMonths, differenceInYears, format, parseISO} from 'date-fns';
 import {fr} from 'date-fns/locale';
+import {AuthService} from '../../service/auth.service';
 
 @Component({
   selector: 'app-owner-settings',
@@ -36,6 +37,7 @@ export class OwnerSettingsComponent implements OnInit {
   owner: Owner | null = null;
   memberSinceText: string = '';
   registrationDateFormatted: string = '';
+  authService=inject(AuthService);
 
 
   constructor(
@@ -71,14 +73,11 @@ export class OwnerSettingsComponent implements OnInit {
     const totalMonths = differenceInMonths(now, regDate);
     const months = totalMonths % 12;
 
-    // Formater la date d'inscription pour l'affichage
     this.registrationDateFormatted = format(regDate, 'dd/MM/yyyy', { locale: fr });
 
-    // Si moins de 12 mois, afficher seulement les mois
     if (totalMonths < 12) {
       return `Membre depuis ${totalMonths} mois`;
     }
-    // Sinon, afficher les années et les mois
     else {
       let result = `Membre depuis ${years} an${years > 1 ? 's' : ''}`;
       if (months > 0) {
@@ -101,8 +100,8 @@ export class OwnerSettingsComponent implements OnInit {
         }
 
 
-        // Utiliser updateValueAndValidity pour s'assurer que le formulaire est correctement mis à jour
         this.userForm.patchValue({
+          id: this.authService.getUserId(),
           firstname: owner.firstname || '',
           lastname: owner.lastname || '',
           email: owner.email || '',
