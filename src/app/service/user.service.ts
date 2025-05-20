@@ -26,7 +26,7 @@ export class UserService {
   // Mettre à jour les informations de l'utilisateur (Owner)
   updateUser(owner: Partial<Owner>): Observable<Owner> {
     const userId = this.authService.getUserId();
-    return this.http.put<Owner>(`${this.apiUrl}/user/${userId}`, owner);
+    return this.http.put<Owner>(`${this.apiUrl}/owner/${userId}`, owner);
   }
 
   // Mettre à jour le mot de passe (à implémenter selon votre API)
