@@ -15,7 +15,7 @@ export class DogService {
   public userDogsSubject = new BehaviorSubject<Dog[]>([]);
   public userDogs$: Observable<Dog[]> = this.userDogsSubject.asObservable();
 
-  private activeDogSubject = new BehaviorSubject<Dog | null>(null);
+  public activeDogSubject = new BehaviorSubject<Dog | null>(null);
   public activeDog$: Observable<Dog | null> = this.activeDogSubject.asObservable();
 
   private apiUrl = 'http://localhost:8080';
@@ -56,7 +56,6 @@ export class DogService {
   getDogDetails(dogId: number): Observable<Dog> {
     return this.http.get<Dog>(`${this.apiUrl}/dog/${dogId}`).pipe(
       tap(dog => {
-        // Optionnel: mettre à jour le chien actif avec les données détaillées
         this.setActiveDog(dog);
       }),
       catchError(error => {
