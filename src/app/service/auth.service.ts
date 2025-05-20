@@ -1,14 +1,16 @@
 import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Owner} from '../models/owner';
+import {provideRouter, Router, RouterOutlet} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
+  router = inject(Router);
   connected = false;
   role: string | null = null;
   userId: number | null = null;
@@ -22,11 +24,11 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password }, { responseType: 'text' }).pipe(
+    return this.http.post(`${this.apiUrl}/login`, {email, password}, {responseType: 'text'}).pipe(
       map(token => {
         if (token) {
           this.decodeJwt(token);
-          return { success: true, token };
+          return {success: true, token};
         }
         return null; // Gestion du cas où token est falsy
       }),
@@ -36,7 +38,6 @@ export class AuthService {
       })
     );
   }
-
 
 
   decodeJwt(jwt: string) {
@@ -60,6 +61,7 @@ export class AuthService {
     this.connected = false;
     this.role = null;
     this.userId = null;
+    this.router.navigateByUrl('/login');
   }
 
   // Méthode pour vérifier si l'utilisateur est authentifié
