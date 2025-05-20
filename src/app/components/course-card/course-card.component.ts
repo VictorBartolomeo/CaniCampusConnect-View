@@ -93,7 +93,7 @@ export class CourseCardComponent implements OnInit {
           const dateA = new Date(a.course.startDatetime).getTime();
           const dateB = new Date(b.course.startDatetime).getTime();
           return dateA - dateB;
-        });
+        })
 
       console.log('Inscriptions aux cours à venir pour le chien (triées par date):', this.registrations);
     } else {
