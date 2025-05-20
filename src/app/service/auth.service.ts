@@ -64,12 +64,10 @@ export class AuthService {
     this.router.navigateByUrl('/login');
   }
 
-  // Méthode pour vérifier si l'utilisateur est authentifié
   isAuthenticated(): boolean {
     return this.connected;
   }
 
-  // Méthode pour obtenir l'ID de l'utilisateur
   getUserId(): number | null {
     return this.userId;
   }
@@ -82,21 +80,15 @@ export class AuthService {
 
   checkJwtStatus() {
     const jwt = localStorage.getItem('jwt');
-    console.log('JWT dans localStorage:', jwt ? 'Présent' : 'Absent');
-    console.log('Statut de connexion:', this.connected);
-    console.log('Rôle utilisateur:', this.role);
-    console.log('ID utilisateur:', this.userId);
 
     if (jwt) {
       try {
-        // Vérifier si le JWT est bien formé
         const parts = jwt.split('.');
         if (parts.length !== 3) {
           console.error('Format JWT invalide');
           return false;
         }
 
-        // Vérifier la validité du JWT (expiration)
         const payload = JSON.parse(atob(parts[1]));
         const now = Date.now() / 1000;
         if (payload.exp && payload.exp < now) {
@@ -110,7 +102,6 @@ export class AuthService {
         return false;
       }
     }
-
     return false;
   }
 
