@@ -58,19 +58,11 @@ export class DogFormComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    // Charger les races de chiens
     this.loadBreeds();
-
-    // S'abonner aux changements du chien actif
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       if (dog) {
-        // Mettre à jour le formulaire avec les données du chien actif
         this.patchFormWithDogData(dog);
         console.log('Dog form updated for dog:', dog.name);
-      } else {
-        // Réinitialiser le formulaire si aucun chien n'est sélectionné
-        this.form.reset();
-        this.updatedDog = null;
       }
     });
   }
@@ -114,20 +106,17 @@ export class DogFormComponent implements OnInit, OnDestroy {
     }
 
     if (this.updatedDog) {
-      // Préparer les données pour la mise à jour
       const formData = this.form.value;
 
-      // Mettre à jour l'objet dog avec les nouvelles valeurs du formulaire
       const dogToUpdate = {
         ...this.updatedDog,
         name: formData.name || this.updatedDog.name,
         breeds: formData.breed || this.updatedDog.breeds,
         chipNumber: formData.chipNumber || this.updatedDog.chipNumber,
         birthDate: formData.birthDate || this.updatedDog.birthDate,
-        // Autres propriétés à mettre à jour
       };
 
-      const ownerId = 3; // Vous pourriez récupérer cela depuis un service d'authentification
+      const ownerId = 3;
       const dogId = this.updatedDog.id;
       const endpointUrl = `http://localhost:8080/owner/${ownerId}/dogs/${dogId}`;
 
@@ -156,7 +145,6 @@ export class DogFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Méthode pour réinitialiser le formulaire
   resetForm() {
     this.form.reset();
     this.updatedDog = null;

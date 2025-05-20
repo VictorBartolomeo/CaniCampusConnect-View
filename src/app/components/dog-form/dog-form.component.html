@@ -11,6 +11,7 @@
 
             <label class="block mb-2" for="breed">Races</label>
             <p-multiselect [options]="dogBreeds"
+
                            formControlName="breed"
                            optionLabel="label"
                            placeholder="Race.s du chien"
@@ -27,7 +28,8 @@
                     showIcon
                     iconDisplay="input"
                     dateFormat="dd/mm/yy"
-                    [maxDate]="today"></p-datepicker>
+                    [maxDate]="today"
+                    styleClass="w-full md:w-80"></p-datepicker>
 
 <!--            TODO Ajouter ici le genre du chien-->
 
