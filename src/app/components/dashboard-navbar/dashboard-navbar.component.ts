@@ -1,5 +1,5 @@
 import {FormsModule} from '@angular/forms';
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
 import {MegaMenu} from 'primeng/megamenu';
 import {ButtonModule} from 'primeng/button';
@@ -7,16 +7,13 @@ import {CommonModule} from '@angular/common';
 import {AvatarModule} from 'primeng/avatar';
 import {Select} from 'primeng/select';
 import {Dog} from '../../models/dog';
-import {HttpClient} from '@angular/common/http';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {Menu} from 'primeng/menu';
-import {User} from '../../models/user';
 import {AuthService} from '../../service/auth.service';
 import {DogService} from '../../service/dog.service';
 import {Observable} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
-import {tap} from 'rxjs/operators';
 
 
 @Component({
@@ -102,7 +99,7 @@ export class DashboardNavbarComponent implements OnInit {
       {
         label: 'Déconnexion',
         icon: 'pi pi-sign-out',
-        route: '/login'
+        command: ()=> this.authService.disconnection()
       }
     ];
   }
@@ -120,9 +117,6 @@ export class DashboardNavbarComponent implements OnInit {
     });
 
   }
-
-
-
 }
 
 
