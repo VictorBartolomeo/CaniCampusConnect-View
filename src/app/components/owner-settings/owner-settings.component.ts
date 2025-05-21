@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../service/user.service';
-import { MessageService } from 'primeng/api';
-import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { CardModule } from 'primeng/card';
-import { ToastModule } from 'primeng/toast';
-import { Owner } from '../../models/owner';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import {differenceInMonths, differenceInYears, format, formatDistanceToNow, parseISO} from 'date-fns';
+import {Component, inject, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {UserService} from '../../service/user.service';
+import {MessageService} from 'primeng/api';
+import {CommonModule} from '@angular/common';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {CardModule} from 'primeng/card';
+import {ToastModule} from 'primeng/toast';
+import {Owner} from '../../models/owner';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {differenceInMonths, differenceInYears, format, parseISO} from 'date-fns';
 import {fr} from 'date-fns/locale';
+import {AuthService} from '../../service/auth.service';
 
 @Component({
   selector: 'app-owner-settings',
@@ -36,13 +37,16 @@ export class OwnerSettingsComponent implements OnInit {
   owner: Owner | null = null;
   memberSinceText: string = '';
   registrationDateFormatted: string = '';
+  authService = inject(AuthService);
+  originalEmail: string = '';
 
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
     private messageService: MessageService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -71,15 +75,11 @@ export class OwnerSettingsComponent implements OnInit {
     const totalMonths = differenceInMonths(now, regDate);
     const months = totalMonths % 12;
 
-    // Formater la date d'inscription pour l'affichage
-    this.registrationDateFormatted = format(regDate, 'dd/MM/yyyy', { locale: fr });
+    this.registrationDateFormatted = format(regDate, 'dd/MM/yyyy', {locale: fr});
 
-    // Si moins de 12 mois, afficher seulement les mois
     if (totalMonths < 12) {
       return `Membre depuis ${totalMonths} mois`;
-    }
-    // Sinon, afficher les années et les mois
-    else {
+    } else {
       let result = `Membre depuis ${years} an${years > 1 ? 's' : ''}`;
       if (months > 0) {
         result += ` et ${months} mois`;
@@ -94,15 +94,16 @@ export class OwnerSettingsComponent implements OnInit {
     this.userService.getCurrentUser().subscribe({
       next: (owner) => {
         this.owner = owner;
-        console.log('Données utilisateur chargées:', owner);
+
+        this.originalEmail = owner.email || '';
+        console.log('Email original stocké:', this.originalEmail);
 
         if (owner.registrationDate) {
           this.memberSinceText = this.getMemberSinceText(owner.registrationDate);
         }
 
-
-        // Utiliser updateValueAndValidity pour s'assurer que le formulaire est correctement mis à jour
         this.userForm.patchValue({
+          id: this.authService.getUserId(),
           firstname: owner.firstname || '',
           lastname: owner.lastname || '',
           email: owner.email || '',
@@ -129,14 +130,34 @@ export class OwnerSettingsComponent implements OnInit {
   onSubmit(): void {
     if (this.userForm.valid) {
       this.loading = true;
+
+      const currentEmail = this.userForm.value.email || '';
+
+      const emailChanged = currentEmail !== this.originalEmail;
+
       this.userService.updateUser(this.userForm.value).subscribe({
         next: (updatedOwner) => {
           this.owner = updatedOwner;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Succès',
-            detail: 'Informations mises à jour avec succès'
-          });
+
+          if (emailChanged) {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Email modifié',
+              detail: 'Votre adresse email a été modifiée. Vous allez être déconnecté dans 3 secondes. Un email de validation a été envoyé à votre nouvelle adresse. Veuillez valider votre email avant de vous reconnecter.',
+              sticky: true
+            });
+
+            setTimeout(() => {
+              this.authService.disconnection();
+            }, 3000);
+          } else {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: 'Informations mises à jour avec succès'
+            });
+          }
+
           this.loading = false;
         },
         error: (error) => {

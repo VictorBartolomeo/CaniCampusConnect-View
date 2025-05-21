@@ -1,14 +1,16 @@
 import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {Owner} from '../models/owner';
+import {provideRouter, Router, RouterOutlet} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
+  router = inject(Router);
   connected = false;
   role: string | null = null;
   userId: number | null = null;
@@ -22,11 +24,11 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { email, password }, { responseType: 'text' }).pipe(
+    return this.http.post(`${this.apiUrl}/login`, {email, password}, {responseType: 'text'}).pipe(
       map(token => {
         if (token) {
           this.decodeJwt(token);
-          return { success: true, token };
+          return {success: true, token};
         }
         return null; // Gestion du cas où token est falsy
       }),
@@ -36,7 +38,6 @@ export class AuthService {
       })
     );
   }
-
 
 
   decodeJwt(jwt: string) {
@@ -60,14 +61,13 @@ export class AuthService {
     this.connected = false;
     this.role = null;
     this.userId = null;
+    this.router.navigateByUrl('/login');
   }
 
-  // Méthode pour vérifier si l'utilisateur est authentifié
   isAuthenticated(): boolean {
     return this.connected;
   }
 
-  // Méthode pour obtenir l'ID de l'utilisateur
   getUserId(): number | null {
     return this.userId;
   }
@@ -80,21 +80,15 @@ export class AuthService {
 
   checkJwtStatus() {
     const jwt = localStorage.getItem('jwt');
-    console.log('JWT dans localStorage:', jwt ? 'Présent' : 'Absent');
-    console.log('Statut de connexion:', this.connected);
-    console.log('Rôle utilisateur:', this.role);
-    console.log('ID utilisateur:', this.userId);
 
     if (jwt) {
       try {
-        // Vérifier si le JWT est bien formé
         const parts = jwt.split('.');
         if (parts.length !== 3) {
           console.error('Format JWT invalide');
           return false;
         }
 
-        // Vérifier la validité du JWT (expiration)
         const payload = JSON.parse(atob(parts[1]));
         const now = Date.now() / 1000;
         if (payload.exp && payload.exp < now) {

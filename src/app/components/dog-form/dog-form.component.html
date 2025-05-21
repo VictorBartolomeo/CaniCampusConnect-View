@@ -1,48 +1,34 @@
 <div class="card flex justify-center w-full">
-    <form [formGroup]="form" (ngSubmit)=onSubmitEdit() class="w-full">
+  <form [formGroup]="form" (ngSubmit)=onSubmitEdit() class="w-full">
+    <div class="flex flex-col gap-4 w-full">
+      <h1 class="text-xl font-bold">Modifier le profil du chien {{ updatedDog?.name }}</h1>
 
-        <div class="flex flex-col gap-4 w-full">
+      <label for="name">Nom du chien</label>
+      <input class="w-full font-bold" type="text" pInputText formControlName="name"/>
 
-            <h1 class="text-xl font-bold">Modifier le profil du chien {{ updatedDog?.name }}</h1>
+      <label class="block mb-2" for="breed">Races</label>
+      <p-multiselect [options]="availableBreeds"
+                     formControlName="breed"
+                     optionLabel="name"
+                     dataKey="name"
+                     placeholder="Race.s du chien"
+                     [maxSelectedLabels]="3"
+                     styleClass="w-full md:w-80"></p-multiselect>
 
-            <label for="name">Nom du chien</label>
-            <input class="w-full font-bold" type="text" pInputText formControlName="name"/>
+      <label for="chipNumber">Numéro de puce</label>
+      <input type="text" pInputText formControlName="chipNumber"/>
 
+      <label for="birthDate">Date de naissance</label>
+      <p-calendar
+        formControlName="birthDate"
+        inputId="birthDate"
+        showIcon
+        iconDisplay="input"
+        dateFormat="dd/mm/yy"
+        [maxDate]="today"
+        styleClass="w-full md:w-80 z-10"></p-calendar>
 
-            <label class="block mb-2" for="breed">Races</label>
-            <p-multiselect [options]="dogBreeds"
-
-                           formControlName="breed"
-                           optionLabel="label"
-                           placeholder="Race.s du chien"
-                           [maxSelectedLabels]="3"
-                           styleClass="w-full md:w-80"></p-multiselect>
-
-            <label for="chipNumber">Numéro de puce</label>
-            <input type="text" pInputText formControlName="chipNumber"/>
-
-            <label for="birthDate">Date de naissance</label>
-            <p-datepicker
-                    formControlName="birthDate"
-                    inputId="birthDate"
-                    showIcon
-                    iconDisplay="input"
-                    dateFormat="dd/mm/yy"
-                    [maxDate]="today"
-                    styleClass="w-full md:w-80"></p-datepicker>
-
-<!--            TODO Ajouter ici le genre du chien-->
-
-            <!--      <label for="avatar">Avatar</label>-->
-            <!--      <p-fileupload #fu mode="basic" chooseLabel="Choose"-->
-            <!--                    chooseIcon="pi pi-upload" name="demo[]"-->
-            <!--                    url="{{updatedDog?.avatarUrl}}"-->
-            <!--                    accept="image/*"-->
-            <!--                    maxFileSize="1000000" (onUpload)="onUpload($event)"-->
-            <!--                    formControlName="avatar"/>-->
-            <!--      <p-button label="Upload" (onClick)="fu.upload()" severity="secondary"/>-->
-
-            <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="w-full"/>
-        </div>
-    </form>
+      <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="w-full"/>
+    </div>
+  </form>
 </div>
