@@ -14,12 +14,15 @@
           placeholder="Votre email"
           [ngClass]="{'ng-invalid ng-dirty': submitted && f['email'].errors}"
         />
-        <small *ngIf="submitted && f['email'].errors?.['required']" class="p-error">
+        @if (submitted && f['email'].errors?.['email'] && f['email'].errors?.['required']){
+        <small class="p-error">
           Email requis
         </small>
-        <small *ngIf="submitted && f['email'].errors?.['email']" class="p-error">
+        } @else if ( submitted && f['email'].errors?.['required']){
+        <small class="p-error">
           Email invalide
         </small>
+        }
       </div>
 
       <div class="field mb-4">

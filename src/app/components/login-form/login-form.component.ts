@@ -40,7 +40,6 @@ export class LoginFormComponent {
       password: ['', Validators.required]
     });
 
-    // Rediriger si déjà connecté
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
     }
