@@ -1,4 +1,19 @@
 @import "primeicons/primeicons.css";
+
+@import "tailwindcss";
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
+
+@theme {
+  /* ---------------------------- */
+  /* ---- CUSTOM BREAKPOINTS ---- */
+  /* ---------------------------- */
+  --breakpoint-xs: 350px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+  --breakpoint-xl: 1920px;
+}
+
 $my-primary: #1B2140;
 $my-secondary: #93C01F;
 $my-secondary-20: #93C01F33;
@@ -50,19 +65,6 @@ $buttonBorderRadius: $my-button-corner-radius;
 $inputBorderRadius: $my-input-field-corner-radius;
 
 
-@import "tailwindcss";
-@import "../node_modules/angular-calendar/css/angular-calendar.css";
-
-@theme {
-  /* ---------------------------- */
-  /* ---- CUSTOM BREAKPOINTS ---- */
-  /* ---------------------------- */
-  --breakpoint-xs: 350px;
-  --breakpoint-sm: 768px;
-  --breakpoint-md: 1024px;
-  --breakpoint-lg: 1440px;
-  --breakpoint-xl: 1920px;
-}
 
 
 body {
