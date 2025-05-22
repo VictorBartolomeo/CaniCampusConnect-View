@@ -10,7 +10,6 @@ import {Dialog} from 'primeng/dialog';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {faEye, faPaw} from '@fortawesome/free-solid-svg-icons';
 import {differenceInMonths} from 'date-fns';
-import {forkJoin} from 'rxjs';
 
 import {DogService} from '../../service/dog.service';
 import {Dog} from '../../models/dog';
@@ -42,35 +41,24 @@ export class RegisterCourseComponent implements OnInit {
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
   filterService = inject(FilterService);
+
   courses: Course[] = [];
-  dogRegistrations: Registration[] = [];
-  dogs: Dog[] = [];
   dialogVisible: boolean = false;
   selectedCourseForDialog: Course | null = null;
   selectedDog: Dog | null = null;
   filteredCourses: Course[] = [];
   apiUrl = 'http://localhost:8080';
 
+  // Les icônes pour les boutons
+  protected readonly faEye = faEye;
+  protected readonly faPaw = faPaw;
+
   ngOnInit() {
-    // Récupérer d'abord le chien actif
     this.dogService.activeDog$.subscribe(activeDog => {
       if (activeDog) {
         this.selectedDog = activeDog;
         console.log('Chien actif:', this.selectedDog);
-
-        // Une fois qu'on a le chien actif, charger à la fois les cours et les inscriptions
-        this.loadCoursesAndRegistrations(activeDog.id);
-      }
-    });
-
-    // Charger tous les chiens de l'utilisateur
-    this.dogService.userDogs$.subscribe(dogs => {
-      this.dogs = dogs;
-      console.log('Chiens de l\'utilisateur:', this.dogs);
-
-      // Si pas de chien actif et qu'on a des chiens, en définir un par défaut
-      if (!this.selectedDog && this.dogs.length > 0) {
-        this.dogService.setActiveDog(this.dogs[0]);
+        this.loadAvailableCourses();
       }
     });
 
@@ -78,111 +66,120 @@ export class RegisterCourseComponent implements OnInit {
     this.dogService.loadUserDogs();
   }
 
-  loadCoursesAndRegistrations(dogId: number) {
-    // Utiliser forkJoin pour charger les deux resources en parallèle
-    forkJoin({
-      courses: this.http.get<Course[]>(`${this.apiUrl}/courses`),
-      registrations: this.http.get<Registration[]>(`${this.apiUrl}/dog/${dogId}/registrations`)
-    }).subscribe({
-      next: (result) => {
-        console.log('Données chargées:', result);
+  loadAvailableCourses() {
+    if (!this.selectedDog) return;
 
-        // Sauvegarder les cours
-        this.courses = result.courses.map(course => {
-          if (!course.registrations) {
-            course.registrations = [];
-          }
-          return course;
-        });
+    // Utiliser la nouvelle route pour récupérer les cours avec leurs inscriptions
+    this.http.get<Course[]>(`${this.apiUrl}/courses/owner`).subscribe({
+      next: (courses) => {
+        console.log('Cours chargés avec inscriptions:', courses);
+        this.courses = courses;
 
-        // Sauvegarder les inscriptions du chien
-        this.dogRegistrations = result.registrations;
-
-        // Filtrer les cours pour ce chien
+        // Filtrer les cours disponibles pour ce chien
         this.filterCoursesForDog();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des données:', error);
+        console.error('Erreur lors du chargement des cours:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Impossible de charger les cours disponibles',
+          life: 3000,
+        });
       }
     });
   }
 
   filterCoursesForDog() {
     if (!this.selectedDog || !this.courses.length) {
-      console.warn('Pas de chien sélectionné ou pas de cours disponibles');
       this.filteredCourses = [];
       return;
     }
 
-    console.log(`Filtrage des cours pour ${this.selectedDog.name}`);
-
+    // Filtrer les cours pour le chien actif
     this.filteredCourses = this.courses.filter(course => {
-      // Vérifier l'éligibilité par âge
-      const ageEligible = this.isDogEligibleForCourse(this.selectedDog!, course);
+      // Vérifier si le chien est déjà inscrit à ce cours
+      const isAlreadyRegistered = this.isDogRegisteredForCourse(course);
+      if (isAlreadyRegistered) {
+        console.log(`Cours "${course.title}": chien déjà inscrit`);
+        return false;
+      }
 
-      // Vérifier si le chien est déjà inscrit à ce cours en utilisant les inscriptions
-      const alreadyRegistered = this.isDogAlreadyRegisteredToCourse(course.id);
+      // Vérifier si le chien est éligible par âge
+      const isEligibleByAge = this.isDogEligibleForCourse(this.selectedDog!, course);
+      if (!isEligibleByAge) {
+        console.log(`Cours "${course.title}": chien non éligible par âge`);
+        return false;
+      }
 
-      // Afficher uniquement les cours où le chien est éligible ET n'est pas déjà inscrit
-      return ageEligible && !alreadyRegistered;
+      // Vérifier si le cours est complet
+      const activeRegistrations = course.registrations ?
+        course.registrations.filter(r =>
+          r.status === RegistrationStatus.PENDING ||
+          r.status === RegistrationStatus.CONFIRMED
+        ).length : 0;
+
+      const isFull = activeRegistrations >= course.maxCapacity;
+      if (isFull) {
+        console.log(`Cours "${course.title}": complet`);
+        return false;
+      }
+
+      console.log(`Cours "${course.title}": disponible pour inscription`);
+      return true;
     });
+  }
 
-    console.log(`Nombre de cours filtrés: ${this.filteredCourses.length}`);
+  // Vérifier si le chien est déjà inscrit à un cours
+  isDogRegisteredForCourse(course: Course): boolean {
+    if (!course.registrations || !this.selectedDog) return false;
+
+    return course.registrations.some(registration =>
+      registration.dog &&
+      registration.dog.id === this.selectedDog!.id &&
+      (registration.status === RegistrationStatus.PENDING ||
+        registration.status === RegistrationStatus.CONFIRMED)
+    );
+  }
+
+  // Obtenir la catégorie d'âge du chien (pour l'affichage)
+  getDogAgeCategory(dog: Dog): string {
+    const dogBirthDate = new Date(dog.birthDate);
+    const ageInMonths = differenceInMonths(new Date(), dogBirthDate);
+
+    if (ageInMonths >= 0 && ageInMonths <= 12) {
+      return "Chiot";
+    } else if (ageInMonths >= 13 && ageInMonths <= 36) {
+      return "Jeune chien";
+    } else if (ageInMonths >= 37 && ageInMonths <= 84) {
+      return "Adulte";
+    } else if (ageInMonths >= 85) {
+      return "Senior";
+    } else {
+      return "Âge inconnu";
+    }
   }
 
   isDogEligibleForCourse(dog: Dog, course: Course): boolean {
     if (!course.courseType || !course.courseType.ageRange) {
-      console.log(`Cours ${course.title}: pas de tranche d'âge définie, considéré comme éligible`);
-      return true;
+      return true; // Si pas de restriction d'âge, on considère éligible
     }
 
-    // Calculer l'âge du chien à la date du cours
+    // Calculer l'âge du chien À LA DATE DU COURS
     const courseDate = new Date(course.startDatetime);
     const dogBirthDate = new Date(dog.birthDate);
     const ageInMonths = differenceInMonths(courseDate, dogBirthDate);
 
-    // Définir des valeurs par défaut pour minAge et maxAge si elles n'existent pas
-    const minAge = course.courseType.ageRange.minAge !== undefined ? course.courseType.ageRange.minAge : 0;
-    const maxAge = course.courseType.ageRange.maxAge !== undefined ? course.courseType.ageRange.maxAge : 240; // 20 ans
+    // Obtenir les limites d'âge du cours
+    const minAge = course.courseType.ageRange.minAge || 0;
+    const maxAge = course.courseType.ageRange.maxAge || 240; // 20 ans par défaut
 
-    // Vérifier si l'âge du chien est dans la tranche d'âge du cours
+    // Vérifier si l'âge est dans la plage
     const isEligible = ageInMonths >= minAge && ageInMonths <= maxAge;
-    console.log(`Chien ${dog.name} (${ageInMonths} mois à la date du cours) est ${isEligible ? 'éligible' : 'non éligible'} pour le cours ${course.title} (âge requis: ${minAge}-${maxAge} mois)`);
+
+    console.log(`Chien ${dog.name} (${ageInMonths} mois à la date du cours) est ${isEligible ? 'éligible' : 'non éligible'} pour le cours "${course.title}" (âge requis: ${minAge}-${maxAge} mois)`);
 
     return isEligible;
-  }
-
-  // Utiliser les inscriptions récupérées pour vérifier si le chien est déjà inscrit
-  isDogAlreadyRegisteredToCourse(courseId: number): boolean {
-    if (!this.dogRegistrations || this.dogRegistrations.length === 0) {
-      return false;
-    }
-
-    // Vérifier si une inscription active existe pour ce cours
-    const isRegistered = this.dogRegistrations.some(registration =>
-      registration.course &&
-      registration.course.id === courseId &&
-      (registration.status === RegistrationStatus.PENDING ||
-        registration.status === RegistrationStatus.CONFIRMED)
-    );
-
-    if (isRegistered) {
-      console.log(`Le chien est déjà inscrit au cours ID: ${courseId}`);
-    }
-
-    return isRegistered;
-  }
-
-  // Méthode pour obtenir le nombre d'inscriptions actives pour un cours
-  getActiveRegistrationsCount(course: Course): number {
-    if (!course.registrations) {
-      return 0;
-    }
-
-    return course.registrations.filter(registration =>
-      registration.status === RegistrationStatus.PENDING ||
-      registration.status === RegistrationStatus.CONFIRMED
-    ).length;
   }
 
   showCourseDialog(course: Course) {
@@ -228,52 +225,27 @@ export class RegisterCourseComponent implements OnInit {
     });
   }
 
-  // Méthode pour inscrire le chien à un cours
   registerDogForCourse(dog: Dog, course: Course) {
-    // Vérifications de sécurité
-    if (!dog || !dog.id) {
-      console.error('Erreur: Données du chien invalides', dog);
+    if (!dog || !dog.id || !course || !course.id) {
       this.messageService.add({
         severity: 'error',
         summary: 'Erreur',
-        detail: 'Impossible d\'identifier le chien pour l\'inscription',
+        detail: 'Informations invalides pour l\'inscription',
         life: 3000,
       });
       return;
     }
 
-    if (!course || !course.id) {
-      console.error('Erreur: Données du cours invalides', course);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erreur',
-        detail: 'Impossible d\'identifier le cours pour l\'inscription',
-        life: 3000,
-      });
-      return;
-    }
-
-    // S'assurer que les IDs sont des nombres
-    const dogId = typeof dog.id === 'string' ? parseInt(dog.id, 10) : dog.id;
-    const courseId = typeof course.id === 'string' ? parseInt(course.id, 10) : course.id;
-
-    // Créer l'objet d'inscription selon le format attendu par le backend
-    // Adapter selon la structure exacte attendue par votre API
-    const registration = {
-      dog: { id: dogId },
-      course: { id: courseId }
+    // Créer un objet pour la requête d'inscription
+    const registrationData = {
+      dog: { id: dog.id },
+      course: { id: course.id }
     };
 
-    console.log('Tentative d\'inscription avec les données:', {
-      dogId: dogId,
-      courseId: courseId,
-      registration: registration
-    });
-
-    // Envoyer la demande d'inscription au serveur
-    this.http.post(`${this.apiUrl}/registration`, registration).subscribe({
+    // Envoyer la demande d'inscription
+    this.http.post(`${this.apiUrl}/registration`, registrationData).subscribe({
       next: (response) => {
-        console.log('Réponse du serveur après inscription:', response);
+        console.log('Inscription réussie:', response);
 
         this.messageService.add({
           severity: 'success',
@@ -282,54 +254,20 @@ export class RegisterCourseComponent implements OnInit {
           life: 3000,
         });
 
-        // Recharger les inscriptions du chien pour mettre à jour la liste des cours disponibles
-        this.loadCoursesAndRegistrations(dogId);
+        // Mettre à jour la liste des cours disponibles
+        this.loadAvailableCourses();
       },
       error: (error) => {
-        console.error('Erreur lors de l\'inscription au cours:', error);
+        console.error('Erreur lors de l\'inscription:', error);
 
-        let errorMessage = 'Une erreur est survenue lors de l\'inscription au cours';
-
-        // Tenter d'extraire un message d'erreur plus précis de la réponse
-        if (error.error && error.error.message) {
-          errorMessage = error.error.message;
-        }
-
+        const errorMessage = error.error?.message || 'Une erreur est survenue lors de l\'inscription';
         this.messageService.add({
           severity: 'error',
           summary: 'Erreur d\'inscription',
           detail: errorMessage,
-          life: 5000,
+          life: 3000,
         });
       }
     });
   }
-
-
-  selectDog(dog: Dog) {
-    this.dogService.setActiveDog(dog);
-    if (dog.id) {
-      this.loadCoursesAndRegistrations(dog.id);
-    }
-  }
-
-  getDogAgeCategory(dog: Dog): string {
-    const dogBirthDate = new Date(dog.birthDate);
-    const ageInMonths = differenceInMonths(new Date(), dogBirthDate);
-    if (ageInMonths >= 0 && ageInMonths <= 12) {
-      return "Chiot";
-    } else if (ageInMonths >= 13 && ageInMonths <= 36) {
-      return "Jeune chien";
-    } else if (ageInMonths >= 37 && ageInMonths <= 84) {
-      return "Adulte";
-    } else if (ageInMonths >= 85) {
-      return "Senior";
-    } else {
-      return "Âge inconnu";
-    }
-  }
-
-  protected readonly faPaw = faPaw;
-  protected readonly faEye = faEye;
-  protected readonly RegistrationStatus = RegistrationStatus;
 }
