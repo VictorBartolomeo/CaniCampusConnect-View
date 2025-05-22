@@ -10,6 +10,7 @@ import {Dog} from '../models/dog';
   providedIn: 'root'
 })
 export class DogService {
+
   public userDogsSubject = new BehaviorSubject<Dog[]>([]);
   public userDogs$: Observable<Dog[]> = this.userDogsSubject.asObservable();
 
