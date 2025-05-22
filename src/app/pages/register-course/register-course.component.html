@@ -1,4 +1,3 @@
-
 <div class="card px-10 mt-10">
   <h1 class="text-3xl font-bold mb-10">Consulter les cours disponibles</h1>
 
@@ -35,7 +34,7 @@
         <td>{{ course.description }}</td>
         <td>{{ course.coach.firstname }} {{ course.coach.lastname }}</td>
         <td>{{ course.startDatetime | date : "dd MMMM yyyy à HH:mm" }}</td>
-        <td>{{ getActiveRegistrationsCount(course) }} / {{ course.maxCapacity }}</td>
+        <td>{{ course.registrations.filter(course.registrations.status === 'PENDING' || course.registrations.status === 'CONFIRMED').length }} / {{ course.maxCapacity }}</td>
         <td class="flex gap-5">
           <div>
             <p-toast position="bottom-center"/>
@@ -68,7 +67,7 @@
                   <p><strong>Coach:</strong> {{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}</p>
                   <p><strong>Date:</strong> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}</p>
                   <p><strong>Horaires:</strong> {{ selectedCourseForDialog.startDatetime | date : "HH:mm" }} - {{ selectedCourseForDialog.endDatetime | date: "HH:mm" }}</p>
-                  <p><strong>Jauge:</strong> {{ getActiveRegistrationsCount(selectedCourseForDialog) }} / {{ selectedCourseForDialog.maxCapacity }}</p>
+                  <p><strong>Jauge:</strong> {{ selectedCourseForDialog.registrations.filter(selectedCourseForDialog.registrations.RegistrationStatus === 'PENDING' || selectedCourseForDialog.registrations.status === 'CONFIRMED').length }} / {{ selectedCourseForDialog.maxCapacity }}</p>
                 </div>
               }
               <ng-template pTemplate="footer">
