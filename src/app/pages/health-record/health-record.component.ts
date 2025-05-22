@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Dog} from '../../models/dog';
 import {CommonModule} from '@angular/common';
@@ -19,7 +19,7 @@ import {Subscription} from 'rxjs';
   templateUrl: './health-record.component.html',
   styleUrl: './health-record.component.scss'
 })
-export class HealthRecordComponent {
+export class HealthRecordComponent implements OnInit, OnDestroy{
 
   currentDog: Dog | null = null;
   private subscription!: Subscription;
