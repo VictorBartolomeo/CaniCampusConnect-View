@@ -14,9 +14,9 @@ import {differenceInMonths} from 'date-fns';
 import {DogService} from '../../service/dog.service';
 import {Dog} from '../../models/dog';
 import {Course} from '../../models/course';
-import {Registration} from '../../models/registration';
 import {RegistrationStatus} from '../../models/registrationstatus.enum';
 import {ButtonDirective} from 'primeng/button';
+import {ActiveRegistrationsPipe} from '../../Pipes/active-registrations.pipe';
 
 @Component({
   selector: 'app-register-course',
@@ -30,6 +30,7 @@ import {ButtonDirective} from 'primeng/button';
     FaIconComponent,
     Dialog,
     ButtonDirective,
+    ActiveRegistrationsPipe,
   ],
   templateUrl: './register-course.component.html',
   styleUrl: './register-course.component.scss',
