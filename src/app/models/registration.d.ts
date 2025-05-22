@@ -10,9 +10,7 @@ export type Registration = {
   status: RegistrationStatus;
 }
 
-// export enum RegistrationStatus {
-//   "PENDING",
-//   "CONFIRMED",
-//   "CANCELLED",
-//   "REFUSED"
-// }
+export interface RegistrationRequest {
+  dog: { id: number };
+  course: { id: number };
+}
