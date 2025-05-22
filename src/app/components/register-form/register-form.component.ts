@@ -102,7 +102,7 @@ export class RegisterFormComponent {
     this.error = '';
 
     if (this.registerForm.invalid) {
-      // Afficher un toast d'erreur
+
       this.messageService.add({
         severity: 'error',
         summary: 'Échec',
