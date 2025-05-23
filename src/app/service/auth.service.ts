@@ -3,24 +3,61 @@ import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
 import {Owner} from '../models/owner';
-import {provideRouter, Router, RouterOutlet} from '@angular/router';
+import {Router} from '@angular/router';
+import {OwnerService} from './owner.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class AuthService {
   router = inject(Router);
   connected = false;
   role: string | null = null;
   userId: number | null = null;
+  darkMode: boolean = false;
   private apiUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private ownerService: OwnerService
+  ) {
     const jwt = localStorage.getItem('jwt');
     if (jwt != null) {
       this.decodeJwt(jwt);
     }
+
+    // Charger la préférence de thème
+    this.loadThemePreference();
+  }
+
+  // Méthode pour charger la préférence de thème
+  private loadThemePreference(): void {
+    const savedTheme = localStorage.getItem('darkMode');
+    this.darkMode = savedTheme === 'true';
+    this.applyTheme();
+  }
+
+  // Méthode pour appliquer le thème
+  private applyTheme(): void {
+    const element = document.querySelector('html');
+    if (this.darkMode) {
+      element?.classList.add('my-app-dark');
+    } else {
+      element?.classList.remove('my-app-dark');
+    }
+  }
+
+  // Méthode pour basculer le thème
+  toggleDarkMode(): boolean {
+    this.darkMode = !this.darkMode;
+    localStorage.setItem('darkMode', this.darkMode.toString());
+    this.applyTheme();
+    return this.darkMode;
+  }
+
+  // Méthode pour vérifier si le thème sombre est actif
+  isDarkMode(): boolean {
+    return this.darkMode;
   }
 
   login(email: string, password: string): Observable<any> {
@@ -39,7 +76,6 @@ export class AuthService {
     );
   }
 
-
   decodeJwt(jwt: string) {
     localStorage.setItem('jwt', jwt);
     try {
@@ -50,6 +86,11 @@ export class AuthService {
       this.role = body.role;
       this.userId = body.userId;
       this.connected = true;
+
+      // Charger les informations du propriétaire dès la connexion
+      if (this.userId) {
+        this.ownerService.loadOwnerInfo(this.userId).subscribe();
+      }
     } catch (e) {
       console.error('Erreur lors du décodage du JWT:', e);
       this.disconnection();
@@ -61,6 +102,8 @@ export class AuthService {
     this.connected = false;
     this.role = null;
     this.userId = null;
+    // Réinitialiser les données du propriétaire
+    this.ownerService.clearOwnerData();
     this.router.navigateByUrl('/login');
   }
 
@@ -73,10 +116,16 @@ export class AuthService {
   }
 
   getUserInfo(): Observable<Owner> {
-    const userId = this.getUserId();
-    return this.http.get<Owner>(`${this.apiUrl}/owner/${userId}`);
+    return this.ownerService.loadOwnerInfo(this.userId) as Observable<Owner>;
   }
 
+  getUserFullName(): string {
+    return this.ownerService.getFullName();
+  }
+
+  refreshUserInfo(): void {
+    this.ownerService.loadOwnerInfo(this.userId).subscribe();
+  }
 
   checkJwtStatus() {
     const jwt = localStorage.getItem('jwt');
@@ -105,5 +154,4 @@ export class AuthService {
 
     return false;
   }
-
 }
