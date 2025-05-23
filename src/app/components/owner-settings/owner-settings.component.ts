@@ -134,10 +134,10 @@ export class OwnerSettingsComponent implements OnInit {
       const currentEmail = this.userForm.value.email || '';
 
       const emailChanged = currentEmail !== this.originalEmail;
-
       this.userService.updateUser(this.userForm.value).subscribe({
         next: (updatedOwner) => {
           this.owner = updatedOwner;
+
 
           if (emailChanged) {
             this.messageService.add({

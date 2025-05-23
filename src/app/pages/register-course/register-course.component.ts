@@ -67,6 +67,7 @@ export class RegisterCourseComponent implements OnInit {
     this.dogService.loadUserDogs();
   }
 
+  //TODO Vérifier pourquoi ca me retourne les dates antérieurs au jour.
   loadAvailableCourses() {
     if (!this.selectedDog) return;
 
@@ -162,9 +163,6 @@ export class RegisterCourseComponent implements OnInit {
   }
 
   isDogEligibleForCourse(dog: Dog, course: Course): boolean {
-    if (!course.courseType || !course.courseType.ageRange) {
-      return true; // Si pas de restriction d'âge, on considère éligible
-    }
 
     // Calculer l'âge du chien À LA DATE DU COURS
     const courseDate = new Date(course.startDatetime);
