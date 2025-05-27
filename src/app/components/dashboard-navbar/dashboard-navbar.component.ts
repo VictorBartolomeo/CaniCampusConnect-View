@@ -1,3 +1,4 @@
+
 import {FormsModule} from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
@@ -11,14 +12,15 @@ import {RouterLink, RouterOutlet} from '@angular/router';
 import {Menu} from 'primeng/menu';
 import {AuthService} from '../../service/auth.service';
 import {DogService} from '../../service/dog.service';
+import {OwnerService} from '../../service/owner.service';
 import {Observable} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
 
-
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './dashboard-navbar.component.html',
+  // Supprimez OwnerService des imports
   imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet, DropdownModule, Ripple],
   styleUrls: ['./dashboard-navbar.component.scss']
 })
@@ -33,8 +35,9 @@ export class DashboardNavbarComponent implements OnInit {
 
 
   constructor(
-    private authService: AuthService,
-    public dogService: DogService
+    public authService: AuthService,
+    public dogService: DogService,
+    public ownerService: OwnerService,
   ) {
     this.userDogs$ = this.dogService.userDogs$;
     this.activeDog$ = this.dogService.activeDog$;
@@ -45,7 +48,6 @@ export class DashboardNavbarComponent implements OnInit {
 
 
   ngOnInit() {
-
     if (this.authService.getUserId()) {
       this.dogService.loadUserDogs();
     }
@@ -75,7 +77,7 @@ export class DashboardNavbarComponent implements OnInit {
 
     this.avatar = [
       {
-        label: 'placeholder name',
+        label: this.ownerService.getFullName(),
         styleClass: 'name-item',
         disabled:true
       },
@@ -89,8 +91,16 @@ export class DashboardNavbarComponent implements OnInit {
         icon: 'pi pi-credit-card'
       },
       {
-        label: 'Apparence',
-        icon: 'pi pi-palette'
+        label: this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre',
+        icon: 'pi pi-palette',
+        command: () => {
+          this.authService.toggleDarkMode();
+          // Mettre à jour le libellé du menu
+          const themeItem = this.avatar?.find(item => item.icon === 'pi pi-palette');
+          if (themeItem) {
+            themeItem.label = this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre';
+          }
+        }
       },
       {
         label: 'Aide',
@@ -115,9 +125,5 @@ export class DashboardNavbarComponent implements OnInit {
       },
       error: (err) => console.error('Erreur lors du chargement des détails du chien:', err)
     });
-
   }
 }
-
-
-

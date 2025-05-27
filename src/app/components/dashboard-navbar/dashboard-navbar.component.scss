@@ -12,7 +12,6 @@ p-menu {
     :host ::ng-deep .p-menu { /* Cible p-menu globalement mais depuis ce composant */
       .p-menu-list {
         .p-menu-item.name-item > .p-menu-item-content { /* Cible le contenu de l'item ayant la classe */
-          margin-bottom: 10px;
           font-weight: bold;
           }
         }
@@ -21,3 +20,5 @@ p-menu {
 .select-dog .p-select-option{
   font-weight: bold;
 }
+
+
