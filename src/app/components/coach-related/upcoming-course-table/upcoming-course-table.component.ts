@@ -5,8 +5,6 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';
 import { RippleModule } from "primeng/ripple";
 
 import { Course } from '../../../models/course';
@@ -15,25 +13,16 @@ import { RegistrationStatus } from '../../../models/registrationstatus.enum';
 
 import { CoachDataService } from '../../../service/coach-data.service';
 import { AuthStateService } from '../../../service/auth-state.service';
-import { RegistrationService } from '../../../service/registration.service';
-
-interface StatusOption {
-  label: string;
-  value: RegistrationStatus;
-  icon?: string;
-}
 
 @Component({
   selector: 'app-upcoming-course-table',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     TableModule,
     TagModule,
     ButtonModule,
     TooltipModule,
-    DropdownModule,
     DatePipe,
     RippleModule
   ],
@@ -43,22 +32,17 @@ interface StatusOption {
 export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
   private authStateService = inject(AuthStateService);
   private coachDataService = inject(CoachDataService);
-  private registrationService = inject(RegistrationService);
 
   coachId: number | null = null;
   upcomingCourses: Course[] = [];
   isLoading = true;
   error: string | null = null;
 
-  // Correctement typé pour éviter les erreurs
-  expandedRows: Record<number, boolean> = {};
+  expandedRows: {[key: string]: boolean} = {};
+  rows = 5;
+  totalRecords = 0;
 
   private coursesSubscription?: Subscription;
-
-  statusOptions: StatusOption[] = [
-    { label: 'Confirmer', value: RegistrationStatus.CONFIRMED, icon: 'pi pi-check' },
-    { label: 'Refuser', value: RegistrationStatus.REFUSED, icon: 'pi pi-times' }
-  ];
 
   readonly RegistrationStatus = RegistrationStatus;
 
@@ -85,7 +69,9 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
               ...course,
               registrations: Array.isArray(course.registrations) ? course.registrations : []
             }));
+          this.totalRecords = this.upcomingCourses.length;
           this.isLoading = false;
+          console.log(`Loaded ${this.upcomingCourses.length} courses:`, this.upcomingCourses);
         },
         error: (err) => {
           console.error("Erreur lors du chargement des cours du coach:", err);
@@ -95,20 +81,24 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
       });
   }
 
+  toggleRow(course: Course): void {
+    if (this.isRowExpanded(course)) {
+      delete this.expandedRows[course.id];
+    } else {
+      this.expandedRows[course.id] = true;
+    }
+    console.log('Row expanded state:', this.expandedRows);
+  }
+
+  isRowExpanded(course: Course): boolean {
+    return this.expandedRows[course.id];
+  }
+
   getConfirmedRegistrationsCount(course: Course): number {
     if (!course || !Array.isArray(course.registrations)) {
       return 0;
     }
     return course.registrations.filter(r => r.status === RegistrationStatus.CONFIRMED).length;
-  }
-
-  getRegistrationsToManage(course: Course): Registration[] {
-    if (!course || !Array.isArray(course.registrations)) {
-      return [];
-    }
-    return course.registrations.filter(
-      reg => reg.status === RegistrationStatus.PENDING || reg.status === RegistrationStatus.CONFIRMED
-    );
   }
 
   getSeverityForStatus(status: RegistrationStatus): string {
@@ -132,40 +122,15 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
     }
   }
 
-  onRegistrationStatusChange(
-    newStatus: RegistrationStatus,
-    registration: Registration,
-    course: Course
-  ): void {
-    if (!newStatus || newStatus === registration.status) {
-      return;
+  getStatusIcon(status: RegistrationStatus | null): string {
+    if (!status) return 'pi pi-question-circle';
+    switch (status) {
+      case RegistrationStatus.CONFIRMED: return 'pi pi-check-circle';
+      case RegistrationStatus.PENDING: return 'pi pi-clock';
+      case RegistrationStatus.REFUSED: return 'pi pi-times-circle';
+      case RegistrationStatus.CANCELLED: return 'pi pi-ban';
+      default: return 'pi pi-question-circle';
     }
-
-    this.registrationService.updateRegistrationStatus(registration.id, newStatus)
-      .subscribe({
-        next: (updatedReg) => {
-          const courseIndex = this.upcomingCourses.findIndex(c => c.id === course.id);
-          if (courseIndex > -1) {
-            const regIndex = this.upcomingCourses[courseIndex].registrations.findIndex(r => r.id === updatedReg.id);
-            if (regIndex > -1) {
-              this.upcomingCourses[courseIndex].registrations[regIndex] = { ...updatedReg };
-              this.upcomingCourses = [...this.upcomingCourses];
-            }
-          }
-          console.log(`Statut de l'inscription ${registration.id} mis à jour à ${newStatus}`);
-        },
-        error: (err) => {
-          console.error(`Échec de la mise à jour du statut pour l'inscription ${registration.id}:`, err);
-        }
-      });
-  }
-
-  onRowExpand(event: any): void {
-    this.expandedRows[event.data.id] = true;
-  }
-
-  onRowCollapse(event: any): void {
-    delete this.expandedRows[event.data.id];
   }
 
   ngOnDestroy(): void {
