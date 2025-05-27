@@ -7,7 +7,7 @@ import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {CardModule} from 'primeng/card';
 import {ToastModule} from 'primeng/toast';
-import {Owner} from '../../models/owner';
+import {Owner} from '../../models/user';
 import {IconField} from 'primeng/iconfield';
 import {InputIcon} from 'primeng/inputicon';
 import {differenceInMonths, differenceInYears, format, parseISO} from 'date-fns';
@@ -91,7 +91,7 @@ export class OwnerSettingsComponent implements OnInit {
 
   loadUserData(): void {
     this.loading = true;
-    this.userService.getCurrentUser().subscribe({
+    this.userService.getCurrentUser<Owner>().subscribe({
       next: (owner) => {
         this.owner = owner;
 
