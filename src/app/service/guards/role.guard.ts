@@ -31,8 +31,7 @@ export class RoleGuard implements CanActivate {
     if (currentRole && authorizedRoles && authorizedRoles.some(role => role === currentRole)) {
       return true;
     } else {
-      // Rediriger vers une page "non autorisé" ou une page par défaut
-      this.router.navigate(['/unauthorized']); // Créez cette page si elle n'existe pas
+      this.router.navigate(['/unauthorized']);
       return false;
     }
   }
