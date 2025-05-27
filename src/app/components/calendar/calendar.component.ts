@@ -14,11 +14,12 @@ import {TableModule} from 'primeng/table';
 import {Course} from '../../models/course';
 import {CustomDateFormatter} from './custom-date-formatter.provider';
 import {Button} from 'primeng/button';
-import {UpperCasePipe} from '@angular/common';
+import {DOCUMENT, UpperCasePipe} from '@angular/common';
 import {DogService} from '../../service/dog.service';
 import {Dog} from '../../models/dog';
 import {Registration} from '../../models/registration';
 import {Subscription} from 'rxjs';
+import {AuthService} from '../../service/auth.service';
 
 @Component({
   selector: 'app-calendar',
@@ -39,11 +40,11 @@ import {Subscription} from 'rxjs';
 export class CalendarComponent implements OnInit, OnDestroy {
   http = inject(HttpClient);
   dogService = inject(DogService);
-
-  courses: Course[] = [];
+  authService = inject(AuthService);
   activeDog: Dog | null = null;
   registrations: Registration[] = [];
   subscription: Subscription | null = null;
+  document = inject(DOCUMENT);
 
   view: CalendarView = CalendarView.Month;
   viewDate = new Date();
@@ -52,8 +53,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   weekStartsOn: number = DAYS_OF_WEEK.MONDAY;
   weekendDays: number[] = [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY];
 
+  private readonly darkThemeClass = 'dark-theme';
+
   ngOnInit() {
-    // S'abonner au chien actif
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       this.activeDog = dog;
       if (dog) {
@@ -63,6 +65,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
         this.events = [];
       }
     });
+
+    this.document.body.classList.add(this.darkThemeClass);
   }
 
   ngOnDestroy() {
@@ -100,16 +104,31 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
 
   getEventColor(status: string): { primary: string; secondary: string } {
-    // Personnaliser les couleurs en fonction du statut de l'inscription
-    switch (status) {
-      case 'CONFIRMED':
-        return { primary: '#4CAF50', secondary: '#E8F5E9' }; // Vert
-      case 'PENDING':
-        return { primary: '#FFC107', secondary: '#FFF8E1' }; // Jaune/Orange
-      case 'CANCELLED':
-        return { primary: '#F44336', secondary: '#FFEBEE' }; // Rouge
-      default:
-        return { primary: '#1e90ff', secondary: '#D1E8FF' }; // Bleu par défaut
+    // Ajuster les couleurs en fonction du mode sombre ou clair
+    if (this.authService.isDarkMode()) {
+      // Couleurs pour le mode sombre
+      switch (status) {
+        case 'CONFIRMED':
+          return { primary: '#5CCA62', secondary: '#255D2A' }; // Vert plus lumineux en mode sombre
+        case 'PENDING':
+          return { primary: '#FFD54F', secondary: '#5D4C10' }; // Jaune plus lumineux
+        case 'CANCELLED':
+          return { primary: '#FF5252', secondary: '#5D1F1F' }; // Rouge plus lumineux
+        default:
+          return { primary: '#42A5F5', secondary: '#1A3D5D' }; // Bleu plus lumineux
+      }
+    } else {
+      // Couleurs pour le mode clair (vos couleurs actuelles)
+      switch (status) {
+        case 'CONFIRMED':
+          return { primary: '#4CAF50', secondary: '#E8F5E9' }; // Vert
+        case 'PENDING':
+          return { primary: '#FFC107', secondary: '#FFF8E1' }; // Jaune/Orange
+        case 'CANCELLED':
+          return { primary: '#F44336', secondary: '#FFEBEE' }; // Rouge
+        default:
+          return { primary: '#1e90ff', secondary: '#D1E8FF' }; // Bleu par défaut
+      }
     }
   }
 }

@@ -1,16 +1,15 @@
-// dog.service.ts
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, of} from 'rxjs';
 import {tap, catchError} from 'rxjs/operators';
-import {AuthService} from './auth.service';
 import {Dog} from '../models/dog';
+import {AuthStateService} from './auth-state.service';
+import {UserService} from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DogService {
-
   public userDogsSubject = new BehaviorSubject<Dog[]>([]);
   public userDogs$: Observable<Dog[]> = this.userDogsSubject.asObservable();
 
@@ -21,16 +20,25 @@ export class DogService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authStateService: AuthStateService,
+    private userService: UserService
   ) {
-    this.loadUserDogs();
+    // S'abonner aux changements d'ID utilisateur pour charger les chiens
+    this.authStateService.userId$.subscribe(userId => {
+      if (userId) {
+        this.loadUserDogs(userId);
+      }
+    });
   }
 
-  public loadUserDogs(): void {
-    const userId = this.authService.getUserId();
-    console.log('ID utilisateur récupéré:', userId);
+  public loadUserDogs(userId?: number | null): void {
+    // Utiliser l'ID fourni ou l'obtenir depuis le service d'état
+    const id = userId || this.authStateService.getUserId();
+    if (!id) return;
 
-    this.http.get<Dog[]>(`${this.apiUrl}/owner/${userId}/dogs`).subscribe({
+    console.log('ID utilisateur récupéré:', id);
+
+    this.http.get<Dog[]>(`${this.apiUrl}/owner/${id}/dogs`).subscribe({
       next: (dogs) => {
         if (dogs && dogs.length > 0) {
           this.userDogsSubject.next(dogs);
@@ -65,6 +73,7 @@ export class DogService {
       }
     });
   }
+
 
   setActiveDog(dog: Dog | null): void {
     this.activeDogSubject.next(dog);
