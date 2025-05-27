@@ -2,35 +2,6 @@
   <p-megaMenu [model]="items" [style]="{ display: 'flex' }"
               styleClass="p-4 bg-surface-0 dark:bg-surface-900">
 
-    {{(dogService.userDogsSubject | async)?.length}}
-    <ng-template pTemplate="start">
-      <p-select
-        [options]="(dogService.userDogsSubject | async) || []"
-        [(ngModel)]="selectedDogId"
-        optionLabel="name"
-        optionValue="id"
-        [filter]="true"
-        filterBy="name"
-        placeholder="Choisir un chien"
-        class="w-full md:w-56"
-        styleClass="font-semibold"
-        (onChange)="onDogChange($event.value)">
-
-        <ng-template pTemplate="selectedItem" let-selectedOption>
-          <div class="flex items-center gap-2">
-            <img src="/img/avatars/golden.png" style="width: 32px"/>
-            <div>{{ selectedOption.name }}</div>
-          </div>
-        </ng-template>
-
-        <ng-template pTemplate="item" let-dog>
-          <div class="flex items-center gap-2">
-            <img src="/img/avatars/golden.png" style="width: 32px"/>
-            <div>{{ dog.name }}</div>
-          </div>
-        </ng-template>
-      </p-select>
-    </ng-template>
 
     <ng-template pTemplate="item" let-item>
       <a pRipple [routerLink]="item.route"
