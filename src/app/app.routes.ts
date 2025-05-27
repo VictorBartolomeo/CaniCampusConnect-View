@@ -24,7 +24,7 @@ export const routes: Routes = [
   {path : "home", component : LandingPageComponent},
   {path : "login", component : LoginPageComponent},
   {path : "register", component : RegisterPageComponent},
-  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data : {authorizedRoles: ["OWNER"]},
+  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data : {authorizedRoles: ['ROLE_OWNER']},
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "", redirectTo: "course", pathMatch: "full"},
@@ -40,7 +40,7 @@ export const routes: Routes = [
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
-  {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data: {authorizedRoles: ['COACH']}, children :
+  {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data: {authorizedRoles: ['ROLE_COACH']}, children :
   [
     // {path : }
   ]},
