@@ -1,27 +1,18 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { Course } from '../models/course.d'; // Assurez-vous que le chemin est correct
-import { Registration } from '../models/registration.d'; // Si les inscriptions sont imbriquées et ont des dates
-import { Dog } from '../models/dog.d'; // Si les chiens dans les inscriptions ont des dates (ex: birthDate)
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map, tap} from 'rxjs/operators';
+import {Course} from '../models/course.d'; // Assurez-vous que le chemin est correct
+import {Registration} from '../models/registration.d'; // Si les inscriptions sont imbriquées et ont des dates
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoachDataService {
   private http = inject(HttpClient);
-  // Ajustez cette URL de base en fonction de la configuration de votre API backend
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = 'http://localhost:8080';
 
   constructor() { }
-
-  /**
-   * Récupère tous les cours associés à un coach spécifique.
-   * L'endpoint attendu est quelque chose comme GET /api/coach/{coachId}/courses
-   * @param coachId L'ID du coach pour lequel récupérer les cours.
-   * @returns Un Observable contenant un tableau de Course.
-   */
   getCoursesByCoachId(coachId: number): Observable<Course[]> {
     if (!coachId) {
       // Gérer le cas où coachId est null ou undefined pour éviter un appel API inutile
@@ -29,13 +20,12 @@ export class CoachDataService {
       return throwError(() => new Error('Coach ID is required.'));
     }
 
-    return this.http.get<Course[]>(`${this.apiUrl}/coach/${coachId}/courses`).pipe(
+    return this.http.get<Course[]>(`${this.apiUrl}/coach/${coachId}/courses/upcoming`).pipe(
       map(courses => courses.map(course => this.transformCourse(course))),
       tap(transformedCourses => console.log(`Fetched ${transformedCourses.length} courses for coach ${coachId}`, transformedCourses)),
       catchError(this.handleError)
     );
   }
-
   /**
    * Transforme un objet Course brut reçu de l'API.
    * Principalement pour convertir les chaînes de date ISO en objets Date JavaScript.
@@ -61,12 +51,6 @@ export class CoachDataService {
    */
   private transformRegistration(registration: Registration): Registration {
     const transformedReg: Registration = { ...registration };
-    // Exemple: si registration a une date 'registrationDate'
-    // if (registration.registrationDate) {
-    //   transformedReg.registrationDate = new Date(registration.registrationDate);
-    // }
-
-    // Si le chien est présent et a une date de naissance
     if (registration.dog && registration.dog.birthDate) {
       transformedReg.dog = {
         ...registration.dog,
