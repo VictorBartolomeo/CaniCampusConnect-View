@@ -9,7 +9,7 @@ import {RegistrationStatus} from '../models/registrationstatus.enum';
   providedIn: 'root'
 })
 export class RegistrationService {
-  private apiUrl = 'http://localhost:8080/api/registrations'; // Ajustez si votre endpoint est différent
+  private apiUrl = 'http://localhost:8080/registrations'; // Ajustez si votre endpoint est différent
 
   constructor(private http: HttpClient) { }
 
