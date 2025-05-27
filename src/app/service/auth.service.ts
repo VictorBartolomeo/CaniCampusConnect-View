@@ -2,9 +2,9 @@ import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
-import {Owner} from '../models/owner';
+import {Owner} from '../models/user';
 import {Router} from '@angular/router';
-import {OwnerService} from './owner.service';
+import {UserService} from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private ownerService: OwnerService
+    private userService: UserService
   ) {
     const jwt = localStorage.getItem('jwt');
     if (jwt != null) {
@@ -89,7 +89,7 @@ export class AuthService {
 
       // Charger les informations du propriétaire dès la connexion
       if (this.userId) {
-        this.ownerService.loadOwnerInfo(this.userId).subscribe();
+        this.userService.loadOwnerInfo(this.userId).subscribe();
       }
     } catch (e) {
       console.error('Erreur lors du décodage du JWT:', e);
@@ -102,7 +102,7 @@ export class AuthService {
     this.connected = false;
     this.role = null;
     this.userId = null;
-    this.ownerService.clearOwnerData();
+    this.userService.clearUserData();
     this.router.navigateByUrl('/login');
   }
 
@@ -115,15 +115,15 @@ export class AuthService {
   }
 
   getUserInfo(): Observable<Owner> {
-    return this.ownerService.loadOwnerInfo(this.userId) as Observable<Owner>;
+    return this.userService.loadOwnerInfo(this.userId) as Observable<Owner>;
   }
 
   getUserFullName(): string {
-    return this.ownerService.getFullName();
+    return this.userService.getFullName();
   }
 
   refreshUserInfo(): void {
-    this.ownerService.loadOwnerInfo(this.userId).subscribe();
+    this.userService.loadOwnerInfo(this.userId).subscribe();
   }
 
   checkJwtStatus() {
