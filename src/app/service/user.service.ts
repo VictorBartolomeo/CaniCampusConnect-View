@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {forwardRef, Inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
@@ -10,7 +10,6 @@ import { AuthService } from './auth.service';
 })
 export class UserService {
   private apiUrl = 'http://localhost:8080';
-
 
   // Observables pour chaque type d'utilisateur
   private ownerSubject = new BehaviorSubject<Owner | null>(null);
@@ -28,7 +27,7 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    @Inject(forwardRef(()=>AuthService))private authService: AuthService
   ) {}
 
   // Méthodes génériques pour tous les utilisateurs

@@ -1,7 +1,7 @@
 import {catchError, map, tap} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {inject, Injectable} from '@angular/core';
+import {forwardRef, Inject, inject, Injectable} from '@angular/core';
 import {Owner} from '../models/user';
 import {Router} from '@angular/router';
 import {UserService} from './user.service';
@@ -19,7 +19,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private userService: UserService
+    @Inject(forwardRef(() => UserService)) private userService: UserService
   ) {
     const jwt = localStorage.getItem('jwt');
     if (jwt != null) {
