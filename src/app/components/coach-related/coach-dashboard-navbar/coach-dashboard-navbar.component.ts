@@ -19,12 +19,11 @@ import {Ripple} from 'primeng/ripple';
 
 @Component({
   selector: 'app-dashboard-navbar',
-  templateUrl: './dashboard-navbar.component.html',
-  // Supprimez OwnerService des imports
+  templateUrl: './coach-dashboard-navbar.component.html',
   imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet, DropdownModule, Ripple],
-  styleUrls: ['./dashboard-navbar.component.scss']
+  styleUrls: ['./coach-dashboard-navbar.component.scss']
 })
-export class DashboardNavbarComponent implements OnInit {
+export class CoachDashboardNavbarComponent implements OnInit {
 
   items: MegaMenuItem[] | undefined;
   avatar: MegaMenuItem[] | undefined;
