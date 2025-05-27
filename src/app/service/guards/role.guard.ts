@@ -21,10 +21,10 @@ export class RoleGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     const authorizedRoles = route.data['authorizedRoles'] as Array<string>;
-    const currentRole = this.authService.role; // Utilise le getter de AuthService
+    const currentRole = this.authService.role;
 
     if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login']); // Redirige vers login si non authentifié
+      this.router.navigate(['/login']);
       return false;
     }
 
