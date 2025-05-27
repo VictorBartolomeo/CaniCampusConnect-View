@@ -1,9 +1,9 @@
-import {forwardRef, Inject, Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Owner, Coach, ClubOwner, User } from '../models/user';
-import { AuthService } from './auth.service';
+import { AuthStateService } from './auth-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,13 +27,27 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    @Inject(forwardRef(()=>AuthService))private authService: AuthService
-  ) {}
+    private authStateService: AuthStateService
+  ) {
+    // S'abonner aux changements d'ID utilisateur pour charger les informations utilisateur
+    this.authStateService.userId$.subscribe(userId => {
+      if (userId) {
+        const role = this.authStateService.getRole();
+        if (role === 'OWNER') {
+          this.loadOwnerInfo(userId).subscribe();
+        } else if (role === 'COACH') {
+          this.loadCoachInfo(userId).subscribe();
+        } else if (role === 'CLUB_OWNER') {
+          this.loadClubOwnerInfo(userId).subscribe();
+        }
+      }
+    });
+  }
 
   // Méthodes génériques pour tous les utilisateurs
   getCurrentUser<T extends User>(): Observable<T> {
-    const userId = this.authService.getUserId();
-    const role = this.authService.role;
+    const userId = this.authStateService.getUserId();
+    const role = this.authStateService.getRole();
 
     if (!userId || !role) {
       return of(null as unknown as T);
@@ -81,8 +95,8 @@ export class UserService {
   }
 
   updateUser<T extends User>(userData: Partial<T>): Observable<T> {
-    const userId = this.authService.getUserId();
-    const role = this.authService.role;
+    const userId = this.authStateService.getUserId();
+    const role = this.authStateService.getRole();
 
     if (!userId || !role) {
       return of(null as unknown as T);
@@ -116,8 +130,8 @@ export class UserService {
   }
 
   updatePassword(currentPassword: string, newPassword: string): Observable<any> {
-    const userId = this.authService.getUserId();
-    const role = this.authService.role;
+    const userId = this.authStateService.getUserId();
+    const role = this.authStateService.getRole();
 
     if (!userId || !role) {
       return of(null);
@@ -204,7 +218,6 @@ export class UserService {
   }
 
   // Méthodes d'administration pour ClubOwner
-  // Récupération en temps réel de tous les propriétaires (pour l'administration)
   loadAllOwners(): Observable<Owner[]> {
     return this.http.get<Owner[]>(`${this.apiUrl}/owners`).pipe(
       tap(owners => {
@@ -221,7 +234,7 @@ export class UserService {
   getFullName(user?: User | null): string {
     if (!user) {
       // Essayer de récupérer l'utilisateur selon le rôle
-      const role = this.authService.role;
+      const role = this.authStateService.getRole();
       switch (role) {
         case 'OWNER':
           user = this.getCurrentOwner();
