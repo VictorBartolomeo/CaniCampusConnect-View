@@ -18,31 +18,39 @@ import {
 } from './components/coach-related/coach-dashboard-navbar/coach-dashboard-navbar.component';
 import {UnauthorizedComponent} from './pages/unauthorized/unauthorized.component';
 import {RoleGuard} from './service/guards/role.guard';
+import {CoachDashboardComponent} from './pages/coach-related/coach-dashboard/coach-dashboard.component';
+import {CoachCourseComponent} from './components/coach-related/coach-course/coach-course.component';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
   {path : "home", component : LandingPageComponent},
   {path : "login", component : LoginPageComponent},
   {path : "register", component : RegisterPageComponent},
+
+  //OWNERS
   {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data : {authorizedRoles: ['ROLE_OWNER']},
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "", redirectTo: "course", pathMatch: "full"},
           {path : "course", component : CourseComponent},
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
-          {path : "health-record", component : HealthRecordComponent, canActivate:[loggedGuard], }
-
+          {path : "health-record", component : HealthRecordComponent }
         ]},
       {path : "manage-dog", component : ManageDogsPageComponent },
       {path : "reserve-course", component : RegisterCourseComponent},
       {path : "settings", component : SettingsComponent},
-      {path: "owner-profile", component: OwnerProfileComponent, canActivate:[loggedGuard]},
+      {path: "owner-profile", component: OwnerProfileComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
+
+  //COACHS
   {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data: {authorizedRoles: ['ROLE_COACH']}, children :
   [
-    // {path : }
+    {path : "user", component: CoachDashboardComponent, children : [
+      {path : "", redirectTo: "course", pathMatch: "full"},
+        {path: "course", component: CoachCourseComponent},
+      ]}
   ]},
   { path: 'unauthorized', component: UnauthorizedComponent },
   {path : "CGU", component : GeneralConditionsUseComponent},

@@ -41,7 +41,7 @@ export class LoginFormComponent {
     });
 
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      this.redirectToDashboardByRole();
     }
   }
 
@@ -61,10 +61,9 @@ export class LoginFormComponent {
     this.authService.login(this.f['email'].value, this.f['password'].value)
       .subscribe({
         next: (response) => {
-          if (response) {
-            console.log('Connexion réussie, vérification du JWT:');
-            this.authService.checkJwtStatus(); // Vérifier l'état du JWT
-            this.router.navigate(['/dashboard']);
+          if (response && response.success) { // login() retourne {success: true, token}
+            // Le rôle est défini dans AuthStateService via decodeJwt appelé dans authService.login
+            this.redirectToDashboardByRole();
           } else {
             this.error = 'Échec de connexion, vérifiez vos identifiants';
             this.loading = false;
@@ -86,6 +85,22 @@ export class LoginFormComponent {
         }
       });
   }
+  private redirectToDashboardByRole(): void {
+    const userRole = this.authService.role; // AuthService a un getter 'role' qui utilise AuthStateService
+
+    if (userRole === "ROLE_COACH") {
+      this.router.navigateByUrl('/coach/dashboard');
+    } else if (userRole === "ROLE_OWNER") {
+      this.router.navigateByUrl('/dashboard');
+    } else if (userRole === "ROLE_CLUBOWNER") {
+      // Assurez-vous que la route '/clubowner/dashboard' est définie dans app.routes.ts
+      this.router.navigateByUrl('/clubowner/dashboard');
+    } else {
+      console.warn(`Rôle utilisateur non géré ('${userRole}') ou absent. Redirection vers la page de connexion ou un dashboard par défaut.`);
+      this.router.navigateByUrl('/login');
+    }
+  }
+
 
 }
 
