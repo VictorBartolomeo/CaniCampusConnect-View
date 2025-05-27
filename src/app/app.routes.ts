@@ -20,39 +20,58 @@ import {UnauthorizedComponent} from './pages/unauthorized/unauthorized.component
 import {RoleGuard} from './service/guards/role.guard';
 import {CoachDashboardComponent} from './pages/coach-related/coach-dashboard/coach-dashboard.component';
 import {CoachCourseComponent} from './pages/coach-related/coach-course/coach-course.component';
+import {
+  UpcomingCourseTableComponent
+} from './components/coach-related/upcoming-course-table/upcoming-course-table.component';
+import {CoachCalendarComponent} from './components/coach-related/coach-calendar/coach-calendar.component';
 
 export const routes: Routes = [
-  {path : "", redirectTo: "home", pathMatch: "full"},
-  {path : "home", component : LandingPageComponent},
-  {path : "login", component : LoginPageComponent},
-  {path : "register", component : RegisterPageComponent},
+  {path: "", redirectTo: "home", pathMatch: "full"},
+  {path: "home", component: LandingPageComponent},
+  {path: "login", component: LoginPageComponent},
+  {path: "register", component: RegisterPageComponent},
 
   //OWNERS
-  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data : {authorizedRoles: ['ROLE_OWNER']},
-    children:[
-      {path : "user", component : DashboardUserPageComponent, children:[
-          {path : "", redirectTo: "course", pathMatch: "full"},
-          {path : "course", component : CourseComponent},
+  {
+    path: "dashboard",
+    component: DashboardNavbarComponent,
+    canActivate: [loggedGuard, RoleGuard],
+    data: {authorizedRoles: ['ROLE_OWNER']},
+    children: [
+      {
+        path: "user", component: DashboardUserPageComponent, children: [
+          {path: "", redirectTo: "course", pathMatch: "full"},
+          {path: "course", component: CourseComponent},
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
-          {path : "health-record", component : HealthRecordComponent }
-        ]},
-      {path : "manage-dog", component : ManageDogsPageComponent },
-      {path : "reserve-course", component : RegisterCourseComponent},
-      {path : "settings", component : SettingsComponent},
+          {path: "health-record", component: HealthRecordComponent}
+        ]
+      },
+      {path: "manage-dog", component: ManageDogsPageComponent},
+      {path: "reserve-course", component: RegisterCourseComponent},
+      {path: "settings", component: SettingsComponent},
       {path: "owner-profile", component: OwnerProfileComponent},
       {path: "", redirectTo: "user", pathMatch: "full"},
-      {path : "**", component : NotFoundComponent}
-    ]},
+      {path: "**", component: NotFoundComponent}
+    ]
+  },
 
   //COACHS
-  {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data: {authorizedRoles: ['ROLE_COACH']}, children :
-  [
-    {path : "user", component: CoachDashboardComponent, children : [
-      {path : "", redirectTo: "course", pathMatch: "full"},
-        {path: "course", component: CoachCourseComponent},
-      ]}
-  ]},
-  { path: 'unauthorized', component: UnauthorizedComponent },
-  {path : "CGU", component : GeneralConditionsUseComponent},
-  {path : "**", component : NotFoundComponent}
+  {
+    path: "coach/dashboard",
+    component: CoachDashboardNavbarComponent,
+    canActivate: [loggedGuard, RoleGuard],
+    data: {authorizedRoles: ['ROLE_COACH']},
+    children: [
+      {
+        path: "user", component: CoachDashboardComponent, children: [
+          {path: "", redirectTo: "upcoming-course", pathMatch: "full"},
+          {path: "upcoming-course", component: UpcomingCourseTableComponent},
+          {path: "calendar", component: CoachCalendarComponent}
+        ]
+      }
+    ]
+  },
+  {path: 'unauthorized', component: UnauthorizedComponent},
+  {path: "CGU", component: GeneralConditionsUseComponent},
+  {path: "**", component: NotFoundComponent}
 ];
