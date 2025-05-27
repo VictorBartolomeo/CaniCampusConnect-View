@@ -19,7 +19,7 @@ import {
 import {UnauthorizedComponent} from './pages/unauthorized/unauthorized.component';
 import {RoleGuard} from './service/guards/role.guard';
 import {CoachDashboardComponent} from './pages/coach-related/coach-dashboard/coach-dashboard.component';
-import {CoachCourseComponent} from './components/coach-related/coach-course/coach-course.component';
+import {CoachCourseComponent} from './pages/coach-related/coach-course/coach-course.component';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
