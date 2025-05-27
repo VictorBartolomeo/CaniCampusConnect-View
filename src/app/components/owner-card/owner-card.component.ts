@@ -10,7 +10,7 @@ import { DividerModule } from 'primeng/divider';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
 import { DogService } from '../../service/dog.service';
-import { Owner } from '../../models/owner';
+import { Owner } from '../../models/user';
 import { Dog } from '../../models/dog';
 import { differenceInDays, differenceInMonths, differenceInYears, format } from 'date-fns';
 import { fr } from 'date-fns/locale';
