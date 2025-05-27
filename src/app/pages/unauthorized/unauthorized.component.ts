@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple'; // Pour l'effet de vague sur le bouton
+import {Component, inject} from '@angular/core';
+import {Router} from '@angular/router';
+import {ButtonModule} from 'primeng/button';
+import {RippleModule} from 'primeng/ripple';
+import {AuthStateService} from '../../service/auth-state.service';
 
 @Component({
   selector: 'app-unauthorized',
@@ -12,10 +13,23 @@ import { RippleModule } from 'primeng/ripple'; // Pour l'effet de vague sur le b
 })
 export class UnauthorizedComponent {
 
-  constructor(private router: Router) {}
+  router = inject(Router);
+  authStateService = inject(AuthStateService)
+
 
   navigateToDashboard(): void {
-    // Redirige l'utilisateur vers une page sûre, comme le tableau de bord.
-    this.router.navigate(['/dashboard']);
+    const userRole = this.authStateService.getRole();
+
+    if (userRole === "ROLE_COACH") {
+      this.router.navigateByUrl('/coach/dashboard');
+    } else if (userRole === "ROLE_OWNER") {
+      this.router.navigateByUrl('/dashboard');
+
+    } else if (userRole === "ROLE_CLUBOWNER") {
+      // this.router.navigate(['/clubowner/dashboard']);
+      console.log("A FAIRE")
+    } else {
+      this.router.navigateByUrl('/login')
+    }
   }
 }
