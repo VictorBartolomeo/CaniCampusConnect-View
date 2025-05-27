@@ -12,7 +12,7 @@ import {RouterLink, RouterOutlet} from '@angular/router';
 import {Menu} from 'primeng/menu';
 import {AuthService} from '../../service/auth.service';
 import {DogService} from '../../service/dog.service';
-import {OwnerService} from '../../service/owner.service';
+import {UserService} from '../../service/user.service';
 import {Observable} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
@@ -37,7 +37,7 @@ export class DashboardNavbarComponent implements OnInit {
   constructor(
     public authService: AuthService,
     public dogService: DogService,
-    public ownerService: OwnerService,
+    public userService: UserService,
   ) {
     this.userDogs$ = this.dogService.userDogs$;
     this.activeDog$ = this.dogService.activeDog$;
@@ -77,7 +77,7 @@ export class DashboardNavbarComponent implements OnInit {
 
     this.avatar = [
       {
-        label: this.ownerService.getFullName(),
+        label: this.userService.getFullName(),
         styleClass: 'name-item',
         disabled:true
       },
