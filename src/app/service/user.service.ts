@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 export class UserService {
   private apiUrl = 'http://localhost:8080';
 
+
   // Observables pour chaque type d'utilisateur
   private ownerSubject = new BehaviorSubject<Owner | null>(null);
   public owner$ = this.ownerSubject.asObservable();
