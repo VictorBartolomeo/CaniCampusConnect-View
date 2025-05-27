@@ -28,44 +28,31 @@ export class CoachDashboardNavbarComponent implements OnInit {
   items: MegaMenuItem[] | undefined;
   avatar: MegaMenuItem[] | undefined;
 
-  userDogs$: Observable<Dog[]>;
-  activeDog$: Observable<Dog | null>;
-  selectedDogId: number | null = null;
-
 
   constructor(
     public authService: AuthService,
-    public dogService: DogService,
     public userService: UserService,
   ) {
-    this.userDogs$ = this.dogService.userDogs$;
-    this.activeDog$ = this.dogService.activeDog$;
-    this.activeDog$.subscribe(dog => {
-      this.selectedDogId = dog?.id || null;
-    });
   }
 
 
   ngOnInit() {
-    if (this.authService.getUserId()) {
-      this.dogService.loadUserDogs();
-    }
 
     this.items = [
       {
         label: 'Général',
         root: true,
-        route: "/coach/dashboard"
+        route: "/coach/dashboard/user"
       },
       {
         label: 'Gérer mes cours',
         root: true,
-        route: "/dashboard/manage-courses"
+        route: "coach/dashboard/manage-courses"
       },
       {
         label: 'Paramètres',
         root: true,
-        route: "/dashboard/settings"
+        route: "coach/dashboard/settings"
       }
     ];
 
@@ -82,7 +69,8 @@ export class CoachDashboardNavbarComponent implements OnInit {
       },
       {
         label: 'Payements',
-        icon: 'pi pi-credit-card'
+        icon: 'pi pi-credit-card',
+        disabled : true
       },
       {
         label: this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre',
@@ -106,18 +94,5 @@ export class CoachDashboardNavbarComponent implements OnInit {
         command: ()=> this.authService.disconnection()
       }
     ];
-  }
-
-  onDogChange(dogId: number): void {
-    if (!dogId) return;
-
-    // Charger les détails complets du chien sélectionné
-    this.dogService.getDogDetails(dogId).subscribe({
-      next: (dogDetails) => {
-        // Les détails du chien sont maintenant disponibles via activeDog$ pour tous les composants
-        console.log('Chien sélectionné avec succès:', dogDetails.name);
-      },
-      error: (err) => console.error('Erreur lors du chargement des détails du chien:', err)
-    });
   }
 }
