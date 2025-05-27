@@ -16,13 +16,15 @@ import {OwnerProfileComponent} from './pages/owner-related/owner-profile/owner-p
 import {
   CoachDashboardNavbarComponent
 } from './components/coach-related/coach-dashboard-navbar/coach-dashboard-navbar.component';
+import {UnauthorizedComponent} from './pages/unauthorized/unauthorized.component';
+import {RoleGuard} from './service/guards/role.guard';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
   {path : "home", component : LandingPageComponent},
   {path : "login", component : LoginPageComponent},
   {path : "register", component : RegisterPageComponent},
-  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard], data : {authorizedRoles: "OWNER"},
+  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data : {authorizedRoles: ["OWNER"]},
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "", redirectTo: "course", pathMatch: "full"},
@@ -38,10 +40,11 @@ export const routes: Routes = [
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
-  {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard], data: {authorizedRoles: ['COACH']}, children :
+  {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard, RoleGuard], data: {authorizedRoles: ['COACH']}, children :
   [
     // {path : }
   ]},
+  { path: 'unauthorized', component: UnauthorizedComponent },
   {path : "CGU", component : GeneralConditionsUseComponent},
   {path : "**", component : NotFoundComponent}
 ];
