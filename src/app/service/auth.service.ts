@@ -102,7 +102,6 @@ export class AuthService {
     this.connected = false;
     this.role = null;
     this.userId = null;
-    // Réinitialiser les données du propriétaire
     this.ownerService.clearOwnerData();
     this.router.navigateByUrl('/login');
   }
