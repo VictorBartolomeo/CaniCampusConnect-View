@@ -7,13 +7,11 @@ import { Owner } from '../models/owner';
 @Injectable({
   providedIn: 'root'
 })
+
 export class OwnerService {
   private apiUrl = 'http://localhost:8080';
 
-  // BehaviorSubject pour stocker les données du propriétaire
-  private ownerSubject = new BehaviorSubject<Owner | null>(null);
-
-  // Observable public que les composants peuvent observer
+  public ownerSubject = new BehaviorSubject<Owner | null>(null);
   public owner$ = this.ownerSubject.asObservable();
 
   constructor(private http: HttpClient) {}
