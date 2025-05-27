@@ -5,7 +5,7 @@ import {LoginPageComponent} from './pages/login-page/login-page.component';
 import {RegisterPageComponent} from './pages/owner-related/register-page/register-page.component';
 import {GeneralConditionsUseComponent} from './pages/general-conditions-use/general-conditions-use.component';
 import {DashboardUserPageComponent} from './pages/owner-related/dashboard-user-page/dashboard-user-page.component';
-import {DashboardNavbarComponent} from './components/dashboard-navbar/dashboard-navbar.component';
+import {DashboardNavbarComponent} from './components/owner-related/dashboard-navbar/dashboard-navbar.component';
 import {HealthRecordComponent} from './pages/owner-related/health-record/health-record.component';
 import {CourseComponent} from './pages/owner-related/course/course.component';
 import {RegisterCourseComponent} from './pages/owner-related/register-course/register-course.component';

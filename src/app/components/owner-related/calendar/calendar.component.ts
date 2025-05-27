@@ -11,15 +11,15 @@ import {
 } from 'angular-calendar';
 import {HttpClient} from '@angular/common/http';
 import {TableModule} from 'primeng/table';
-import {Course} from '../../models/course';
+import {Course} from '../../../models/course';
 import {CustomDateFormatter} from './custom-date-formatter.provider';
 import {Button} from 'primeng/button';
 import {DOCUMENT, UpperCasePipe} from '@angular/common';
-import {DogService} from '../../service/dog.service';
-import {Dog} from '../../models/dog';
-import {Registration} from '../../models/registration';
+import {DogService} from '../../../service/dog.service';
+import {Dog} from '../../../models/dog';
+import {Registration} from '../../../models/registration';
 import {Subscription} from 'rxjs';
-import {AuthService} from '../../service/auth.service';
+import {AuthService} from '../../../service/auth.service';
 
 @Component({
   selector: 'app-calendar',

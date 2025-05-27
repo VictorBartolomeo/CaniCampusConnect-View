@@ -4,13 +4,13 @@ import {Card} from 'primeng/card';
 import {Chip} from 'primeng/chip';
 import {DatePipe, NgClass} from '@angular/common';
 import {Carousel} from 'primeng/carousel';
-import {Course} from '../../models/course';
+import {Course} from '../../../models/course';
 import {Subscription} from 'rxjs';
-import {DogService} from '../../service/dog.service';
-import {Dog} from '../../models/dog';
+import {DogService} from '../../../service/dog.service';
+import {Dog} from '../../../models/dog';
 import {PrimeTemplate} from 'primeng/api';
-import {Registration} from '../../models/registration';
-import {RegistrationStatus} from '../../models/registrationstatus.enum';
+import {Registration} from '../../../models/registration';
+import {RegistrationStatus} from '../../../models/registrationstatus.enum';
 
 
 @Component({
