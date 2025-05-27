@@ -55,17 +55,12 @@ export class CoachDashboardNavbarComponent implements OnInit {
       {
         label: 'Général',
         root: true,
-        route: "/dashboard"
+        route: "/coach/dashboard"
       },
       {
-        label: 'Gérer mon chien',
+        label: 'Gérer mes cours',
         root: true,
-        route: "/dashboard/manage-dog"
-      },
-      {
-        label: 'Réserver un cours',
-        root: true,
-        route: "/dashboard/reserve-course"
+        route: "/dashboard/manage-courses"
       },
       {
         label: 'Paramètres',
