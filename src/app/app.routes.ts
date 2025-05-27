@@ -10,16 +10,19 @@ import {HealthRecordComponent} from './pages/owner-related/health-record/health-
 import {CourseComponent} from './pages/owner-related/course/course.component';
 import {RegisterCourseComponent} from './pages/owner-related/register-course/register-course.component';
 import {ManageDogsPageComponent} from './pages/owner-related/manage-dogs-page/manage-dogs-page.component';
-import {loggedGuard} from './service/logged.guard';
+import {loggedGuard} from './service/guards/logged.guard';
 import {SettingsComponent} from './pages/owner-related/settings/settings.component';
 import {OwnerProfileComponent} from './pages/owner-related/owner-profile/owner-profile.component';
+import {
+  CoachDashboardNavbarComponent
+} from './components/coach-related/coach-dashboard-navbar/coach-dashboard-navbar.component';
 
 export const routes: Routes = [
   {path : "", redirectTo: "home", pathMatch: "full"},
   {path : "home", component : LandingPageComponent},
   {path : "login", component : LoginPageComponent},
   {path : "register", component : RegisterPageComponent},
-  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard],
+  {path : "dashboard", component: DashboardNavbarComponent, canActivate:[loggedGuard], data : {authorizedRoles: "OWNER"},
     children:[
       {path : "user", component : DashboardUserPageComponent, children:[
           {path : "", redirectTo: "course", pathMatch: "full"},
@@ -35,6 +38,10 @@ export const routes: Routes = [
       {path: "", redirectTo: "user", pathMatch: "full"},
       {path : "**", component : NotFoundComponent}
     ]},
+  {path : "coach/dashboard", component: CoachDashboardNavbarComponent, canActivate:[loggedGuard], data: {authorizedRoles: ['COACH']}, children :
+  [
+    // {path : }
+  ]},
   {path : "CGU", component : GeneralConditionsUseComponent},
   {path : "**", component : NotFoundComponent}
 ];
