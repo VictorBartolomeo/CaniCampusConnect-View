@@ -2,8 +2,8 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError, map, tap} from 'rxjs/operators';
-import {Course} from '../models/course.d'; // Assurez-vous que le chemin est correct
-import {Registration} from '../models/registration.d'; // Si les inscriptions sont imbriquées et ont des dates
+import {Course} from '../models/course';
+import {Registration} from '../models/registration';
 
 @Injectable({
   providedIn: 'root'
