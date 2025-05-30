@@ -1,4 +1,3 @@
-
 import {FormsModule} from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
@@ -6,21 +5,17 @@ import {MegaMenu} from 'primeng/megamenu';
 import {ButtonModule} from 'primeng/button';
 import {CommonModule} from '@angular/common';
 import {AvatarModule} from 'primeng/avatar';
-import {Select} from 'primeng/select';
-import {Dog} from '../../../models/dog';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {Menu} from 'primeng/menu';
 import {AuthService} from '../../../service/auth.service';
-import {DogService} from '../../../service/dog.service';
 import {UserService} from '../../../service/user.service';
-import {Observable} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
 
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './coach-dashboard-navbar.component.html',
-  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet, DropdownModule, Ripple],
+  imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, RouterLink, Menu, RouterOutlet, DropdownModule, Ripple],
   styleUrls: ['./coach-dashboard-navbar.component.scss']
 })
 export class CoachDashboardNavbarComponent implements OnInit {
