@@ -24,6 +24,7 @@ import {
   UpcomingCourseTableComponent
 } from './components/coach-related/upcoming-course-table/upcoming-course-table.component';
 import {CoachCalendarComponent} from './components/coach-related/coach-calendar/coach-calendar.component';
+import {CourseManagementComponent} from './pages/coach-related/course-management/course-management.component';
 
 export const routes: Routes = [
   {path: "", redirectTo: "home", pathMatch: "full"},
@@ -39,7 +40,8 @@ export const routes: Routes = [
     data: {authorizedRoles: ['ROLE_OWNER']},
     children: [
       {
-        path: "user", component: DashboardUserPageComponent, children: [
+        path: "user", component: DashboardUserPageComponent,
+        children: [
           {path: "", redirectTo: "course", pathMatch: "full"},
           {path: "course", component: CourseComponent},
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
@@ -63,14 +65,19 @@ export const routes: Routes = [
     data: {authorizedRoles: ['ROLE_COACH']},
     children: [
       {
-        path: "user", component: CoachDashboardComponent, children: [
+        path: "general", component: CoachDashboardComponent,
+        children: [
           {path: "", redirectTo: "upcoming-course", pathMatch: "full"},
           {path: "upcoming-course", component: UpcomingCourseTableComponent},
           {path: "calendar", component: CoachCalendarComponent}
         ]
-      }
+      },
+      {path: "subscription-management", component: CourseManagementComponent},
+      // {path: "settings", component: CoachSettingsComponent},
+      {path: "", redirectTo: "general", pathMatch: "full"},
     ]
   },
+
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: "CGU", component: GeneralConditionsUseComponent},
   {path: "**", component: NotFoundComponent}
