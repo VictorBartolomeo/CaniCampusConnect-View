@@ -1,0 +1,129 @@
+/* Jour actuel */
+.cal-today span.cal-day-number
+{
+  font-weight: normal;
+  font-family: "Montserrat", 'Calibri', serif;
+}
+
+/* Jour actuel */
+.cal-today span.cal-day-number {
+  font-weight: bolder;
+  font-family: "Montserrat", 'Calibri', serif;
+}
+
+.cal-month-view .cal-header .cal-cell{
+  //uppercar
+  text-transform: uppercase;
+}
+
+
+$bg-dark-primary: #18181b; // Fond principal
+$bg-dark-secondary: #1a2d4d; // Fond secondaire
+$bg-active: #263e61; // Fond actif
+$text-color: #f5f8fa; // Couleur de texte
+$border-color: rgba(255, 255, 255, 0.2); // Couleur de bordure
+$today-bg: #2b3414; // Couleur du jour actuel
+$event-primary: #3e8ed0; // Couleur principale des événements
+$event-secondary: rgba(62, 142, 208, 0.2); // Couleur secondaire des événements
+$weekend-color: #52525b; // Couleur des weekends
+
+// Styles pour le mode sombre
+.my-app-dark {
+  // Styles du calendrier en mode sombre
+  mwl-calendar-month-view,
+  mwl-calendar-week-view,
+  mwl-calendar-day-view {
+    .cal-month-view,
+    .cal-week-view,
+    .cal-day-view {
+      background-color: $bg-dark-primary;
+      color: $text-color;
+      border-color: $border-color;
+
+      // En-tête du mois
+      .cal-header {
+        background-color: $bg-dark-secondary;
+        color: $text-color;
+      }
+
+      // Jours de la semaine
+      .cal-day-headers {
+        .cal-header {
+          background-color: $bg-dark-secondary;
+          &:hover {
+            background-color: $bg-active;
+          }
+        }
+      }
+
+      // Cellule des jours
+      .cal-cell {
+        background-color: $bg-dark-primary;
+        &:hover {
+          background-color: $bg-active;
+        }
+      }
+
+      // Jour aujourd'hui
+      .cal-today {
+        background-color: $today-bg !important;
+      }
+
+      // Jours du weekend
+      .cal-weekend {
+        .cal-day-number {
+          color: $weekend-color;
+        }
+      }
+
+      // Jours hors du mois courant
+      .cal-out-month {
+        .cal-day-number {
+          opacity: 0.3;
+        }
+      }
+
+      // Événements
+      .cal-event {
+        background-color: $event-secondary;
+        border-color: $event-primary;
+        color: $text-color;
+      }
+
+      // Bordures des cellules
+      .cal-day-cell {
+        border-color: $border-color;
+      }
+
+      // Badge des événements
+      .cal-day-badge {
+        background-color: $event-primary;
+      }
+
+      // Entête dans la vue semaine et jour
+      .cal-time-events {
+        border-color: $border-color;
+
+        .cal-time {
+          background-color: $bg-dark-secondary;
+          color: $text-color;
+          border-color: $border-color;
+        }
+      }
+
+      // Séparateurs dans la vue semaine et jour
+      .cal-hour-segment {
+        border-color: $border-color;
+      }
+
+      // Événements dans la vue semaine et jour
+      .cal-event-container {
+        .cal-event {
+          background-color: $event-primary;
+          border-color: darken($event-primary, 10%);
+        }
+      }
+    }
+  }
+}
+
