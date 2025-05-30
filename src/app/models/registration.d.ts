@@ -3,6 +3,7 @@ import {Course} from './course';
 import {RegistrationStatus} from './registrationstatus.enum';
 
 export type Registration = {
+  id: number;
   registrationId: number;
   course: Course;
   dog: Dog;

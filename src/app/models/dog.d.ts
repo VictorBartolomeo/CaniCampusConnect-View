@@ -6,6 +6,7 @@ import {MedicationTreatment} from './medicationtreatment';
 import {Breed} from './breed';
 import {Gender} from './gender.enum';
 import {Course} from './course';
+import {Owner} from './user';
 
 export type Dog = {
   id: number;
@@ -21,4 +22,5 @@ export type Dog = {
   dogWeights?: DogWeight[];
   avatarUrl?: string | null;
   courses?: Course[];
+  owner: Owner;
 }

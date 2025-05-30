@@ -88,7 +88,8 @@ export class DashboardNavbarComponent implements OnInit {
       },
       {
         label: 'Payements',
-        icon: 'pi pi-credit-card'
+        icon: 'pi pi-credit-card',
+        disabled : true
       },
       {
         label: this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre',
