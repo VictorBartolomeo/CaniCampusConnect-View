@@ -1,31 +1,80 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Registration } from '../models/registration';
-import {RegistrationStatus} from '../models/registrationstatus.enum';
+import { Course } from '../models/course';
+import { AuthStateService } from './auth-state.service';
+import {API_CONFIG_URL} from '../../environments/environment.development';
+
+export interface CourseWithPendingRegistrations {
+  course: Course;
+  pendingRegistrations: Registration[];
+  pendingCount: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationService {
-  private apiUrl = 'http://localhost:8080/registrations'; // Ajustez si votre endpoint est différent
+  private apiUrl = API_CONFIG_URL.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  // Subject pour les notifications en temps réel
+  private pendingCountSubject = new BehaviorSubject<number>(0);
+  public pendingCount$ = this.pendingCountSubject.asObservable();
 
-  updateRegistrationStatus(registrationId: number, status: RegistrationStatus): Observable<Registration> {
-    if (!registrationId) {
-      return throwError(() => new Error('Registration ID cannot be null or undefined.'));
-    }
+  constructor(
+    private http: HttpClient,
+    private authStateService: AuthStateService
+  ) {}
 
-    return this.http.put<Registration>(`${this.apiUrl}/${registrationId}/status`, { status }).pipe(
-      tap(updatedRegistration => console.log(`Registration ${registrationId} status updated to ${status}`, updatedRegistration)),
-      catchError(error => {
-        console.error(`Error updating registration status for ${registrationId}:`, error);
-        return throwError(() => error);
+  /**
+   * Récupère toutes les registrations en attente pour un coach
+   */
+  getPendingRegistrations(coachId: number): Observable<Registration[]> {
+    return this.http.get<Registration[]>(`${this.apiUrl}/coach/${coachId}/pending-registrations`)
+      .pipe(
+        tap(registrations => {
+          this.updatePendingCount(registrations.length);
+        })
+      );
+  }
+
+  /**
+   * Met à jour le statut d'une registration
+   */
+  updateRegistrationStatus(registrationId: number, newStatus: 'CONFIRMED' | 'REJECTED'): Observable<Registration> {
+    return this.http.patch<Registration>(
+      `${this.apiUrl}/coach/registrations/${registrationId}/status`,
+      { status: newStatus }
+    ).pipe(
+      tap(() => {
+        // Rafraîchir le compteur après modification
+        this.refreshPendingCount();
       })
     );
   }
 
-  // Potentiellement d'autres méthodes liées aux inscriptions si nécessaire
+  /**
+   * Rafraîchit le compteur de demandes en attente
+   */
+  refreshPendingCount(): void {
+    const coachId = this.authStateService.getUserId();
+    if (coachId) {
+      this.getPendingRegistrations(coachId).subscribe();
+    }
+  }
+
+  /**
+   * Met à jour le compteur de demandes en attente
+   */
+  private updatePendingCount(count: number): void {
+    this.pendingCountSubject.next(count);
+  }
+
+  /**
+   * Récupère le nombre actuel de demandes en attente
+   */
+  getCurrentPendingCount(): number {
+    return this.pendingCountSubject.getValue();
+  }
 }
