@@ -1,1 +1,38 @@
-<p>coach-calendar works!</p>
+<h2 class="font-bold text-xl mb-2">Calendrier</h2>
+<div class="col-md-4">
+  <h3 class="text-center text-xl font-bold mb-8 mt-8">
+    {{ viewDate | calendarDate:(view + 'ViewTitle'):locale:weekStartsOn | uppercase}}
+  </h3>
+</div>
+<div class="row text-center">
+  <div class="mb-8">
+    <div class="flex flex-row gap-4 justify-evenly mb-4">
+      <p-button
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate">
+        Précédent
+      </p-button>
+      <p-button mwlCalendarToday
+                [(viewDate)]="viewDate">
+        Aujourd'hui
+      </p-button>
+      <p-button mwlCalendarNextView
+                [view]="view"
+                [(viewDate)]="viewDate">
+        Suivant
+      </p-button>
+    </div>
+  </div>
+
+  <div>
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="events"
+      [locale]="locale"
+      [weekStartsOn]="weekStartsOn"
+      [weekendDays]="weekendDays">
+    </mwl-calendar-month-view>
+  </div>
+
+</div>
