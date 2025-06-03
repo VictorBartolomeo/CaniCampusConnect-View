@@ -110,35 +110,6 @@ export class DogFormComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  // onSubmitEdit() {
-  //   if (this.form.invalid) {
-  //     this.form.markAllAsTouched();
-  //     return;
-  //   }
-  //
-  //   if (!this.updatedDog || !this.updatedDog.id) {
-  //     console.error('ID du chien manquant');
-  //     return;
-  //   }
-  //
-  //   const dogData = {
-  //     ...this.form.value,
-  //     id: this.updatedDog.id
-  //   };
-  //
-  //   console.log('Données à envoyer pour la mise à jour:', dogData);
-  //
-  //   this.http.put(`${this.apiUrl}/dog/${this.updatedDog.id}`, dogData).subscribe({
-  //     next: (response) => {
-  //       console.log('Chien mis à jour avec succès:', response);
-  //       // Mettre à jour le chien actif dans le service si nécessaire
-  //       this.dogService.loadUserDogs();
-  //     },
-  //     error: (error) => {
-  //       console.error('Erreur lors de la mise à jour du chien:', error);
-  //     }
-  //   });
-  // }
   onSubmitEdit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
