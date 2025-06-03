@@ -5,6 +5,7 @@ import { Registration } from '../models/registration';
 import { Course } from '../models/course';
 import { AuthStateService } from './auth-state.service';
 import {API_CONFIG_URL} from '../../environments/environment.development';
+import {RegistrationStatus} from '../models/registrationstatus.enum';
 
 export interface CourseWithPendingRegistrations {
   course: Course;
@@ -42,16 +43,9 @@ export class RegistrationService {
   /**
    * Met à jour le statut d'une registration
    */
-  updateRegistrationStatus(registrationId: number, newStatus: 'CONFIRMED' | 'REJECTED'): Observable<Registration> {
-    return this.http.patch<Registration>(
-      `${this.apiUrl}/coach/registrations/${registrationId}/status`,
-      { status: newStatus }
-    ).pipe(
-      tap(() => {
-        // Rafraîchir le compteur après modification
-        this.refreshPendingCount();
-      })
-    );
+  updateRegistrationStatus(registrationId: number, status: RegistrationStatus): Observable<Registration> {
+    const body = { status: status };
+    return this.http.patch<Registration>(`${this.apiUrl}/registrations/${registrationId}/status`, body);
   }
 
   /**
@@ -77,4 +71,6 @@ export class RegistrationService {
   getCurrentPendingCount(): number {
     return this.pendingCountSubject.getValue();
   }
+
+
 }
