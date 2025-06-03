@@ -1,17 +1,34 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
+
+// PrimeNG imports
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { BadgeModule } from 'primeng/badge';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+import { ConfirmationService, MessageService } from 'primeng/api';
+
+// Services et modèles
+import { RegistrationService } from '../../../service/registration.service';
+import { AuthStateService } from '../../../service/auth-state.service';
+import { Registration } from '../../../models/registration';
+import { RegistrationStatus } from '../../../models/registrationstatus.enum';
+
 @Component({
   selector: 'app-coach-subscription-table',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     TableModule,
     ButtonModule,
-    MultiSelectModule,
     BadgeModule,
     ConfirmDialogModule,
     ToastModule,
     ProgressSpinnerModule,
-    CardModule,
     TagModule
   ],
   providers: [ConfirmationService, MessageService],
@@ -19,14 +36,10 @@
   styleUrls: ['./coach-subscription-table.component.scss']
 })
 export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
-  coursesWithPendingRegistrations: CourseWithPendingRegistrations[] = [];
-  filteredCourses: CourseWithPendingRegistrations[] = [];
+  pendingRegistrations: Registration[] = [];
   loading = false;
   updatingRegistration = false;
-  selectedCourseTypes: CourseType[] = [];
-  availableCourseTypes: CourseType[] = [];
-  // ✅ Array pour stocker les éléments expandés
-  expandedRows: CourseWithPendingRegistrations[] = [];
+  expandedRows: {[key: string]: boolean} = {};
 
   private destroy$ = new Subject<void>();
 
@@ -58,7 +71,9 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (registrations: Registration[]) => {
-          this.processRegistrations(registrations);
+          this.pendingRegistrations = registrations.sort((a, b) =>
+            new Date(a.course.startDatetime).getTime() - new Date(b.course.startDatetime).getTime()
+          );
           this.loading = false;
         },
         error: (error: any) => {
@@ -69,109 +84,92 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
       });
   }
 
-  private processRegistrations(registrations: Registration[]): void {
-    const courseMap = new Map<number, CourseWithPendingRegistrations>();
-
-    registrations.forEach(registration => {
+  getUniqueCoursesWithRegistrations() {
+    const courseMap = new Map();
+    this.pendingRegistrations.forEach(registration => {
       const courseId = registration.course.id;
-
       if (!courseMap.has(courseId)) {
         courseMap.set(courseId, {
           course: registration.course,
-          pendingRegistrations: [],
-          pendingCount: 0
+          registrations: []
         });
       }
-
-      const courseData = courseMap.get(courseId)!;
-      courseData.pendingRegistrations.push(registration);
-      courseData.pendingCount++;
+      courseMap.get(courseId).registrations.push(registration);
     });
-
-    this.coursesWithPendingRegistrations = Array.from(courseMap.values())
-      .sort((a, b) => new Date(a.course.startDatetime).getTime() - new Date(b.course.startDatetime).getTime());
-
-    this.filteredCourses = [...this.coursesWithPendingRegistrations];
-    this.extractCourseTypes();
+    return Array.from(courseMap.values());
   }
 
-  private extractCourseTypes(): void {
-    const typesSet = new Set<string>();
-    this.coursesWithPendingRegistrations.forEach(item => {
-      typesSet.add(JSON.stringify(item.course.courseType));
-    });
-
-    this.availableCourseTypes = Array.from(typesSet)
-      .map(typeStr => JSON.parse(typeStr) as CourseType);
+  getRegistrationsForCourse(courseId: number): Registration[] {
+    return this.pendingRegistrations.filter(reg => reg.course.id === courseId);
   }
 
-  applyFilters(): void {
-    this.filteredCourses = this.coursesWithPendingRegistrations.filter(item => {
-      if (this.selectedCourseTypes.length > 0) {
-        const hasSelectedType = this.selectedCourseTypes.some(
-          selectedType => selectedType.id === item.course.courseType.id
-        );
-        if (!hasSelectedType) return false;
-      }
-      return true;
-    });
-  }
-
-  clearFilters(): void {
-    this.selectedCourseTypes = [];
-    this.filteredCourses = [...this.coursesWithPendingRegistrations];
-  }
-
-  // ✅ Méthode simplifiée pour l'expansion
-  toggleRow(courseData: CourseWithPendingRegistrations): void {
-    const index = this.expandedRows.findIndex(row => row.course.id === courseData.course.id);
-
-    if (index >= 0) {
-      // Ligne déjà expandée, on la retire
-      this.expandedRows.splice(index, 1);
+  toggleRow(course: any): void {
+    if (this.isRowExpanded(course)) {
+      delete this.expandedRows[course.id];
     } else {
-      // Ligne pas expandée, on l'ajoute
-      this.expandedRows.push(courseData);
+      this.expandedRows[course.id] = true;
     }
-
-    console.log('Expanded rows:', this.expandedRows.map(r => r.course.title));
   }
 
-  isRowExpanded(courseData: CourseWithPendingRegistrations): boolean {
-    return this.expandedRows.some(row => row.course.id === courseData.course.id);
+  isRowExpanded(course: any): boolean {
+    return this.expandedRows[course.id];
   }
 
-  updateRegistrationStatus(registration: Registration, newStatus: 'CONFIRMED' | 'REJECTED'): void {
-    const actionText = newStatus === 'CONFIRMED' ? 'confirmer' : 'rejeter';
+  // ✅ Ajout du target comme dans votre exemple qui marche
+  updateRegistrationStatus(event: Event, registration: Registration, newStatus: 'CONFIRMED' | 'REFUSED'): void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const actionText = newStatus === 'CONFIRMED' ? 'confirmer' : 'refuser';
     const message = `Êtes-vous sûr de vouloir ${actionText} l'inscription de ${registration.dog.name} ?`;
 
+    console.log('Tentative d\'affichage du dialog pour:', registration.dog.name); // ✅ Debug
+
     this.confirmationService.confirm({
+      target: event.target as EventTarget, // ✅ Ajout du target
       message,
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Oui',
       rejectLabel: 'Non',
       accept: () => {
+        console.log('Confirmation acceptée'); // ✅ Debug
         this.performStatusUpdate(registration, newStatus);
+      },
+      reject: () => {
+        console.log('Confirmation rejetée'); // ✅ Debug
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Annulé',
+          detail: 'Action annulée',
+          life: 1500
+        });
       }
     });
   }
 
-  private performStatusUpdate(registration: Registration, newStatus: 'CONFIRMED' | 'REJECTED'): void {
+  private performStatusUpdate(registration: Registration, newStatus: 'CONFIRMED' | 'REFUSED'): void {
     this.updatingRegistration = true;
 
-    this.registrationService.updateRegistrationStatus(registration.id, newStatus)
+    const status = newStatus === 'CONFIRMED' ? RegistrationStatus.CONFIRMED : RegistrationStatus.REFUSED;
+    const actionPast = newStatus === 'CONFIRMED' ? 'confirmée' : 'refusée';
+
+    this.registrationService.updateRegistrationStatus(registration.id, status)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedRegistration: Registration) => {
-          const actionText = newStatus === 'CONFIRMED' ? 'confirmée' : 'rejetée';
-          this.showSuccess('Succès', `L'inscription de ${registration.dog.name} a été ${actionText}`);
+          this.showSuccess('Succès', `L'inscription de ${registration.dog.name} a été ${actionPast}`);
           this.loadPendingRegistrations();
           this.updatingRegistration = false;
         },
         error: (error: any) => {
           console.error('Erreur lors de la mise à jour:', error);
-          this.showError('Erreur', 'Impossible de mettre à jour le statut de l\'inscription');
+
+          if (error.error && typeof error.error === 'string' && error.error.includes('complet')) {
+            this.showError('Cours complet', 'Le cours a atteint sa capacité maximale. Impossible de confirmer cette inscription.');
+          } else {
+            this.showError('Erreur', 'Impossible de mettre à jour le statut de l\'inscription');
+          }
           this.updatingRegistration = false;
         }
       });
@@ -192,7 +190,7 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
     switch (status) {
       case 'PENDING': return 'warn';
       case 'CONFIRMED': return 'success';
-      case 'REJECTED': return 'danger';
+      case 'REFUSED': return 'danger';
       default: return 'info';
     }
   }
@@ -201,7 +199,7 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
     switch (status) {
       case 'PENDING': return 'En attente';
       case 'CONFIRMED': return 'Confirmé';
-      case 'REJECTED': return 'Rejeté';
+      case 'REFUSED': return 'Refusé';
       default: return status;
     }
   }
