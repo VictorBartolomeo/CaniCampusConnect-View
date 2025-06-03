@@ -23,9 +23,9 @@ import {Button} from 'primeng/button';
 })
 export class CoachDashboardComponent {
   tabs = [
-    { route: '/coach/dashboard/user/upcoming-course', label: 'Cours', icon: 'pi pi-calendar-clock' },
-    { route: '/coach/dashboard/user/chat', label: 'Messagerie', icon: 'pi pi-comments', disabled: true },
-    { route: '/coach/dashboard/user/calendar', label: 'Calendrier', icon: 'pi pi-calendar' },
+    { route: '/coach/dashboard/general/upcoming-course', label: 'Cours', icon: 'pi pi-calendar-clock' },
+    { route: '/coach/dashboard/general/chat', label: 'Messagerie', icon: 'pi pi-comments', disabled: true },
+    { route: '/coach/dashboard/general/calendar', label: 'Calendrier', icon: 'pi pi-calendar' },
   ];
   dates: Date[] | undefined;
 

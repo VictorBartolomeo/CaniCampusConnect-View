@@ -10,6 +10,7 @@ import {provideAnimations} from '@angular/platform-browser/animations';
 import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 import {jwtInterceptor} from './service/jwt.interceptor';
+import {ConfirmationService, MessageService} from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,6 +27,8 @@ export const appConfig: ApplicationConfig = {
       }
     }),
     provideAnimations(),
+    MessageService,
+    ConfirmationService,
     importProvidersFrom(
     CalendarModule.forRoot({
       provide: DateAdapter,
