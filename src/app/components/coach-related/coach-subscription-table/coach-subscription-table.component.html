@@ -1,48 +1,21 @@
-<div class="max-w-7xl mx-auto p-6">
   <p-toast />
   <p-confirmDialog />
+<div class="max-w-7xl mx-auto p-6">
 
-  <!-- Header -->
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Gestion des Demandes</h1>
-    <p-badge [value]="coursesWithPendingRegistrations.length.toString()" severity="warn" />
+    <p-badge [value]="getUniqueCoursesWithRegistrations().length.toString()" severity="warn" />
   </div>
 
-  <!-- Filters -->
-  <div class="bg-white dark:bg-slate-800 rounded-lg p-4 mb-6 shadow-sm">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <p-multiSelect
-        [options]="availableCourseTypes"
-        [(ngModel)]="selectedCourseTypes"
-        optionLabel="name"
-        placeholder="Filtrer par types de cours"
-        class="w-full"
-        (onChange)="applyFilters()" />
-
-      <p-button
-        label="Réinitialiser les filtres"
-        icon="pi pi-refresh"
-        severity="secondary"
-        (onClick)="clearFilters()" />
-    </div>
-  </div>
-
-  <!-- Loading -->
   @if (loading) {
     <div class="flex justify-center py-12">
       <p-progressSpinner />
     </div>
   }
 
-  <!-- Desktop Table -->
   @if (!loading) {
-    <div class="hidden lg:block bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
-      <!-- ✅ Configuration simplifiée pour l'expansion -->
-      <p-table
-        [value]="filteredCourses"
-        [paginator]="true"
-        [rows]="10"
-        dataKey="course.id">
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
+      <p-table [value]="getUniqueCoursesWithRegistrations()" [paginator]="true" [rows]="10">
 
         <ng-template pTemplate="header">
           <tr>
@@ -54,16 +27,10 @@
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-courseData let-rowIndex="rowIndex">
-          <tr class="cursor-pointer hover:bg-slate-50">
+        <ng-template pTemplate="body" let-courseData>
+          <tr class="cursor-pointer hover:bg-slate-50" (click)="toggleRow(courseData.course)">
             <td>
-              <!-- ✅ Bouton d'expansion PrimeNG standard -->
-              <p-button
-                [icon]="isRowExpanded(courseData) ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-                (onClick)="toggleRow(courseData)"
-                [text]="true"
-                size="small">
-              </p-button>
+              <i class="pi" [class]="isRowExpanded(courseData.course) ? 'pi-chevron-down' : 'pi-chevron-right'"></i>
             </td>
             <td class="font-semibold">{{ courseData.course.title }}</td>
             <td>
@@ -71,18 +38,17 @@
             </td>
             <td>{{ formatDate(courseData.course.startDatetime) }}</td>
             <td>
-              <p-badge [value]="courseData.pendingCount.toString()" severity="warn" />
+              <p-badge [value]="courseData.registrations.length.toString()" severity="warn" />
             </td>
           </tr>
 
-          <!-- ✅ Expansion row directement dans le template body -->
-          @if (isRowExpanded(courseData)) {
+          @if (isRowExpanded(courseData.course)) {
             <tr>
               <td colspan="5" class="p-4 bg-slate-50 dark:bg-slate-900">
                 <h3 class="font-semibold mb-4">Demandes pour {{ courseData.course.title }}</h3>
 
                 <div class="space-y-3">
-                  @for (registration of courseData.pendingRegistrations; track registration.id) {
+                  @for (registration of courseData.registrations; track registration.id) {
                     <div class="flex justify-between items-center p-3 bg-white dark:bg-slate-800 rounded">
                       <div>
                         <div class="font-medium">{{ registration.dog.name }}</div>
@@ -99,21 +65,17 @@
                             size="small"
                             severity="success"
                             [disabled]="updatingRegistration"
-                            (onClick)="updateRegistrationStatus(registration, 'CONFIRMED')" />
+                            (onClick)="updateRegistrationStatus($event, registration, 'CONFIRMED')" />
 
                           <p-button
-                            label="Rejeter"
+                            label="Refuser"
                             icon="pi pi-times"
                             size="small"
                             severity="danger"
                             [disabled]="updatingRegistration"
-                            (onClick)="updateRegistrationStatus(registration, 'REJECTED')" />
+                            (onClick)="updateRegistrationStatus($event, registration, 'REFUSED')" />
                         }
                       </div>
-                    </div>
-                  } @empty {
-                    <div class="text-center py-6 text-slate-500">
-                      Aucune demande d'inscription
                     </div>
                   }
                 </div>
@@ -127,89 +89,12 @@
             <td colspan="5" class="text-center py-12">
               <div class="flex flex-col items-center gap-3">
                 <i class="pi pi-calendar text-4xl text-slate-400"></i>
-                <span class="text-xl">Aucun cours avec des demandes</span>
+                <span class="text-xl">Aucune demande d'inscription</span>
               </div>
             </td>
           </tr>
         </ng-template>
       </p-table>
-    </div>
-  }
-
-  <!-- Mobile Cards (reste identique) -->
-  @if (!loading) {
-    <div class="lg:hidden space-y-4">
-      @for (courseData of filteredCourses; track courseData.course.id) {
-        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border">
-
-          <!-- Course Header -->
-          <div class="p-4 cursor-pointer" (click)="toggleRow(courseData)">
-            <div class="flex justify-between items-start">
-              <div class="flex-1">
-                <h3 class="font-semibold mb-2">{{ courseData.course.title }}</h3>
-                <div class="flex gap-2 mb-2">
-                  <p-tag [value]="courseData.course.courseType.name" severity="info" />
-                  <p-badge [value]="courseData.pendingCount.toString()" severity="warn" />
-                </div>
-                <div class="text-sm text-slate-600">
-                  {{ formatDate(courseData.course.startDatetime) }}
-                </div>
-              </div>
-              <i class="pi" [class]="isRowExpanded(courseData) ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
-            </div>
-          </div>
-
-          <!-- Expanded Content -->
-          @if (isRowExpanded(courseData)) {
-            <div class="border-t p-4 bg-slate-50 dark:bg-slate-900">
-              <h4 class="font-medium mb-3">Demandes ({{ courseData.pendingCount }})</h4>
-
-              @for (registration of courseData.pendingRegistrations; track registration.id) {
-                <div class="bg-white dark:bg-slate-800 rounded p-3 mb-3 last:mb-0">
-                  <div class="flex justify-between items-start mb-3">
-                    <div>
-                      <div class="font-medium">{{ registration.dog.name }}</div>
-                      <div class="text-sm text-slate-600">{{ formatDate(registration.registrationDate) }}</div>
-                    </div>
-                    <p-tag [value]="getStatusLabel(registration.status)" [severity]="getStatusSeverity(registration.status)" />
-                  </div>
-
-                  @if (registration.status === 'PENDING') {
-                    <div class="flex gap-2">
-                      <p-button
-                        label="Confirmer"
-                        icon="pi pi-check"
-                        size="small"
-                        severity="success"
-                        [disabled]="updatingRegistration"
-                        (onClick)="updateRegistrationStatus(registration, 'CONFIRMED')"
-                        class="flex-1" />
-
-                      <p-button
-                        label="Rejeter"
-                        icon="pi pi-times"
-                        size="small"
-                        severity="danger"
-                        [disabled]="updatingRegistration"
-                        (onClick)="updateRegistrationStatus(registration, 'REJECTED')"
-                        class="flex-1" />
-                    </div>
-                  }
-                </div>
-              } @empty {
-                <div class="text-center py-4 text-slate-500">
-                  Aucune demande
-                </div>
-              }
-            </div>
-          }
-        </div>
-      } @empty {
-        <div class="text-center py-12">
-          <i class="pi pi-calendar text-4xl text-slate-400 block mb-3"></i>
-          <span class="text-xl">Aucun cours avec des demandes</span>
-        </div>
-      }
     </div>
   }
 </div>
