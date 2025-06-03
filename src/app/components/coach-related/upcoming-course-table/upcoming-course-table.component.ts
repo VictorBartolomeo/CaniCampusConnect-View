@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { Subscription } from 'rxjs';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { RippleModule } from "primeng/ripple";
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule, DatePipe} from '@angular/common';
+import {Subscription} from 'rxjs';
+import {TableModule} from 'primeng/table';
+import {TagModule} from 'primeng/tag';
+import {ButtonModule} from 'primeng/button';
+import {TooltipModule} from 'primeng/tooltip';
+import {RippleModule} from "primeng/ripple";
 
-import { Course } from '../../../models/course';
-import { Registration } from '../../../models/registration';
-import { RegistrationStatus } from '../../../models/registrationstatus.enum';
+import {Course} from '../../../models/course';
+import {RegistrationStatus} from '../../../models/registrationstatus.enum';
 
-import { CoachDataService } from '../../../service/coach-data.service';
-import { AuthStateService } from '../../../service/auth-state.service';
+import {CoachDataService} from '../../../service/coach-data.service';
+import {AuthStateService} from '../../../service/auth-state.service';
+import {RegistrationService} from '../../../service/registration.service';
 
 @Component({
   selector: 'app-upcoming-course-table',
@@ -32,6 +32,7 @@ import { AuthStateService } from '../../../service/auth-state.service';
 export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
   private authStateService = inject(AuthStateService);
   private coachDataService = inject(CoachDataService);
+  private registrationService = inject(RegistrationService); // ✅ AJOUT
 
   coachId: number | null = null;
   upcomingCourses: Course[] = [];
@@ -43,6 +44,7 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
   totalRecords = 0;
 
   private coursesSubscription?: Subscription;
+  private courseUpdateSubscription?: Subscription; // ✅ AJOUT
 
   readonly RegistrationStatus = RegistrationStatus;
 
@@ -50,10 +52,22 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
     this.coachId = this.authStateService.getUserId();
     if (this.coachId) {
       this.loadUpcomingCourses(this.coachId);
+      this.subscribeToUpdates(); // ✅ AJOUT
     } else {
       this.error = "Impossible de récupérer l'identifiant du coach.";
       this.isLoading = false;
     }
+  }
+
+  // ✅ NOUVELLE MÉTHODE : Écouter les mises à jour de cours
+  private subscribeToUpdates(): void {
+    this.courseUpdateSubscription = this.registrationService.courseUpdated$
+      .subscribe((courseId: number) => {
+        console.log('🔄 Cours mis à jour:', courseId);
+        if (this.coachId) {
+          this.loadUpcomingCourses(this.coachId);
+        }
+      });
   }
 
   loadUpcomingCourses(coachId: number): void {
@@ -71,7 +85,7 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
             }));
           this.totalRecords = this.upcomingCourses.length;
           this.isLoading = false;
-          console.log(`Loaded ${this.upcomingCourses.length} courses:`, this.upcomingCourses);
+          console.log(`✅ Cours rechargés: ${this.upcomingCourses.length} cours`);
         },
         error: (err) => {
           console.error("Erreur lors du chargement des cours du coach:", err);
@@ -136,6 +150,10 @@ export class UpcomingCourseTableComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.coursesSubscription) {
       this.coursesSubscription.unsubscribe();
+    }
+    // ✅ AJOUT : Nettoyer l'abonnement aux mises à jour
+    if (this.courseUpdateSubscription) {
+      this.courseUpdateSubscription.unsubscribe();
     }
   }
 }
