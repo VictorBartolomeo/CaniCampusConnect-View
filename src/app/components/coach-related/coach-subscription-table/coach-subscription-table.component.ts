@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-
-// PrimeNG imports
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
@@ -11,12 +9,12 @@ import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { ConfirmationService, MessageService } from 'primeng/api';
-
-// Services et modèles
 import { RegistrationService } from '../../../service/registration.service';
 import { AuthStateService } from '../../../service/auth-state.service';
 import { Registration } from '../../../models/registration';
 import { RegistrationStatus } from '../../../models/registrationstatus.enum';
+import { ButtonDirective} from 'primeng/button';
+import {Ripple} from 'primeng/ripple';
 
 @Component({
   selector: 'app-coach-subscription-table',
@@ -29,9 +27,10 @@ import { RegistrationStatus } from '../../../models/registrationstatus.enum';
     ConfirmDialogModule,
     ToastModule,
     ProgressSpinnerModule,
-    TagModule
+    TagModule,
+    ButtonDirective,
+    Ripple
   ],
-  providers: [ConfirmationService, MessageService],
   templateUrl: './coach-subscription-table.component.html',
   styleUrls: ['./coach-subscription-table.component.scss']
 })
@@ -116,28 +115,29 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
   }
 
   // ✅ Ajout du target comme dans votre exemple qui marche
+
   updateRegistrationStatus(event: Event, registration: Registration, newStatus: 'CONFIRMED' | 'REFUSED'): void {
+    // Arrêter IMMÉDIATEMENT la propagation
+    event.stopImmediatePropagation();
     event.stopPropagation();
     event.preventDefault();
+
+    console.log('🔥 Méthode updateRegistrationStatus appelée !');
 
     const actionText = newStatus === 'CONFIRMED' ? 'confirmer' : 'refuser';
     const message = `Êtes-vous sûr de vouloir ${actionText} l'inscription de ${registration.dog.name} ?`;
 
-    console.log('Tentative d\'affichage du dialog pour:', registration.dog.name); // ✅ Debug
-
     this.confirmationService.confirm({
-      target: event.target as EventTarget, // ✅ Ajout du target
+      target: event.target as EventTarget,
       message,
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Oui',
       rejectLabel: 'Non',
       accept: () => {
-        console.log('Confirmation acceptée'); // ✅ Debug
         this.performStatusUpdate(registration, newStatus);
       },
       reject: () => {
-        console.log('Confirmation rejetée'); // ✅ Debug
         this.messageService.add({
           severity: 'info',
           summary: 'Annulé',
@@ -147,6 +147,8 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
 
   private performStatusUpdate(registration: Registration, newStatus: 'CONFIRMED' | 'REFUSED'): void {
     this.updatingRegistration = true;
@@ -220,5 +222,9 @@ export class CoachSubscriptionTableComponent implements OnInit, OnDestroy {
       detail,
       life: 5000
     });
+  }
+  testClick(action: string, dogName: string): void {
+    console.log(`🎯 TEST CLICK: ${action} pour ${dogName}`);
+    console.log('Window size:', window.innerWidth, 'x', window.innerHeight);
   }
 }
