@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import {Observable, BehaviorSubject, tap, Subject} from 'rxjs';
 import { Registration } from '../models/registration';
 import { Course } from '../models/course';
 import { AuthStateService } from './auth-state.service';
@@ -22,6 +22,10 @@ export class RegistrationService {
   // Subject pour les notifications en temps réel
   private pendingCountSubject = new BehaviorSubject<number>(0);
   public pendingCount$ = this.pendingCountSubject.asObservable();
+
+  // ✅ AJOUT : Subject pour notifier les mises à jour de cours
+  private courseUpdatedSubject = new Subject<number>();
+  public courseUpdated$ = this.courseUpdatedSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -45,7 +49,20 @@ export class RegistrationService {
    */
   updateRegistrationStatus(registrationId: number, status: RegistrationStatus): Observable<Registration> {
     const body = { status: status };
-    return this.http.patch<Registration>(`${this.apiUrl}/registrations/${registrationId}/status`, body);
+    return this.http.patch<Registration>(`${this.apiUrl}/registrations/${registrationId}/status`, body)
+      .pipe(
+        tap(updatedRegistration => {
+          // ✅ AJOUT : Notifier que le cours a été mis à jour
+          this.notifyCourseUpdate(updatedRegistration.course.id);
+        })
+      );
+  }
+
+  /**
+   * ✅ NOUVELLE MÉTHODE : Notifie qu'un cours a été mis à jour
+   */
+  private notifyCourseUpdate(courseId: number): void {
+    this.courseUpdatedSubject.next(courseId);
   }
 
   /**
@@ -71,6 +88,4 @@ export class RegistrationService {
   getCurrentPendingCount(): number {
     return this.pendingCountSubject.getValue();
   }
-
-
 }
