@@ -46,12 +46,21 @@ export class DogSummaryComponent implements OnInit {
     private router: Router
   ) {}
 
+  getDogAvatarUrl(): string {
+    return this.dog ? this.dogService.getDogAvatarUrl(this.dog) : "?";
+  }
+
   ngOnInit() {
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       this.dog = dog;
       console.log('Dog summary updated for dog:', dog?.name);
     });
-  }
+    if (this.dog) {
+      console.log('Dog data:', this.dog);
+      console.log('Dog breeds:', this.dog.breeds);
+      console.log('Avatar URL result:', this.getDogAvatarUrl());
+    }
+    }
 
   ngOnDestroy() {
     if (this.subscription) {
@@ -201,10 +210,6 @@ export class DogSummaryComponent implements OnInit {
     return allUpToDate
       ? { label: 'À jour', color: 'text-green-600' }
       : { label: 'À vérifier', color: 'text-red-500' };
-  }
-
-  showEditForm(): void {
-    this.editRequested.emit();
   }
 
   navigateToAddDog(): void {

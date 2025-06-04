@@ -1,11 +1,10 @@
 @if (dog) {
   <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full ">
-    <!-- En-tête avec image et nom du chien -->
     <div class="relative h-40 w-full bg-gradient-to-r from-blue-500 to-indigo-600">
       <img
-        [src]="dog.avatarUrl || '/img/avatars/golden.png'"
+        [src]=getDogAvatarUrl()
         class="object-cover h-full w-full"
-        alt="Photo de {{dog.name}}"
+        alt="Photo de {{dog?.name}}"
       />
       <div class="absolute bottom-0 left-0 p-3 bg-black bg-opacity-50 w-full">
         <h2 class="text-white text-xl font-bold flex items-center gap-2">
@@ -57,14 +56,6 @@
           <span [class]="getVaccinationStatus().color">{{getVaccinationStatus().label}}</span>
         </span>
       </div>
-    </div>
-
-    <div class="px-3 pb-3">
-      <p-button
-        icon="pi pi-pencil"
-        label="Modifier les informations"
-        styleClass="p-button-sm p-button-outlined w-full"
-        (onClick)="showEditForm()"></p-button>
     </div>
   </div>
 } @else {
