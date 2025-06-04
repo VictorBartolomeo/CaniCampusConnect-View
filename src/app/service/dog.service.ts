@@ -32,13 +32,14 @@ export class DogService {
       }
     });
   }
+
   getDogAvatarUrl(dog: Dog): string {
     console.log('🐕 getDogAvatarUrl called for dog:', dog?.name);
 
     // Priorité 1: Image personnalisée du chien
     if (dog?.avatarUrl) {
       console.log('✅ Using dog avatar:', dog.avatarUrl);
-      return dog.avatarUrl;
+      return `${this.apiUrl}${dog.avatarUrl}`;
     }
 
     // Priorité 2: Image de la race
@@ -50,7 +51,14 @@ export class DogService {
       console.log('🖼️ Breed image URL:', breedImageUrl);
 
       if (breedImageUrl && breedImageUrl.trim() !== '') {
-        return breedImageUrl;
+        // ✅ CORRECTION : S'assurer que l'URL est complète
+        if (breedImageUrl.startsWith('http')) {
+          // L'URL est déjà complète
+          return breedImageUrl;
+        } else {
+          // L'URL est relative, ajouter l'apiUrl
+          return `${this.apiUrl}${breedImageUrl}`;
+        }
       }
     }
 
@@ -58,7 +66,6 @@ export class DogService {
     console.log('🚫 Using fallback image');
     return '/icons/placeholder_no_breed.jpg';
   }
-
 
 
   public loadUserDogs(userId?: number | null): void {
@@ -95,7 +102,6 @@ export class DogService {
       }
     });
   }
-
 
   setActiveDog(dog: Dog | null): void {
     this.activeDogSubject.next(dog);
@@ -138,6 +144,4 @@ export class DogService {
       })
     );
   }
-
-
 }
