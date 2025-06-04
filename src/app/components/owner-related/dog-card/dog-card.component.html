@@ -1,12 +1,11 @@
 <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
-  <!-- En-tête avec image et nom du chien -->
+
   <ng-template pTemplate="header">
     <div class="relative h-48 w-full bg-gradient-to-r from-blue-500 to-indigo-600">
-      <img
-        [src]="dog.avatarUrl || '/img/avatars/golden.png'"
-        class="object-cover h-full w-full"
-        alt="Photo de {{dog.name}}"
-      />
+      <img [src]="getDogAvatarUrl()"
+           (error)="onImageError($event)"
+           class="w-full h-32 object-cover"
+           [alt]="dog.name">
       <div class="absolute bottom-0 left-0 p-4 bg-black bg-opacity-50 w-full">
         <h2 class="text-white text-2xl font-bold flex items-center gap-2">
           {{dog.name}}
@@ -23,9 +22,9 @@
     </div>
   </ng-template>
 
-  <!-- Corps de la carte -->
+
   <div class="space-y-4 p-3">
-    <!-- Informations principales -->
+
     <div class="flex items-center gap-2">
       <i class="pi pi-id-card text-blue-600"></i>
       <span class="font-semibold">Numéro de puce: {{dog.chipNumber || 'Non renseigné'}}</span>

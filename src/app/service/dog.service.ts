@@ -5,6 +5,7 @@ import {tap, catchError} from 'rxjs/operators';
 import {Dog} from '../models/dog';
 import {AuthStateService} from './auth-state.service';
 import {UserService} from './user.service';
+import {BreedService} from './breed.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class DogService {
   constructor(
     private http: HttpClient,
     private authStateService: AuthStateService,
-    private userService: UserService
+    private userService: UserService,
+    private breedService: BreedService
   ) {
     // S'abonner aux changements d'ID utilisateur pour charger les chiens
     this.authStateService.userId$.subscribe(userId => {
@@ -31,49 +33,79 @@ export class DogService {
     });
   }
 
+  getDogAvatarUrl(dog: Dog): string {
+    console.log('🐕 getDogAvatarUrl called for dog:', dog?.name);
+
+    // Priorité 1: Image personnalisée du chien
+    if (dog?.avatarUrl) {
+      console.log('✅ Using dog avatar:', dog.avatarUrl);
+      return `${this.apiUrl}${dog.avatarUrl}`;
+    }
+
+    // Priorité 2: Image de la race
+    if (dog?.breeds && dog.breeds.length > 0) {
+      const primaryBreed = dog.breeds[0];
+      console.log('🔍 Primary breed:', primaryBreed?.name);
+
+      const breedImageUrl = this.breedService.getBreedImageFromBreed(primaryBreed);
+      console.log('🖼️ Breed image URL:', breedImageUrl);
+
+      if (breedImageUrl && breedImageUrl.trim() !== '') {
+        if (breedImageUrl.startsWith('http')) {
+          return breedImageUrl;
+        } else {
+          return `${this.apiUrl}${breedImageUrl}`;
+        }
+      }
+    }
+
+    // Priorité 3: Image par défaut
+    console.log('🚫 Using fallback image');
+    return '/icons/placeholder_no_breed.jpg';
+  }
+
+
+
   public loadUserDogs(userId?: number | null): void {
-    // Utiliser l'ID fourni ou l'obtenir depuis le service d'état
     const id = userId || this.authStateService.getUserId();
     if (!id) return;
 
-    console.log('ID utilisateur récupéré:', id);
-
     this.http.get<Dog[]>(`${this.apiUrl}/owner/${id}/dogs`).subscribe({
-      next: (dogs) => {
-        if (dogs && dogs.length > 0) {
-          this.userDogsSubject.next(dogs);
-
-          // Récupérer l'ID du chien stocké dans le localStorage
-          const storedDogId = localStorage.getItem('activeDogId');
-
-          if (storedDogId) {
-            // Essayer de trouver le chien correspondant dans la liste des chiens
-            const storedDog = dogs.find(dog => dog.id.toString() === storedDogId);
-
-            if (storedDog) {
-              // Si le chien est trouvé, le définir comme chien actif
-              console.log('Chien trouvé dans le localStorage:', storedDog.name);
-              this.setActiveDog(storedDog);
-            } else {
-              // Si le chien n'est pas trouvé, utiliser le premier chien de la liste
-              console.log('Chien du localStorage non trouvé, utilisation du premier chien');
-              this.setActiveDog(dogs[0]);
-            }
-          } else {
-            // Si aucun ID n'est stocké, utiliser le premier chien
-            console.log('Aucun chien dans le localStorage, utilisation du premier chien');
-            this.setActiveDog(dogs[0]);
-          }
-        } else {
-          console.log('Aucun chien trouvé pour cet utilisateur');
-        }
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des chiens:', error);
-      }
+      next: (dogs) => this.handleDogsLoaded(dogs),
+      error: (error) => console.error('Erreur lors du chargement des chiens:', error)
     });
   }
 
+  private handleDogsLoaded(dogs: Dog[]): void {
+    if (!dogs || dogs.length === 0) {
+      console.log('Aucun chien trouvé pour cet utilisateur');
+      return;
+    }
+
+    this.userDogsSubject.next(dogs);
+
+    const activeDog = this.findActiveDog(dogs);
+    this.setActiveDog(activeDog);
+  }
+
+  private findActiveDog(dogs: Dog[]): Dog {
+    const storedDogId = localStorage.getItem('activeDogId');
+
+    if (storedDogId) {
+      const storedDog = dogs.find(dog => dog.id.toString() === storedDogId);
+
+      if (storedDog) {
+        console.log('Chien trouvé dans le localStorage:', storedDog.name);
+        return storedDog;
+      }
+
+      console.log('Chien du localStorage non trouvé, utilisation du premier chien');
+    } else {
+      console.log('Aucun chien dans le localStorage, utilisation du premier chien');
+    }
+
+    return dogs[0];
+  }
 
   setActiveDog(dog: Dog | null): void {
     this.activeDogSubject.next(dog);

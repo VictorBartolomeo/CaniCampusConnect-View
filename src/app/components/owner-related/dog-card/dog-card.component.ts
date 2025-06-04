@@ -52,6 +52,15 @@ export class DogCardComponent implements OnInit {
 
   constructor(public dogService: DogService) {}
 
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    target.src = '/img/avatars/golden.png';
+  }
+
+  getDogAvatarUrl(): string {
+    return this.dogService.getDogAvatarUrl(this.dog);
+  }
+
   ngOnInit() {
     if (this.dog) {
       this.processWeights();
@@ -62,7 +71,6 @@ export class DogCardComponent implements OnInit {
     }
   }
 
-  // Retourne l'icône et la couleur en fonction du genre
   getGenderIcon(): { icon: any, color: string } {
     if (!this.dog || !this.dog.gender) {
       return {
@@ -100,7 +108,6 @@ export class DogCardComponent implements OnInit {
     }
   }
 
-  // Réutilisation du code existant de DogSummaryComponent
   getDogAge(birthDate: string | Date | undefined): string | null {
     if (birthDate === undefined || birthDate === null) {
       return null;
@@ -205,7 +212,6 @@ export class DogCardComponent implements OnInit {
     });
   }
 
-  // Méthode pour sélectionner ce chien comme chien actif
   selectDog() {
     this.dogService.setActiveDog(this.dog);
   }

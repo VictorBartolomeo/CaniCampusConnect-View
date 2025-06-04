@@ -36,7 +36,6 @@ export class DogSummaryComponent implements OnInit {
   sterilizedMaleIcon = faMarsStroke;
   sterilizedFemaleIcon = faVenusDouble;
 
-  // Enum Gender pour être utilisé dans le template
   genderEnum = Gender;
 
   private subscription!: Subscription;
@@ -46,12 +45,21 @@ export class DogSummaryComponent implements OnInit {
     private router: Router
   ) {}
 
+  getDogAvatarUrl(): string {
+    return this.dog ? this.dogService.getDogAvatarUrl(this.dog) : "?";
+  }
+
   ngOnInit() {
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       this.dog = dog;
       console.log('Dog summary updated for dog:', dog?.name);
     });
-  }
+    if (this.dog) {
+      console.log('Dog data:', this.dog);
+      console.log('Dog breeds:', this.dog.breeds);
+      console.log('Avatar URL result:', this.getDogAvatarUrl());
+    }
+    }
 
   ngOnDestroy() {
     if (this.subscription) {
@@ -59,7 +67,6 @@ export class DogSummaryComponent implements OnInit {
     }
   }
 
-  // Retourne l'icône et la couleur en fonction du genre
   getGenderIcon(): { icon: any, color: string, mainColor: string } {
     if (!this.dog || !this.dog.gender) {
       return {
@@ -103,7 +110,6 @@ export class DogSummaryComponent implements OnInit {
     }
   }
 
-  // Retourne le nom d'affichage du genre
   getGenderDisplayName(): string {
     if (!this.dog || !this.dog.gender) {
       return 'Non spécifié';
@@ -201,10 +207,6 @@ export class DogSummaryComponent implements OnInit {
     return allUpToDate
       ? { label: 'À jour', color: 'text-green-600' }
       : { label: 'À vérifier', color: 'text-red-500' };
-  }
-
-  showEditForm(): void {
-    this.editRequested.emit();
   }
 
   navigateToAddDog(): void {

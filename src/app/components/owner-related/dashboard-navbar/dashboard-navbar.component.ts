@@ -1,6 +1,6 @@
 
 import {FormsModule} from '@angular/forms';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
 import {MegaMenu} from 'primeng/megamenu';
 import {ButtonModule} from 'primeng/button';
@@ -13,18 +13,17 @@ import {Menu} from 'primeng/menu';
 import {AuthService} from '../../../service/auth.service';
 import {DogService} from '../../../service/dog.service';
 import {UserService} from '../../../service/user.service';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
 
 @Component({
   selector: 'app-dashboard-navbar',
   templateUrl: './dashboard-navbar.component.html',
-  // Supprimez OwnerService des imports
   imports: [FormsModule, MegaMenu, ButtonModule, CommonModule, AvatarModule, Select, RouterLink, Menu, RouterOutlet, DropdownModule, Ripple],
   styleUrls: ['./dashboard-navbar.component.scss']
 })
-export class DashboardNavbarComponent implements OnInit {
+export class DashboardNavbarComponent implements OnInit, OnDestroy {
 
   items: MegaMenuItem[] | undefined;
   avatar: MegaMenuItem[] | undefined;
@@ -33,6 +32,9 @@ export class DashboardNavbarComponent implements OnInit {
   activeDog$: Observable<Dog | null>;
   selectedDogId: number | null = null;
 
+  // ✅ AJOUT : Propriété locale pour le chien actif
+  activeDog: Dog | null = null;
+  private activeDogSubscription?: Subscription;
 
   constructor(
     public authService: AuthService,
@@ -41,16 +43,18 @@ export class DashboardNavbarComponent implements OnInit {
   ) {
     this.userDogs$ = this.dogService.userDogs$;
     this.activeDog$ = this.dogService.activeDog$;
-    this.activeDog$.subscribe(dog => {
-      this.selectedDogId = dog?.id || null;
-    });
   }
-
 
   ngOnInit() {
     if (this.authService.getUserId()) {
       this.dogService.loadUserDogs();
     }
+
+    // ✅ S'abonner au chien actif
+    this.activeDogSubscription = this.activeDog$.subscribe(dog => {
+      this.activeDog = dog;
+      this.selectedDogId = dog?.id || null;
+    });
 
     this.items = [
       {
@@ -96,7 +100,6 @@ export class DashboardNavbarComponent implements OnInit {
         icon: 'pi pi-palette',
         command: () => {
           this.authService.toggleDarkMode();
-          // Mettre à jour le libellé du menu
           const themeItem = this.avatar?.find(item => item.icon === 'pi pi-palette');
           if (themeItem) {
             themeItem.label = this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre';
@@ -115,13 +118,17 @@ export class DashboardNavbarComponent implements OnInit {
     ];
   }
 
+  ngOnDestroy(): void {
+    if (this.activeDogSubscription) {
+      this.activeDogSubscription.unsubscribe();
+    }
+  }
+
   onDogChange(dogId: number): void {
     if (!dogId) return;
 
-    // Charger les détails complets du chien sélectionné
     this.dogService.getDogDetails(dogId).subscribe({
       next: (dogDetails) => {
-        // Les détails du chien sont maintenant disponibles via activeDog$ pour tous les composants
         console.log('Chien sélectionné avec succès:', dogDetails.name);
       },
       error: (err) => console.error('Erreur lors du chargement des détails du chien:', err)
