@@ -9,7 +9,7 @@ import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {Dialog} from 'primeng/dialog';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {faEye, faPaw} from '@fortawesome/free-solid-svg-icons';
-import {differenceInMonths} from 'date-fns';
+import {differenceInMonths, isAfter, startOfDay} from 'date-fns'; // ✅ Ajouter isAfter et startOfDay
 
 import {DogService} from '../../../service/dog.service';
 import {Dog} from '../../../models/dog';
@@ -67,7 +67,6 @@ export class RegisterCourseComponent implements OnInit {
     this.dogService.loadUserDogs();
   }
 
-  //TODO Vérifier pourquoi ca me retourne les dates antérieurs au jour.
   loadAvailableCourses() {
     if (!this.selectedDog) return;
 
@@ -98,23 +97,36 @@ export class RegisterCourseComponent implements OnInit {
       return;
     }
 
+    // ✅ Date d'aujourd'hui (début de journée) pour comparaison
+    const today = startOfDay(new Date());
+
     // Filtrer les cours pour le chien actif
     this.filteredCourses = this.courses.filter(course => {
-      // Vérifier si le chien est déjà inscrit à ce cours
+      // ✅ 1. Vérifier que le cours est à venir (pas dans le passé)
+      const courseDate = new Date(course.startDatetime);
+      const isFutureCourse = isAfter(courseDate, today) ||
+        courseDate.getTime() === today.getTime(); // Inclure les cours d'aujourd'hui
+
+      if (!isFutureCourse) {
+        console.log(`Cours "${course.title}": dans le passé (${courseDate.toLocaleDateString()})`);
+        return false;
+      }
+
+      // ✅ 2. Vérifier si le chien est déjà inscrit à ce cours
       const isAlreadyRegistered = this.isDogRegisteredForCourse(course);
       if (isAlreadyRegistered) {
         console.log(`Cours "${course.title}": chien déjà inscrit`);
         return false;
       }
 
-      // Vérifier si le chien est éligible par âge
+      // ✅ 3. Vérifier si le chien est éligible par âge
       const isEligibleByAge = this.isDogEligibleForCourse(this.selectedDog!, course);
       if (!isEligibleByAge) {
         console.log(`Cours "${course.title}": chien non éligible par âge`);
         return false;
       }
 
-      // Vérifier si le cours est complet
+      // ✅ 4. Vérifier si le cours est complet
       const activeRegistrations = course.registrations ?
         course.registrations.filter(r =>
           r.status === RegistrationStatus.PENDING ||
@@ -123,13 +135,29 @@ export class RegisterCourseComponent implements OnInit {
 
       const isFull = activeRegistrations >= course.maxCapacity;
       if (isFull) {
-        console.log(`Cours "${course.title}": complet`);
+        console.log(`Cours "${course.title}": complet (${activeRegistrations}/${course.maxCapacity})`);
         return false;
       }
 
-      console.log(`Cours "${course.title}": disponible pour inscription`);
+      console.log(`Cours "${course.title}": disponible pour inscription (${courseDate.toLocaleDateString()})`);
       return true;
     });
+
+    // ✅ Trier les cours par date (du plus proche au plus lointain)
+    this.filteredCourses.sort((a, b) => {
+      const dateA = new Date(a.startDatetime).getTime();
+      const dateB = new Date(b.startDatetime).getTime();
+      return dateA - dateB;
+    });
+
+    console.log(`📅 ${this.filteredCourses.length} cours à venir disponibles pour ${this.selectedDog?.name}`);
+  }
+
+  // ✅ Méthode utilitaire pour vérifier si un cours est à venir
+  private isFutureCourse(course: Course): boolean {
+    const today = startOfDay(new Date());
+    const courseDate = new Date(course.startDatetime);
+    return isAfter(courseDate, today) || courseDate.getTime() === today.getTime();
   }
 
   // Vérifier si le chien est déjà inscrit à un cours
@@ -163,7 +191,6 @@ export class RegisterCourseComponent implements OnInit {
   }
 
   isDogEligibleForCourse(dog: Dog, course: Course): boolean {
-
     // Calculer l'âge du chien À LA DATE DU COURS
     const courseDate = new Date(course.startDatetime);
     const dogBirthDate = new Date(dog.birthDate);

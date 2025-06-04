@@ -1,16 +1,25 @@
 <div class="card flex justify-center w-full">
-  <form [formGroup]="form" (ngSubmit)=onSubmitEdit() class="w-full">
+  <form [formGroup]="form" (ngSubmit)="onSubmitEdit()" class="w-full">
     <div class="flex flex-col gap-4 w-full">
       <h1 class="text-xl font-bold">Modifier le profil du chien {{ updatedDog?.name }}</h1>
 
       <label for="name">Nom du chien</label>
       <input class="w-full font-bold" type="text" pInputText formControlName="name"/>
 
+      <label class="block mb-2" for="gender">Genre</label>
+      <p-select [options]="genderOptions"
+                formControlName="gender"
+                optionLabel="label"
+                optionValue="value"
+                dataKey="value"
+                placeholder="Sélectionner le genre"
+                styleClass="w-full md:w-80">
+      </p-select>
+
       <label class="block mb-2" for="breed">Races</label>
       <p-multiselect [options]="availableBreeds"
                      formControlName="breed"
                      optionLabel="name"
-                     dataKey="name"
                      placeholder="Race.s du chien"
                      [maxSelectedLabels]="3"
                      styleClass="w-full md:w-80"></p-multiselect>
@@ -28,7 +37,7 @@
         [maxDate]="today"
         styleClass="w-full md:w-80 z-10"></p-calendar>
 
-      <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="w-full"/>
+      <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="w-full flex justify-center"/>
     </div>
   </form>
 </div>

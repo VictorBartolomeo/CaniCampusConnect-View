@@ -34,21 +34,15 @@ export class DogService {
   }
 
   getDogAvatarUrl(dog: Dog): string {
-    console.log('🐕 getDogAvatarUrl called for dog:', dog?.name);
 
-    // Priorité 1: Image personnalisée du chien
     if (dog?.avatarUrl) {
-      console.log('✅ Using dog avatar:', dog.avatarUrl);
       return `${this.apiUrl}${dog.avatarUrl}`;
     }
 
-    // Priorité 2: Image de la race
     if (dog?.breeds && dog.breeds.length > 0) {
       const primaryBreed = dog.breeds[0];
-      console.log('🔍 Primary breed:', primaryBreed?.name);
 
       const breedImageUrl = this.breedService.getBreedImageFromBreed(primaryBreed);
-      console.log('🖼️ Breed image URL:', breedImageUrl);
 
       if (breedImageUrl && breedImageUrl.trim() !== '') {
         if (breedImageUrl.startsWith('http')) {
@@ -111,10 +105,8 @@ export class DogService {
     this.activeDogSubject.next(dog);
     if (dog) {
       localStorage.setItem('activeDogId', dog.id.toString());
-      console.log(`Chien actif défini: ${dog.name} (ID: ${dog.id})`);
     } else {
       localStorage.removeItem('activeDogId');
-      console.log('Chien actif supprimé');
     }
   }
 

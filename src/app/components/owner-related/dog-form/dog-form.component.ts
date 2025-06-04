@@ -1,25 +1,34 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Breed } from '../../../models/breed';
-import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
-import { Dog } from '../../../models/dog';
-import { MultiSelect } from 'primeng/multiselect';
+import { CommonModule } from '@angular/common';
 import { InputText } from 'primeng/inputtext';
+import { MultiSelect } from 'primeng/multiselect';
+import { Select } from 'primeng/select'; // ✅ Ajout du Select
 import { Button } from 'primeng/button';
 import { Calendar } from 'primeng/calendar';
+import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+
+import { Dog } from '../../../models/dog';
+import { Breed } from '../../../models/breed';
+import { Gender } from '../../../models/gender.enum';
+import { GENDER_OPTIONS } from '../../../models/gender.options'; // ✅ Import des options
 import { DogService } from '../../../service/dog.service';
+import {DatePicker} from 'primeng/datepicker';
 
 @Component({
   selector: 'app-dog-form',
   templateUrl: './dog-form.component.html',
   standalone: true,
   imports: [
+    CommonModule, // ✅ Pour la syntaxe @if
     ReactiveFormsModule,
     InputText,
     MultiSelect,
+    Select, // ✅ Ajout du Select
     Button,
-    Calendar
+    Calendar,
+    DatePicker
   ],
   styleUrls: ['./dog-form.component.scss']
 })
@@ -30,6 +39,8 @@ export class DogFormComponent implements OnInit, OnDestroy {
   dogSubscription: Subscription | null = null;
   apiUrl = 'http://localhost:8080';
 
+  genderOptions = GENDER_OPTIONS;
+
   http = inject(HttpClient);
   dogService = inject(DogService);
 
@@ -39,6 +50,7 @@ export class DogFormComponent implements OnInit, OnDestroy {
     breed: [[] as Breed[], [Validators.required, Validators.minLength(1)]],
     chipNumber: ['', Validators.required],
     birthDate: [null as Date | null, Validators.required],
+    gender: ['', Validators.required],
     avatar: [null]
   });
 
@@ -47,8 +59,6 @@ export class DogFormComponent implements OnInit, OnDestroy {
       next: (breeds) => {
         this.availableBreeds = breeds;
         console.log('Races disponibles:', this.availableBreeds);
-
-        // S'abonner au chien actif
         this.subscribeToActiveDog();
       },
       error: (error) => {
@@ -59,31 +69,30 @@ export class DogFormComponent implements OnInit, OnDestroy {
 
   subscribeToActiveDog() {
     this.dogSubscription = this.dogService.activeDog$.subscribe({
-      next: (dog: Dog | null) => { // Typez explicitement le paramètre
+      next: (dog: Dog | null) => {
         if (dog) {
           console.log('Chien actif reçu:', dog);
           this.updatedDog = dog;
 
-          // Mapper les races du chien
           const selectedBreeds = this.mapDogBreedsToAvailableBreeds(dog.breeds || []);
 
-          // Mettre à jour le formulaire
-          this.form.patchValue({
-            name: dog.name,
-            breed: selectedBreeds, // Utiliser les races mappées
-            chipNumber: dog.chipNumber,
-            birthDate: dog.birthDate ? new Date(dog.birthDate) : null,
-            avatar: null
-          });
+            this.form.patchValue({
+              name: dog.name,
+              breed: selectedBreeds,
+              chipNumber: dog.chipNumber,
+              birthDate: dog.birthDate ? new Date(dog.birthDate) : null,
+              gender: dog.gender,
+              avatar: null
+            });
         }
       },
-      error: (error: any) => { // Typez explicitement le paramètre
+      error: (error: any) => {
         console.error('Erreur avec le chien actif:', error);
       }
     });
   }
 
-  mapDogBreedsToAvailableBreeds(dogBreeds: Breed[]): Breed[] { // Typez explicitement le paramètre
+  mapDogBreedsToAvailableBreeds(dogBreeds: Breed[]): Breed[] {
     if (!dogBreeds || !dogBreeds.length) {
       console.warn('Pas de races à mapper', dogBreeds);
       return [];
@@ -95,7 +104,6 @@ export class DogFormComponent implements OnInit, OnDestroy {
     const result: Breed[] = [];
 
     dogBreeds.forEach(dogBreed => {
-      // Trouver la race correspondante par son nom
       const matchingBreed = this.availableBreeds.find(breed => breed.name === dogBreed.name);
 
       if (matchingBreed) {
@@ -121,17 +129,16 @@ export class DogFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Assurez-vous que breeds n'est jamais null
     const formBreeds = this.form.value.breed || [];
 
-    // Créer l'objet à envoyer en conservant les propriétés essentielles du chien existant
+    // ✅ Créer l'objet avec le genre mis à jour
     const dogData = {
       id: this.updatedDog.id,
       name: this.form.value.name,
       birthDate: this.form.value.birthDate,
       chipNumber: this.form.value.chipNumber,
-      gender: this.updatedDog.gender, // Conserver le genre du chien existant
-      breeds: formBreeds.length > 0 ? formBreeds : this.updatedDog.breeds, // Utiliser les races du formulaire ou celles existantes
+      gender: this.form.value.gender, // ✅ Genre mis à jour
+      breeds: formBreeds.length > 0 ? formBreeds : this.updatedDog.breeds,
     };
 
     console.log('Données à envoyer pour la mise à jour:', dogData);
@@ -139,12 +146,10 @@ export class DogFormComponent implements OnInit, OnDestroy {
     this.http.put(`${this.apiUrl}/dog/${this.updatedDog.id}`, dogData).subscribe({
       next: (response) => {
         console.log('Chien mis à jour avec succès:', response);
-        // Mettre à jour le chien actif dans le service si nécessaire
         this.dogService.loadUserDogs();
       },
       error: (error) => {
         console.error('Erreur lors de la mise à jour du chien:', error);
-        // Afficher le détail de l'erreur pour mieux diagnostiquer
         if (error.error && error.error.message) {
           console.error('Message d\'erreur:', error.error.message);
         }
@@ -152,6 +157,10 @@ export class DogFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.form.get(fieldName);
+    return !!(field && field.invalid && field.touched);
+  }
 
   ngOnDestroy() {
     if (this.dogSubscription) {
