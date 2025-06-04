@@ -18,14 +18,19 @@
 
         <ng-template pTemplate="selectedItem" let-selectedOption>
           <div class="flex items-center gap-2">
-            <img src="/img/avatars/golden.png" style="width: 32px"/>
+            <img [src]="activeDog ? dogService.getDogAvatarUrl(activeDog) : '/icons/placeholder_no_breed.jpg'"
+                 [alt]="activeDog?.name || 'Avatar du chien'"
+                 style="width: 32px"/>
             <div>{{ selectedOption.name }}</div>
           </div>
         </ng-template>
 
         <ng-template pTemplate="item" let-dog>
           <div class="flex items-center gap-2">
-            <img src="/img/avatars/golden.png" style="width: 32px"/>
+            <!-- ✅ CORRECTION : Utiliser dog du contexte, pas activeDog -->
+            <img [src]="dogService.getDogAvatarUrl(dog)"
+                 [alt]="dog?.name || 'Avatar du chien'"
+                 style="width: 32px"/>
             <div>{{ dog.name }}</div>
           </div>
         </ng-template>
