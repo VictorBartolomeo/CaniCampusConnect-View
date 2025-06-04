@@ -1,52 +1,175 @@
-<p-button (click)="showDialog()" label="Ajouter un chien" icon="pi pi-plus" />
 
-<p-dialog header="Header" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem', height: '80vh' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
-  <ng-template #header>
-    <div class="flex flex-column items-center justify-center gap-2">
-      <p class="text-xl font-bold">Mettre nom de l'utilisateur : Ajouter un nouveau chien</p>
+<p-button
+  (onClick)="showDialog()"
+  icon="pi pi-plus"
+  label="Ajouter un chien">
+</p-button>
+
+<p-dialog
+  header="Ajouter un nouveau chien"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '50rem'}"
+  [draggable]="false"
+  [resizable]="false">
+
+  <form [formGroup]="form" (ngSubmit)="onSubmitCreate()" class="space-y-6">
+
+    <!-- ✅ Message d'erreur général -->
+    @if (serverErrors['general']) {
+      <div class="p-message p-message-error w-full">
+        <div class="p-message-wrapper">
+          <span class="p-message-icon pi pi-exclamation-triangle"></span>
+          <div class="p-message-text">{{ serverErrors['general'] }}</div>
+        </div>
+      </div>
+    }
+
+    <!-- Nom du chien -->
+    <div class="field">
+      <label for="name" class="block text-sm font-medium mb-2">
+        Nom du chien *
+      </label>
+      <input
+        pInputText
+        id="name"
+        formControlName="name"
+        placeholder="Entrez le nom du chien"
+        class="w-full"
+        [class.p-invalid]="hasFieldError('name')"
+        (input)="onFieldChange('name')" />
+      @if (hasFieldError('name')) {
+        <small class="p-error">
+          {{ getFieldErrorMessage('name') }}
+        </small>
+      }
     </div>
-  </ng-template>
-  <form [formGroup]="form" (ngSubmit)="onSubmitCreate()" id="dogAddForm">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Renseignez les informations</span>
 
-    <div class="flex items-center gap-4 mb-4">
-      <label for="name" class="font-semibold w-24">Nom du chien</label>
-      <input pInputText id="name" class="flex-auto" autocomplete="off" formControlName="name" />
+    <!-- Sélecteur de genre -->
+    <div class="field">
+      <label for="gender" class="block text-sm font-medium mb-2">
+        Genre *
+      </label>
+      <p-select
+        inputId="gender"
+        formControlName="gender"
+        [options]="genderOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Sélectionner le genre"
+        class="w-full"
+        [class.p-invalid]="hasFieldError('gender')"
+        (onChange)="onFieldChange('gender')">
+
+        <ng-template pTemplate="selectedItem" let-selectedOption>
+          @if (selectedOption) {
+            <div class="flex items-center gap-2">
+              <i [class]="selectedOption.icon + ' ' + selectedOption.color"></i>
+              <span>{{ selectedOption.label }}</span>
+            </div>
+          }
+        </ng-template>
+
+        <ng-template pTemplate="item" let-option>
+          <div class="flex items-center gap-2">
+            <i [class]="option.icon + ' ' + option.color"></i>
+            <span>{{ option.label }}</span>
+          </div>
+        </ng-template>
+      </p-select>
+      @if (hasFieldError('gender')) {
+        <small class="p-error">
+          {{ getFieldErrorMessage('gender') }}
+        </small>
+      }
     </div>
 
-    <div class="flex items-center gap-4 mb-2">
-      <label for="breed" class="font-semibold w-24">Race</label>
-      <p-multiselect [options]="dogBreeds"
-                     formControlName="breed"
-                     optionLabel="label"
-                     placeholder="Race.s du chien"
-                     [maxSelectedLabels]="3"
-                     styleClass="flex-auto"
-                     inputId="breed"></p-multiselect>
-    </div>
-
-    <div class="flex items-center gap-4 mb-2">
-      <label for="chipNumber" class="font-semibold w-24">Numéro de puce</label>
-      <input pInputText id="chipNumber" class="flex-auto" autocomplete="off" formControlName="chipNumber" />
-    </div>
-
-    <div class="flex items-center gap-4 mb-2">
-      <label for="birthDate" class="font-semibold w-24">Date de naissance</label>
+    <!-- Date de naissance -->
+    <div class="field">
+      <label for="birthDate" class="block text-sm font-medium mb-2">
+        Date de naissance *
+      </label>
       <p-datepicker
-        formControlName="birthDate"
         inputId="birthDate"
-      showIcon
-      iconDisplay="input"
-      dateFormat="dd/mm/yy"
-      [maxDate]="today"
-      styleClass="flex-auto"></p-datepicker>
+        formControlName="birthDate"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        [maxDate]="today"
+        placeholder="Sélectionner la date"
+        class="w-full"
+        [class.p-invalid]="hasFieldError('birthDate')"
+        (onSelect)="onFieldChange('birthDate')">
+      </p-datepicker>
+      @if (hasFieldError('birthDate')) {
+        <small class="p-error">
+          {{ getFieldErrorMessage('birthDate') }}
+        </small>
+      }
     </div>
 
-    <!--            TODO Ajouter ici le genre du chien-->
-  </form>
+    <!-- ✅ Numéro de puce avec gestion d'erreur spécifique -->
+    <div class="field">
+      <label for="chipNumber" class="block text-sm font-medium mb-2">
+        Numéro de puce
+      </label>
+      <input
+        pInputText
+        id="chipNumber"
+        formControlName="chipNumber"
+        placeholder="Entrez le numéro de puce"
+        class="w-full"
+        [class.p-invalid]="hasFieldError('chipNumber')"
+        (input)="onFieldChange('chipNumber')" />
+      @if (hasFieldError('chipNumber')) {
+        <small class="p-error">
+          {{ getFieldErrorMessage('chipNumber') }}
+        </small>
+      }
+      <small class="text-gray-500 text-xs mt-1">
+        Le numéro de puce doit être unique pour chaque chien
+      </small>
+    </div>
 
-  <ng-template #footer>
-    <p-button label="Cancel" [text]="true" severity="secondary" (click)="visible = false" />
-    <p-button type="submit" form="form" label="Save" [outlined]="true" severity="secondary" />
-  </ng-template>
+    <!-- Races -->
+    <div class="field">
+      <label for="breed" class="block text-sm font-medium mb-2">
+        Races *
+      </label>
+      <p-multiselect
+        inputId="breed"
+        formControlName="breed"
+        [options]="dogBreeds"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Sélectionner les races"
+        class="w-full"
+        [class.p-invalid]="hasFieldError('breed')"
+        (onChange)="onFieldChange('breed')">
+      </p-multiselect>
+      @if (hasFieldError('breed')) {
+        <small class="p-error">
+          {{ getFieldErrorMessage('breed') }}
+        </small>
+      }
+    </div>
+
+    <div class="flex justify-end gap-3 pt-4">
+      <p-button
+        type="button"
+        label="Annuler"
+        severity="secondary"
+        icon="pi pi-times"
+        (onClick)="visible = false"
+        [disabled]="isLoading">
+      </p-button>
+
+      <p-button
+        type="submit"
+        label="Créer le chien"
+        icon="pi pi-check"
+        [disabled]="form.invalid || isLoading"
+        [loading]="isLoading">
+      </p-button>
+    </div>
+  </form>
 </p-dialog>
