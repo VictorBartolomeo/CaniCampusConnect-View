@@ -42,9 +42,8 @@ export class DogAddFormComponent implements OnInit {
   dogService = inject(DogService);
   genderOptions = GENDER_OPTIONS;
 
-  // ✅ Ajouter une propriété pour les erreurs serveur
   serverErrors: { [key: string]: string } = {};
-  isLoading: boolean = false; // ✅ Pour désactiver le bouton pendant l'envoi
+  isLoading: boolean = false;
 
   formBuilder = inject(FormBuilder);
   form = this.formBuilder.group({
@@ -80,7 +79,6 @@ export class DogAddFormComponent implements OnInit {
     this.visible = true;
   }
 
-  // ✅ Méthode pour effacer les erreurs serveur quand l'utilisateur modifie un champ
   onFieldChange(fieldName: string) {
     if (this.serverErrors[fieldName]) {
       delete this.serverErrors[fieldName];
@@ -91,8 +89,8 @@ export class DogAddFormComponent implements OnInit {
     if (this.form.valid) {
       console.log('✅ Formulaire valide - Création en cours...');
 
-      this.isLoading = true; // ✅ Activer le loading
-      this.serverErrors = {}; // ✅ Réinitialiser les erreurs
+      this.isLoading = true;
+      this.serverErrors = {};
 
       const userId = this.authService.getUserId();
       if (!userId) {
@@ -116,6 +114,7 @@ export class DogAddFormComponent implements OnInit {
 
       console.log('📤 Données préparées pour le backend:', dogData);
 
+      //TODO Refacto ici avec le dogService
       this.http.post('http://localhost:8080/dog', dogData).subscribe({
         next: (response) => {
           console.log('🎉 Chien créé avec succès', response);
@@ -129,7 +128,7 @@ export class DogAddFormComponent implements OnInit {
           this.isLoading = false; // ✅ Désactiver le loading
 
           // ✅ Gérer les différents types d'erreurs
-          if (error.status === 500) {
+          if (error.status === 409) {
             // Vérifier si c'est une erreur de contrainte d'unicité pour le numéro de puce
             const errorMessage = error.error?.message || error.message || '';
 

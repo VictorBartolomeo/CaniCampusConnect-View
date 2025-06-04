@@ -1,34 +1,31 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { InputText } from 'primeng/inputtext';
-import { MultiSelect } from 'primeng/multiselect';
-import { Select } from 'primeng/select'; // ✅ Ajout du Select
-import { Button } from 'primeng/button';
-import { Calendar } from 'primeng/calendar';
-import { HttpClient } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {InputText} from 'primeng/inputtext';
+import {MultiSelect} from 'primeng/multiselect';
+import {Select} from 'primeng/select'; // ✅ Ajout du Select
+import {Button} from 'primeng/button';
+import {Calendar} from 'primeng/calendar';
+import {HttpClient} from '@angular/common/http';
+import {Subscription} from 'rxjs';
 
-import { Dog } from '../../../models/dog';
-import { Breed } from '../../../models/breed';
-import { Gender } from '../../../models/gender.enum';
-import { GENDER_OPTIONS } from '../../../models/gender.options'; // ✅ Import des options
-import { DogService } from '../../../service/dog.service';
-import {DatePicker} from 'primeng/datepicker';
+import {Dog} from '../../../models/dog';
+import {Breed} from '../../../models/breed';
+import {GENDER_OPTIONS} from '../../../models/gender.options';
+import {DogService} from '../../../service/dog.service';
 
 @Component({
   selector: 'app-dog-form',
   templateUrl: './dog-form.component.html',
   standalone: true,
   imports: [
-    CommonModule, // ✅ Pour la syntaxe @if
+    CommonModule,
     ReactiveFormsModule,
     InputText,
     MultiSelect,
-    Select, // ✅ Ajout du Select
+    Select,
     Button,
-    Calendar,
-    DatePicker
+    Calendar
   ],
   styleUrls: ['./dog-form.component.scss']
 })
