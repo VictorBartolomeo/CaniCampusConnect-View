@@ -51,12 +51,9 @@ export class DogService {
       console.log('🖼️ Breed image URL:', breedImageUrl);
 
       if (breedImageUrl && breedImageUrl.trim() !== '') {
-        // ✅ CORRECTION : S'assurer que l'URL est complète
         if (breedImageUrl.startsWith('http')) {
-          // L'URL est déjà complète
           return breedImageUrl;
         } else {
-          // L'URL est relative, ajouter l'apiUrl
           return `${this.apiUrl}${breedImageUrl}`;
         }
       }
@@ -68,39 +65,46 @@ export class DogService {
   }
 
 
+
   public loadUserDogs(userId?: number | null): void {
     const id = userId || this.authStateService.getUserId();
     if (!id) return;
 
     this.http.get<Dog[]>(`${this.apiUrl}/owner/${id}/dogs`).subscribe({
-      next: (dogs) => {
-        if (dogs && dogs.length > 0) {
-          this.userDogsSubject.next(dogs);
-
-          const storedDogId = localStorage.getItem('activeDogId');
-
-          if (storedDogId) {
-            const storedDog = dogs.find(dog => dog.id.toString() === storedDogId);
-
-            if (storedDog) {
-              console.log('Chien trouvé dans le localStorage:', storedDog.name);
-              this.setActiveDog(storedDog);
-            } else {
-              console.log('Chien du localStorage non trouvé, utilisation du premier chien');
-              this.setActiveDog(dogs[0]);
-            }
-          } else {
-            console.log('Aucun chien dans le localStorage, utilisation du premier chien');
-            this.setActiveDog(dogs[0]);
-          }
-        } else {
-          console.log('Aucun chien trouvé pour cet utilisateur');
-        }
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des chiens:', error);
-      }
+      next: (dogs) => this.handleDogsLoaded(dogs),
+      error: (error) => console.error('Erreur lors du chargement des chiens:', error)
     });
+  }
+
+  private handleDogsLoaded(dogs: Dog[]): void {
+    if (!dogs || dogs.length === 0) {
+      console.log('Aucun chien trouvé pour cet utilisateur');
+      return;
+    }
+
+    this.userDogsSubject.next(dogs);
+
+    const activeDog = this.findActiveDog(dogs);
+    this.setActiveDog(activeDog);
+  }
+
+  private findActiveDog(dogs: Dog[]): Dog {
+    const storedDogId = localStorage.getItem('activeDogId');
+
+    if (storedDogId) {
+      const storedDog = dogs.find(dog => dog.id.toString() === storedDogId);
+
+      if (storedDog) {
+        console.log('Chien trouvé dans le localStorage:', storedDog.name);
+        return storedDog;
+      }
+
+      console.log('Chien du localStorage non trouvé, utilisation du premier chien');
+    } else {
+      console.log('Aucun chien dans le localStorage, utilisation du premier chien');
+    }
+
+    return dogs[0];
   }
 
   setActiveDog(dog: Dog | null): void {
