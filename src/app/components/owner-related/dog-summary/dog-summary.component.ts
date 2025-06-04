@@ -36,7 +36,6 @@ export class DogSummaryComponent implements OnInit {
   sterilizedMaleIcon = faMarsStroke;
   sterilizedFemaleIcon = faVenusDouble;
 
-  // Enum Gender pour être utilisé dans le template
   genderEnum = Gender;
 
   private subscription!: Subscription;
@@ -68,7 +67,6 @@ export class DogSummaryComponent implements OnInit {
     }
   }
 
-  // Retourne l'icône et la couleur en fonction du genre
   getGenderIcon(): { icon: any, color: string, mainColor: string } {
     if (!this.dog || !this.dog.gender) {
       return {
@@ -112,7 +110,6 @@ export class DogSummaryComponent implements OnInit {
     }
   }
 
-  // Retourne le nom d'affichage du genre
   getGenderDisplayName(): string {
     if (!this.dog || !this.dog.gender) {
       return 'Non spécifié';
