@@ -12,25 +12,25 @@ export const GENDER_OPTIONS = [
   {
     label: 'Mâle',
     value: 'MALE',
-    icon: 'faMars',
-    color: 'text-blue-500'
+    icon: faMars,
+    color: 'text-white'
   },
   {
     label: 'Femelle',
     value: 'FEMALE',
-    icon: 'faVenus',
-    color: 'text-pink-500'
+    icon: faVenus,
+    color: 'text-white'
   },
   {
     label: 'Mâle stérilisé',
     value: 'STERILIZED_MALE',
-    icon: 'faMarsStroke',
-    color: 'text-blue-400'
+    icon: faMarsStroke,
+    color: 'text-white'
   },
   {
     label: 'Femelle stérilisée',
     value: 'STERILIZED_FEMALE',
-    icon: 'faVenusDouble',
-    color: 'text-pink-400'
+    icon: faVenusDouble,
+    color: 'text-white'
   }
 ];
