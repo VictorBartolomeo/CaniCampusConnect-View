@@ -128,10 +128,6 @@ export class AuthService {
     return this.userService.getCurrentUser();
   }
 
-  getUserFullName(): string {
-    return this.userService.getFullName();
-  }
-
   refreshUserInfo(): void {
     const userId = this.authStateService.getUserId();
     if (userId) {
