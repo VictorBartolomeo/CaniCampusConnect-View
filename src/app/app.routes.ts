@@ -25,6 +25,7 @@ import {
 } from './components/coach-related/upcoming-course-table/upcoming-course-table.component';
 import {CoachCalendarComponent} from './components/coach-related/coach-calendar/coach-calendar.component';
 import {CourseManagementComponent} from './pages/coach-related/course-management/course-management.component';
+import {CalendarComponent} from './components/owner-related/calendar/calendar.component';
 
 export const routes: Routes = [
   {path: "", redirectTo: "home", pathMatch: "full"},
@@ -44,6 +45,7 @@ export const routes: Routes = [
         children: [
           {path: "", redirectTo: "course", pathMatch: "full"},
           {path: "course", component: CourseComponent},
+          {path: "calendar", component: CalendarComponent},
           // {path : "chat", component : ChatComponent}, SOON TO COME - Maybe - Finally Nope
           {path: "health-record", component: HealthRecordComponent}
         ]

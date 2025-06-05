@@ -1,24 +1,3 @@
-.avatar-button{
-  --p-button-primary-background : #FFFFFF;
-  --p-button-primary-hover-background : #ECECEC;
-  --p-button-primary-border-color: #FFFFFF;
-  --p-button-primary-hover-border-color: #ECECEC;
-}
 
-p-menu {
-  min-width: fit-content !important;
-  white-space: nowrap;
-}
-    :host ::ng-deep .p-menu { /* Cible p-menu globalement mais depuis ce composant */
-      .p-menu-list {
-        .p-menu-item.name-item > .p-menu-item-content { /* Cible le contenu de l'item ayant la classe */
-          font-weight: bold;
-          }
-        }
-      }
-
-.select-dog .p-select-option{
-  font-weight: bold;
-}
 
 
