@@ -10,6 +10,7 @@ import {Registration} from '../../../models/registration';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
 import {ButtonDirective, ButtonIcon} from 'primeng/button';
+import {DatePicker} from 'primeng/datepicker';
 
 
 @Component({
@@ -20,7 +21,8 @@ import {ButtonDirective, ButtonIcon} from 'primeng/button';
     FormsModule,
     Calendar,
     ButtonDirective,
-    ButtonIcon
+    ButtonIcon,
+    DatePicker
   ],
   templateUrl: './past-courses.component.html',
   styleUrl: './past-courses.component.scss'

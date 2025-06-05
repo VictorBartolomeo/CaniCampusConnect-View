@@ -4,9 +4,9 @@
 
     <div class="flex items-center">
       <label for="dateFilter" class="mr-2">Filtrer à partir du :</label>
-      <p-calendar id="dateFilter" [(ngModel)]="dateFilter" [showIcon]="true" (onSelect)="onDateFilterChange()"
+      <p-datepicker id="dateFilter" [(ngModel)]="dateFilter" [showIcon]="true" (onSelect)="onDateFilterChange()"
                   dateFormat="dd/mm/yy" inputStyleClass="w-full z-1" placeholder="Sélectionner une date">
-      </p-calendar>
+      </p-datepicker>
       @if (dateFilter) {
         <button pButton pButtonIcon="pi pi-times" class="p-button-text p-button-rounded p-button-sm ml-2"
                 (click)="clearDateFilter()"></button>
