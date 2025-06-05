@@ -109,6 +109,7 @@ ICI C'EST LES COMPOSANTS
           root: {
             primary: {
               background: "{primary.500}",
+              color : "{alias.white}"
             },
             secondary: {
               background: "#212121",
@@ -119,6 +120,7 @@ ICI C'EST LES COMPOSANTS
           root: {
             primary: {
               background: "{alias.white}",
+              color : "{primary.500}"
             },
             secondary: {
               background: "#212121",
@@ -132,11 +134,35 @@ ICI C'EST LES COMPOSANTS
         light: {
           root: {
             background: "{form.field.background}",
+            color : "{primary.500}",
+            borderColor: "{form.field.borderColor}",
           },
+          overlay :{
+            color: "{primary.500}"
+          }
         },
       },
     },
-  }
+    card: {
+      colorScheme: {
+        light: {
+            background: "{alias.secondary_20}",
+            color: "{primary.500}",
+          },
+          dark: {
+            background: "{alias.black}",
+            color: "{alias.white}",
+          }
+        }
+      },
+    megaMenu : {
+      colorScheme: {
+        root: {
+          gap : "1rem",
+        }
+      }
+    }
+    }
 })
 
 
