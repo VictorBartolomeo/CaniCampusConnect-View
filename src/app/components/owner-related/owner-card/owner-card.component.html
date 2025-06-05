@@ -5,9 +5,8 @@
       <div class="absolute inset-0 flex items-center justify-center">
         <p-avatar
           [image]="'/img/avatars/user-default-avatar.png'"
-          size="large"
-          shape="circle"
-          styleClass="border-2 border-white shadow-md"></p-avatar>
+          size="xlarge"
+          styleClass=""></p-avatar>
       </div>
     </div>
   </ng-template>
@@ -60,12 +59,12 @@
   }
 
   <ng-template pTemplate="footer">
-    <div class="flex justify-center">
+    <div class="flex justify-center mt-3">
       <p-button
         icon="pi pi-pencil"
         label="Modifier mon profil"
-        styleClass="p-button-outlined p-button-sm"
-        [routerLink]="['/dashboard/settings']"></p-button>
+        [routerLink]="['/dashboard/settings']"
+      severity="primary"></p-button>
     </div>
   </ng-template>
 </p-card>
