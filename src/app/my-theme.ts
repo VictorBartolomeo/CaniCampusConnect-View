@@ -109,11 +109,31 @@ ICI C'EST LES COMPOSANTS
           root: {
             primary: {
               background: "{primary.500}",
-              color : "{alias.white}"
+              color : "{alias.white}",
+              HoverBackground : "{alias.white}",
+              HoverColor : "{primary.500}",
+              borderColor: '',
+              hoverBorderColor: '{primary.500}',
             },
             secondary: {
               background: "#212121",
             },
+            success :{
+              background: "{success.500}",
+              color : "{alias.white}"
+            },
+            warning :{
+              background: "{warning.500}",
+              color : "{alias.white}"
+            },
+            error :{
+              background: "{error.500}",
+              color : "{alias.white}"
+            },
+            contrast: {
+              background: "{alias.white}",
+              color : "{primary.500}"
+            }
           },
         },
         dark : {
@@ -136,6 +156,15 @@ ICI C'EST LES COMPOSANTS
             background: "{form.field.background}",
             color : "{primary.500}",
             borderColor: "{form.field.borderColor}",
+            focusBorderColor: '{primary.500}',
+            invalidBorderColor: '{error.500}',
+            focusRing: {
+              width: '10rem',
+              style: '{form.field.focus.ring.style}',
+              color: '{form.field.focus.ring.color}',
+              offset: '{form.field.focus.ring.offset}',
+              shadow: '{form.field.focus.ring.shadow}'}
+
           },
           overlay :{
             color: "{primary.500}"
@@ -146,19 +175,53 @@ ICI C'EST LES COMPOSANTS
     card: {
       colorScheme: {
         light: {
-            background: "{alias.secondary_20}",
-            color: "{primary.500}",
-          },
-          dark: {
+          background: "{alias.secondary_20}",
+          color: "{primary.500}",
+          shadow: '1px 1px 3px 0 {primary.500}, 0 1px 2px 0 rgba(255,0,0,0.06)',
+          header: {
             background: "{alias.black}",
             color: "{alias.white}",
+            padding: "1rem",
+            borderRadius: "8px 8px 0 0"
+          },
+          title: {
+            fontWeight: "700",
+            fontSize: "1.25rem",
+            color: "{alias.white}",
+          },
+          subtitle: {
+            fontWeight: "400",
+            fontSize: "0.875rem",
+            color: "{alias.white}"
+          }
+        },
+        dark: {
+          background: "{alias.black}",
+          color: "{alias.white}",
+          header: {
+            background: "{alias.black}",
+            color: "{alias.white}"
           }
         }
-      },
+      }
+    },
+
     megaMenu : {
       colorScheme: {
         root: {
           gap : "1rem",
+        }
+      }
+    },
+    datepicker : {
+      colorScheme: {
+        root: {
+          background: "{alias.white}",
+          color: "{primary.500}",
+          borderColor: "{form.field.borderColor}",
+        },
+        overlay :{
+          color: "{primary.500}"
         }
       }
     }
