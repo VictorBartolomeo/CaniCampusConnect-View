@@ -1,6 +1,7 @@
+
 export enum Gender {
-  'MALE'= 'Male',
-  'FEMALE' = 'Femelle',
-  'STERILIZED_MALE' = 'Mâle stérilisé',
-  'STERILIZED_FEMALE' = 'Femelle stérilisée'
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  STERILIZED_MALE = 'STERILIZED_MALE',
+  STERILIZED_FEMALE = 'STERILIZED_FEMALE'
 }
