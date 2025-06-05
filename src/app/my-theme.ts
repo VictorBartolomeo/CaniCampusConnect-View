@@ -208,6 +208,46 @@ ICI C'EST LES COMPOSANTS
           color: "{primary.500}"
         }
       }
+    },
+
+    menu : {
+      colorScheme: {
+        root: {
+          light: {
+          background: "{alias.white}",
+          color: "{primary.500}",
+        },
+        overlay :{
+          color: "{primary.500}"
+        },
+          dark: {
+          background: "{alias.white}",
+          color: "{alias.white}",
+          }
+          },
+        item : {
+          light: {
+          background: "{alias.white}",
+          color: "{primary.500}",
+          }
+
+        }
+      }
+    },
+
+    avatar : {
+      colorScheme: {
+        root: {
+          light: {
+          background: "{alias.white}",
+          color: "{primary.500}",
+          },
+          dark: {
+          background: "{alias.white}",
+          color: "{alias.white}",
+          }
+        }
+      }
     }
 
 
