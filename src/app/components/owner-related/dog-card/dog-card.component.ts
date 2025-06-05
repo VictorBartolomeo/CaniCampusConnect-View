@@ -11,9 +11,9 @@ import { Dog } from '../../../models/dog';
 import { DogService } from '../../../service/dog.service';
 import { differenceInMonths, differenceInYears } from 'date-fns';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faWeightScale, faMars, faVenus, faMarsStroke, faVenusDouble } from '@fortawesome/free-solid-svg-icons';
+import { faWeightScale } from '@fortawesome/free-solid-svg-icons';
 import { Gender } from '../../../models/gender.enum';
-import {GENDER_OPTIONS} from '../../../models/gender.options';
+import { GENDER_OPTIONS, GenderOptions } from '../../../models/gender.options';
 
 @Component({
   selector: 'app-dog-card',
@@ -37,13 +37,12 @@ export class DogCardComponent implements OnInit {
 
   // Icônes
   weightIcon = faWeightScale;
-  maleIcon = faMars;
-  femaleIcon = faVenus;
-  sterilizedMaleIcon = faMarsStroke;
-  sterilizedFemaleIcon = faVenusDouble;
 
   // Enum Gender pour être utilisé dans le template
   genderEnum = Gender;
+
+  // Options de genre pour faciliter l'accès
+  genderOptions = GENDER_OPTIONS;
 
   latestWeight: any | undefined;
   hasMedication: boolean = false;
@@ -73,10 +72,8 @@ export class DogCardComponent implements OnInit {
   }
 
   getGenderIcon(): { icon: any, color: string } {
-    console.log("le chien :" + this.dog.name + " est de sexe : " + this.dog.gender);
-
     // Trouve l'option correspondante dans GENDER_OPTIONS
-    const genderOption = GENDER_OPTIONS.find(option => option.value === this.dog.gender);
+    const genderOption = this.genderOptions.find(option => option.value === this.dog.gender);
 
     if (genderOption) {
       return {
@@ -90,6 +87,11 @@ export class DogCardComponent implements OnInit {
       icon: 'pi pi-question',
       color: 'text-gray-400'
     };
+  }
+
+  getGenderLabel(): string {
+    const genderOption = this.genderOptions.find(option => option.value === this.dog.gender);
+    return genderOption ? genderOption.label : 'Non spécifié';
   }
 
 

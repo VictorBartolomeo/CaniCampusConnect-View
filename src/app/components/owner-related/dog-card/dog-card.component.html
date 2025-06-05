@@ -12,7 +12,7 @@
           {{dog.name}}
           <fa-icon [icon]="getGenderIcon().icon"
                    [class]="getGenderIcon().color"
-                   [title]="dog.gender"></fa-icon>
+                   [title]="getGenderLabel()"></fa-icon>
         </h2>
         <div class="flex gap-2 items-center text-white text-sm">
           <span>{{getDogAge(dog.birthDate)}}</span>
@@ -33,7 +33,7 @@
 
     <div class="flex items-center gap-2">
       <fa-icon [icon]="getGenderIcon().icon" [class]="getGenderIcon().color"></fa-icon>
-      <span class="font-semibold">Genre: {{dog.gender}}</span>
+      <span class="font-semibold">Genre: {{getGenderLabel()}}</span>
     </div>
 
     <div class="flex items-center gap-2">
