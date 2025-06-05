@@ -12,6 +12,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {AuthService} from '../../../service/auth.service';
 import {DogService} from '../../../service/dog.service';
+import {IconDefinition} from '@fortawesome/angular-fontawesome';
 
 interface BreedsSelect {
   label: string;
@@ -207,11 +208,12 @@ export class DogAddFormComponent implements OnInit {
     return errors;
   }
 
-  getSelectedGenderIcon(): string {
+  getSelectedGenderIcon(): IconDefinition | string {
     const selectedGender = this.form.get('gender')?.value;
     const genderOption = this.genderOptions.find(option => option.value === selectedGender);
     return genderOption?.icon || 'pi pi-question';
   }
+
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.form.get(fieldName);
