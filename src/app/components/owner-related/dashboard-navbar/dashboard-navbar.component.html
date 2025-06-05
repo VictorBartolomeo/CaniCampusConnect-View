@@ -27,7 +27,6 @@
 
         <ng-template pTemplate="item" let-dog>
           <div class="flex items-center gap-2">
-            <!-- ✅ CORRECTION : Utiliser dog du contexte, pas activeDog -->
             <img [src]="dogService.getDogAvatarUrl(dog)"
                  [alt]="dog?.name || 'Avatar du chien'"
                  style="width: 32px"/>
@@ -39,8 +38,7 @@
 
     <ng-template pTemplate="item" let-item>
       <a pRipple [routerLink]="item.route"
-         class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase"
-         style="border-radius: 2rem">
+         class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase">
         <i [ngClass]="item.icon"></i>
         <span class="ml-2">{{ item.label }}</span>
       </a>

@@ -1,3 +1,5 @@
-
-
-
+.avatar-button {
+  ::ng-deep .p-button {
+    background: transparent !important;
+  }
+}

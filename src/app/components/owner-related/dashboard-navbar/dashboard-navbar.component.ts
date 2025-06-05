@@ -1,4 +1,3 @@
-
 import {FormsModule} from '@angular/forms';
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
@@ -46,16 +45,27 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.subscribeToActiveDog();
+    this.initializeStaticItems();
+
     if (this.authService.getUserId()) {
       this.dogService.loadUserDogs();
     }
 
-    // ✅ S'abonner au chien actif
+    // ✅ S'abonner aux changements d'owner pour mettre à jour le menu
+    this.userService.owner$.subscribe(owner => {
+      this.buildAvatarMenu();
+    });
+  }
+
+  private subscribeToActiveDog(): void {
     this.activeDogSubscription = this.activeDog$.subscribe(dog => {
       this.activeDog = dog;
       this.selectedDogId = dog?.id || null;
     });
+  }
 
+  private initializeStaticItems(): void {
     this.items = [
       {
         label: 'Général',
@@ -78,12 +88,15 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
         route: "/dashboard/settings"
       }
     ];
+  }
 
+  // ✅ Construire le menu avatar (appelé à chaque changement d'owner)
+  private buildAvatarMenu(): void {
     this.avatar = [
       {
-        label: this.userService.getFullName(),
+        label: this.userService.getFullName(), // ✅ Utilise directement la méthode du service
         styleClass: 'name-item',
-        disabled:true
+        disabled: true
       },
       {
         label: 'Profile',
@@ -93,7 +106,7 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
       {
         label: 'Payements',
         icon: 'pi pi-credit-card',
-        disabled : true
+        disabled: true
       },
       {
         label: this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre',
@@ -113,7 +126,7 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
       {
         label: 'Déconnexion',
         icon: 'pi pi-sign-out',
-        command: ()=> this.authService.disconnection()
+        command: () => this.authService.disconnection()
       }
     ];
   }
