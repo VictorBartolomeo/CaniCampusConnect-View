@@ -3,59 +3,128 @@ import Aura from "@primeng/themes/aura";
 
 export const MyPreset = definePreset(Aura, {
   semantic: {
-
     primary: {
-      // Couleur primary
-      50: "#f0fdf5",
-      100: "#dcfce8",
-      200: "#bbf7d1",
-      300: "#86efad",
-      400: "#4ade81",
-      500: "#22c55f",
-      600: "#16a34b",
-      700: "#15803d",
-      800: "#166534",
-      900: "#14532c",
-      950: "#052e14",
+      50: '#e8e9ec',
+      100: '#c2c5cd',
+      200: '#9ba0ae',
+      300: '#757b8e',
+      400: '#4e566f',
+      500: '#1B2140',
+      600: '#181d38',
+      700: '#14172f',
+      800: '#101227',
+      900: '#0c0d1e',
+      950: '#080915'
     },
-
-    //
-    // En suite autant de couleur que tu veux
-    //
-    warning: {
-      // Couleur primary
+    secondary: {
+      50: '#f0f3e8',
+      100: '#dbe2c3',
+      200: '#c3cf9b',
+      300: '#acbb73',
+      400: '#96a74b',
+      500: '#93C01F',
+      600: '#84ad1b',
+      700: '#759918',
+      800: '#668615',
+      900: '#577211',
+      950: '#35460b'
     },
     success: {
-      // Couleur primary
+      50: '#f0f3e8',
+      100: '#dbe2c3',
+      200: '#c3cf9b',
+      300: '#acbb73',
+      400: '#96a74b',
+      500: '#93C01F', // $my-secondary
+      600: '#84ad1b',
+      700: '#759918',
+      800: '#668615',
+      900: '#577211',
+      950: '#35460b'
+    },
+    warning: {
+      50: '#fdf8f0',
+      100: '#fbeedc',
+      200: '#f7dcc0',
+      300: '#f3c193',
+      400: '#ef9f5b',
+      500: '#EA8F16', // $my-accent
+      600: '#d38014',
+      700: '#ba7011',
+      800: '#a1610e',
+      900: '#88520b',
+      950: '#543107'
     },
     error: {
-      // Couleur primary
+      50: '#ffe8e8',
+      100: '#ffc2c2',
+      200: '#ff9c9c',
+      300: '#ff7575',
+      400: '#ff4f4f',
+      500: '#ff0000', // Une couleur d'erreur standard
+      600: '#cc0000',
+      700: '#990000',
+      800: '#660000',
+      900: '#330000',
+      950: '#1a0000'
     },
-    information: {
-      // Couleur primary
+    info: {
+      50: '#e8f7fd',
+      100: '#c2effb',
+      200: '#9be6fa',
+      300: '#75dcf8',
+      400: '#4ed3f6',
+      500: '#5BC4F1', // $my-tertiary
+      600: '#52b0d8',
+      700: '#499dbe',
+      800: '#4089a5',
+      900: '#37768b',
+      950: '#214754'
     },
+  alias: {
+    secondary: '#93C01F',
+    secondary_20 : 'rgba(147, 192, 31, 0.2)',
+    tertiary: '#5BC4F1',
+    muted: '#64748B',
+    muted_foreground: '#1B21407F',
+    muted_secondary: '#93C01F33',
+    accent: '#EA8F16',
+    accent_2: '#F3BF00',
+    white: '#fff',
+    black: '#000',
+  }
   },
 
   /*
-  *****************
-  *****************
-  ICI C'EST LES COMPOSANTS
-  *****************
-  *****************
-  */
+*****************
+*****************
+ICI C'EST LES COMPOSANTS
+*****************
+*****************
+*/
   components: {
     button: {
       colorScheme: {
         light: {
           root: {
             primary: {
-              background: "#ef4",
+              background: "{primary.500}",
             },
             secondary: {
               background: "#212121",
             },
           },
         },
+        dark : {
+          root: {
+            primary: {
+              background: "{alias.white}",
+            },
+            secondary: {
+              background: "#212121",
+            },
+          },
+        }
       },
     },
     select: {
@@ -67,5 +136,8 @@ export const MyPreset = definePreset(Aura, {
         },
       },
     },
-  },
-});
+  }
+})
+
+
+
