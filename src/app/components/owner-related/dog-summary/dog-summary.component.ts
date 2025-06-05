@@ -12,6 +12,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faWeightScale, faMars, faVenus, faMarsStroke, faVenusDouble } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { Gender } from '../../../models/gender.enum';
+import {StyleClass} from 'primeng/styleclass';
 
 @Component({
   selector: 'app-dog-summary',
@@ -20,7 +21,8 @@ import { Gender } from '../../../models/gender.enum';
     CommonModule,
     CardModule,
     ButtonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    StyleClass
   ],
   templateUrl: './dog-summary.component.html',
   styleUrl: './dog-summary.component.scss'

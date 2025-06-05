@@ -1,28 +1,33 @@
 @if (dog) {
-  <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full ">
-    <div class="relative h-40 w-full bg-gradient-to-r from-blue-500 to-indigo-600">
-      <img
-        [src]="getDogAvatarUrl()"
-        class="object-cover h-full w-full"
-        alt="Photo de {{dog?.name}}"
-      />
-      <div class="absolute bottom-0 left-0 p-3 bg-black bg-opacity-50 w-full">
-        <h2 class="text-white text-xl font-bold flex items-center gap-2">
-          {{dog.name}}
-          <fa-icon [icon]="getGenderIcon().icon"
-                   [class]="getGenderIcon().color"
-                   [title]="getGenderDisplayName()"></fa-icon>
-        </h2>
-        <div class="flex gap-2 items-center text-white text-sm">
-          <span>{{getDogAge(dog.birthDate)}}</span>
-          <span class="text-xl">•</span>
-          <span>{{getBreedNames()}}</span>
+  <p-card styleClass="h-full w-[500px]">
+
+    <ng-template pTemplate="header">
+      <div class="relative h-60 w-full overflow-hidden">
+
+        <img
+          [src]="getDogAvatarUrl()"
+          class="object-contain h-full w-full "
+          alt="Photo de {{dog?.name}}"
+        />
+
+        <div class="absolute bottom-0 left-0 p-3 bg-primary/60 w-full">
+          <h2 class="text-white text-xl font-bold flex items-center gap-2">
+            {{dog.name}}
+            <fa-icon [icon]="getGenderIcon().icon"
+                     [class]="getGenderIcon().color"
+                     [title]="getGenderDisplayName()"></fa-icon>
+          </h2>
+          <div class="flex gap-2 items-center text-white text-sm">
+            <span>{{getDogAge(dog.birthDate)}}</span>
+            <span class="text-xl">•</span>
+            <span>{{getBreedNames()}}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-template>
 
-    <!-- Corps de la carte -->
-    <div class="space-y-3 p-3">
+
+    <div class="flex flex-col justify-between h-full">
       <div class="flex items-center gap-2">
         <i class="pi pi-id-card text-blue-600"></i>
         <span class="font-semibold text-sm">Numéro de puce: {{dog.chipNumber || 'Non renseigné'}}</span>
@@ -30,7 +35,7 @@
 
       <div class="flex items-center gap-2">
         <i class="pi pi-calendar text-blue-600"></i>
-        <span class="font-semibold text-sm">Date de naissance: {{formatDate(dog.birthDate) || 'Non renseignée'}}</span>
+        <span class="font-semibold text-sm ">Date de naissance: {{formatDate(dog.birthDate) || 'Non renseignée'}}</span>
       </div>
 
       <div class="flex items-center gap-2">
@@ -57,9 +62,10 @@
         </span>
       </div>
     </div>
-  </div>
+
+  </p-card>
 } @else {
-  <div class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full p-4 flex flex-col justify-center items-center">
+  <p-card class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full w-full p-4 flex flex-col justify-center items-center">
     <div class="text-center p-4">
       <i class="pi pi-exclamation-triangle text-3xl text-yellow-500 mb-3"></i>
       <h3 class="text-lg font-semibold mb-2">Aucun chien sélectionné</h3>
@@ -70,5 +76,5 @@
         styleClass="p-button-sm"
         (onClick)="navigateToAddDog()"></p-button>
     </div>
-  </div>
+  </p-card>
 }
