@@ -2,8 +2,6 @@ import {ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDete
 import {provideRouter} from '@angular/router';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {providePrimeNG} from 'primeng/config';
-import Aura from '@primeng/themes/aura';
-
 import {routes} from './app.routes';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {provideAnimations} from '@angular/platform-browser/animations';
@@ -11,6 +9,7 @@ import {CalendarModule, DateAdapter} from 'angular-calendar';
 import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 import {jwtInterceptor} from './service/jwt.interceptor';
 import {ConfirmationService, MessageService} from 'primeng/api';
+import {MyPreset} from './my-theme';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,8 +20,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: MyPreset,
         options: {
+          prefix : "my",
           darkModeSelector: '.my-app-dark'}
       },
       translation: {
