@@ -13,6 +13,7 @@ import { differenceInMonths, differenceInYears } from 'date-fns';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faWeightScale, faMars, faVenus, faMarsStroke, faVenusDouble } from '@fortawesome/free-solid-svg-icons';
 import { Gender } from '../../../models/gender.enum';
+import {GENDER_OPTIONS} from '../../../models/gender.options';
 
 @Component({
   selector: 'app-dog-card',
@@ -72,41 +73,25 @@ export class DogCardComponent implements OnInit {
   }
 
   getGenderIcon(): { icon: any, color: string } {
-    if (!this.dog || !this.dog.gender) {
+    console.log("le chien :" + this.dog.name + " est de sexe : " + this.dog.gender);
+
+    // Trouve l'option correspondante dans GENDER_OPTIONS
+    const genderOption = GENDER_OPTIONS.find(option => option.value === this.dog.gender);
+
+    if (genderOption) {
       return {
-        icon: this.maleIcon,
-        color: 'text-gray-400'
+        icon: genderOption.icon,
+        color: genderOption.color
       };
     }
 
-    switch (this.dog.gender) {
-      case Gender.MALE:
-        return {
-          icon: this.maleIcon,
-          color: 'text-blue-600'
-        };
-      case Gender.STERILIZED_MALE:
-        return {
-          icon: this.sterilizedMaleIcon,
-          color: 'text-blue-600'
-        };
-      case Gender.FEMALE:
-        return {
-          icon: this.femaleIcon,
-          color: 'text-pink-600'
-        };
-      case Gender.STERILIZED_FEMALE:
-        return {
-          icon: this.sterilizedFemaleIcon,
-          color: 'text-pink-600'
-        };
-      default:
-        return {
-          icon: this.maleIcon,
-          color: 'text-gray-400'
-        };
-    }
+    // Fallback
+    return {
+      icon: 'pi pi-question',
+      color: 'text-gray-400'
+    };
   }
+
 
   getDogAge(birthDate: string | Date | undefined): string | null {
     if (birthDate === undefined || birthDate === null) {
