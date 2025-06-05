@@ -8,11 +8,13 @@ import {Button} from 'primeng/button';
 import {Calendar} from 'primeng/calendar';
 import {HttpClient} from '@angular/common/http';
 import {Subscription} from 'rxjs';
+import {DatePicker} from 'primeng/datepicker';
 
 import {Dog} from '../../../models/dog';
 import {Breed} from '../../../models/breed';
 import {GENDER_OPTIONS} from '../../../models/gender.options';
 import {DogService} from '../../../service/dog.service';
+import {Card} from 'primeng/card';
 
 @Component({
   selector: 'app-dog-form',
@@ -25,7 +27,8 @@ import {DogService} from '../../../service/dog.service';
     MultiSelect,
     Select,
     Button,
-    Calendar
+    DatePicker,
+    Card
   ],
   styleUrls: ['./dog-form.component.scss']
 })
