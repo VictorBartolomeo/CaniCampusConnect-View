@@ -161,7 +161,6 @@ export class DogAddFormComponent implements OnInit {
     }
   }
 
-  // ✅ Méthode pour vérifier si un champ a une erreur (client ou serveur)
   hasFieldError(fieldName: string): boolean {
     const field = this.form.get(fieldName);
     const hasClientError = !!(field && field.invalid && field.touched);
