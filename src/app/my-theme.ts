@@ -92,6 +92,7 @@ export const MyPreset = definePreset(Aura, {
     accent_2: '#F3BF00',
     white: '#fff',
     black: '#000',
+    transparent: 'transparent',
   }
   },
 
@@ -103,6 +104,7 @@ ICI C'EST LES COMPOSANTS
 *****************
 */
   components: {
+
     button: {
       colorScheme: {
         light: {
@@ -149,6 +151,7 @@ ICI C'EST LES COMPOSANTS
         }
       },
     },
+
     select: {
       colorScheme: {
         light: {
@@ -172,36 +175,17 @@ ICI C'EST LES COMPOSANTS
         },
       },
     },
+
     card: {
       colorScheme: {
         light: {
           background: "{alias.secondary_20}",
           color: "{primary.500}",
           shadow: '1px 1px 3px 0 {primary.500}, 0 1px 2px 0 rgba(255,0,0,0.06)',
-          header: {
-            background: "{alias.black}",
-            color: "{alias.white}",
-            padding: "1rem",
-            borderRadius: "8px 8px 0 0"
-          },
-          title: {
-            fontWeight: "700",
-            fontSize: "1.25rem",
-            color: "{alias.white}",
-          },
-          subtitle: {
-            fontWeight: "400",
-            fontSize: "0.875rem",
-            color: "{alias.white}"
-          }
         },
         dark: {
           background: "{alias.black}",
           color: "{alias.white}",
-          header: {
-            background: "{alias.black}",
-            color: "{alias.white}"
-          }
         }
       }
     },
@@ -225,7 +209,17 @@ ICI C'EST LES COMPOSANTS
         }
       }
     }
+
+
+    //Composant suivant
+
+
+
+
+
+
     }
+
 })
 
 
