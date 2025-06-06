@@ -37,39 +37,33 @@ $my-accent-2: #F3BF00;
 $my-white: #fff;
 $my-black: #000;
 
-$my-button-corner-radius: 8.92px;
-$my-input-field-corner-radius: 8.92px;
-$my-round-radius: 50%;
-
-
-
 body {
   margin: 0;
   font-family: "Montserrat", 'Calibri', serif;
 }
 
+
 :root {
-  --navbar-height: 0px;
-  --dashboard-navbar-height: 0px;
+  --navbar-height: 85px; // ✅ Valeur par défaut réaliste
+  --dashboard-navbar-height: 85px; // ✅ Idem pour dashboard
 }
 
-
 .h-screen-minus-navbar {
-  height: calc(100vh - var(--navbar-height));
-  min-height: calc(100vh - var(--navbar-height));
+  height: calc(100vh - var(--navbar-height, 85px)); // ✅ Fallback au cas où
+  min-height: calc(100vh - var(--navbar-height, 85px));
 }
 
 .h-screen-minus-dashboard-nav {
-  height: calc(100vh - var(--dashboard-navbar-height));
-  min-height: calc(100vh - var(--dashboard-navbar-height));
+  height: calc(100vh - var(--dashboard-navbar-height, 85px)); // ✅ Fallback
+  min-height: calc(100vh - var(--dashboard-navbar-height, 85px));
 }
 
 .h-mobile-screen-minus-navbar {
-  height: calc((var(--vh, 1vh) * 100) - var(--navbar-height));
-  min-height: calc((var(--vh, 1vh) * 100) - var(--navbar-height));
+  height: calc((var(--vh, 1vh) * 100) - var(--navbar-height, 85px));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--navbar-height, 85px));
 }
 
 .h-mobile-screen-minus-dashboard {
-  height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height));
-  min-height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height));
+  height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height, 85px));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height, 85px));
 }
