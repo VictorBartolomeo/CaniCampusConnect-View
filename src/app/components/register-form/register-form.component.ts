@@ -2,22 +2,28 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIf, NgClass } from '@angular/common';
-import { InputTextModule } from 'primeng/inputtext'; // ✅ Module au lieu de composant
+import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { CardModule } from 'primeng/card'; // ✅ Module
-import { ButtonModule } from 'primeng/button'; // ✅ Module
-import { CheckboxModule } from 'primeng/checkbox'; // ✅ Module
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast'; // ✅ Module
+import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../service/auth.service';
+
+// ✅ Import des validators séparés
 import { PasswordValidator } from '../../service/validators/password-validator';
+import { EmailValidator } from '../../service/validators/email-validator';
+import { PhoneValidator } from '../../service/validators/phone-validator';
+import { NameValidator } from '../../service/validators/name-validator';
+import { PasswordMatchValidator } from '../../service/validators/password-match-validator';
 
 @Component({
   selector: 'app-register-form',
   standalone: true,
   imports: [
-    InputTextModule, // ✅ Modules pour Angular 19
+    InputTextModule,
     RouterLink,
     NgIf,
     NgClass,
@@ -38,10 +44,6 @@ export class RegisterFormComponent {
   submitted = false;
   error = '';
 
-  // Pattern exactement comme votre backend
-  private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  private phonePattern = /^[0-9]{10}$/;
-
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
@@ -53,22 +55,23 @@ export class RegisterFormComponent {
       firstname: ['', [
         Validators.required,
         Validators.minLength(1),
-        Validators.maxLength(100)
+        Validators.maxLength(100),
+        NameValidator.validName() // ✅ Validator spécialisé pour les noms
       ]],
       lastname: ['', [
         Validators.required,
         Validators.minLength(1),
-        Validators.maxLength(100)
+        Validators.maxLength(100),
+        NameValidator.validName() // ✅ Validator spécialisé pour les noms
       ]],
       email: ['', [
         Validators.required,
-        Validators.email,
         Validators.maxLength(150),
-        Validators.pattern(this.emailPattern)
+        EmailValidator.validEmail()
       ]],
       phone: ['', [
         Validators.maxLength(50),
-        Validators.pattern(this.phonePattern)
+        PhoneValidator.validPhone()
       ]],
       password: ['', [
         Validators.required,
@@ -79,27 +82,12 @@ export class RegisterFormComponent {
       confirmPassword: ['', Validators.required],
       acceptTerms: [false, Validators.requiredTrue]
     }, {
-      validators: this.passwordMatchValidator
+      validators: PasswordMatchValidator.passwordsMatch('password', 'confirmPassword')
     });
 
     if (this.authService.isAuthenticated()) {
       this.redirectToDashboard();
     }
-  }
-
-  passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password');
-    const confirmPassword = form.get('confirmPassword');
-
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ mismatch: true });
-    } else if (confirmPassword?.errors?.['mismatch']) {
-      delete confirmPassword.errors['mismatch'];
-      if (Object.keys(confirmPassword.errors).length === 0) {
-        confirmPassword.setErrors(null);
-      }
-    }
-    return null;
   }
 
   get f() {
@@ -134,10 +122,10 @@ export class RegisterFormComponent {
     this.loading = true;
 
     const registerData = {
-      email: this.registerForm.get('email')?.value,
-      firstname: this.registerForm.get('firstname')?.value,
-      lastname: this.registerForm.get('lastname')?.value,
-      phone: this.registerForm.get('phone')?.value || null,
+      email: this.registerForm.get('email')?.value.trim(),
+      firstname: this.registerForm.get('firstname')?.value.trim(),
+      lastname: this.registerForm.get('lastname')?.value.trim(),
+      phone: this.registerForm.get('phone')?.value?.trim() || null,
       password: this.registerForm.get('password')?.value
     };
 
