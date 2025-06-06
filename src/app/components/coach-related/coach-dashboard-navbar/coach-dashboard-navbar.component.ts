@@ -1,6 +1,6 @@
 
 import {FormsModule} from '@angular/forms';
-import {Component, OnInit, OnDestroy, inject} from '@angular/core';
+import {Component, OnInit, OnDestroy, inject, ElementRef} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
 import {MegaMenu} from 'primeng/megamenu';
 import {ButtonModule} from 'primeng/button';
@@ -15,6 +15,7 @@ import {Ripple} from 'primeng/ripple';
 import {BadgeModule} from 'primeng/badge';
 import {RegistrationService} from '../../../service/registration.service';
 import {Subject, takeUntil} from 'rxjs';
+import {LayoutService} from '../../../service/layout.service';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -36,7 +37,6 @@ import {Subject, takeUntil} from 'rxjs';
 })
 export class CoachDashboardNavbarComponent implements OnInit, OnDestroy {
 
-  // ✅ Injection Angular 19
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private registrationManagementService = inject(RegistrationService);
@@ -47,14 +47,29 @@ export class CoachDashboardNavbarComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  constructor(
+    private elementRef: ElementRef,
+    private layoutService: LayoutService
+    // ... vos autres dependencies
+  ) {}
+
+
   ngOnInit() {
     this.initializeMenu();
     this.subscribeToPendingCount();
   }
+  ngAfterViewInit() {
+    setTimeout(() => {
+      const height = this.elementRef.nativeElement.offsetHeight;
+      this.layoutService.setDashboardNavHeight(height);
+    }, 0);
+  }
+
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    this.layoutService.setDashboardNavHeight(0);
   }
 
   private initializeMenu() {
