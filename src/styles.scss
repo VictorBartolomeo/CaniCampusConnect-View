@@ -48,4 +48,28 @@ body {
   font-family: "Montserrat", 'Calibri', serif;
 }
 
+:root {
+  --navbar-height: 0px;
+  --dashboard-navbar-height: 0px;
+}
 
+
+.h-screen-minus-navbar {
+  height: calc(100vh - var(--navbar-height));
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+.h-screen-minus-dashboard-nav {
+  height: calc(100vh - var(--dashboard-navbar-height));
+  min-height: calc(100vh - var(--dashboard-navbar-height));
+}
+
+.h-mobile-screen-minus-navbar {
+  height: calc((var(--vh, 1vh) * 100) - var(--navbar-height));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--navbar-height));
+}
+
+.h-mobile-screen-minus-dashboard {
+  height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height));
+}
