@@ -1,13 +1,16 @@
 <div class="card">
   <p-menubar [model]="items">
+
     <ng-template #start>
       <img routerLink="/home" ngSrc="/img/LOGO_RVB_POSITIF.png" alt="Logo" class="w-16" height="85" width="120"/>
     </ng-template>
 
-
     <ng-template #item let-item let-root="root">
-      <a pRipple [routerLink]="item.route" class="flex items-center p-menubar-item-link">
-        <span>{{ item.label }}</span>
+      <div class="">
+
+      <a pRipple [routerLink]="item.route" class="flex items-center p-menubar-item-link font-bold">
+        <span>{{ item.label | uppercase}}</span>
+
         @if (item.badge) {
           <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"/>
           @if (item.shortcut) {
@@ -17,14 +20,17 @@
               <i [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
             }
           }
-
         }
       </a>
+      </div>
     </ng-template>
 
     <ng-template #end>
-      <p-button routerLink="/login" label="Connection" icon="pi pi-sign-in"/>
+      <div class="flex items-center gap-3">
+
+      <p-button routerLink="/login" label="Connexion" icon="pi pi-sign-in" severity="success"/>
       <p-button routerLink="/register" label="Créer un compte" icon="pi pi-user-plus"/>
+      </div>
     </ng-template>
   </p-menubar>
 </div>
