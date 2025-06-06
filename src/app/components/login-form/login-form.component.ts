@@ -29,6 +29,8 @@ export class LoginFormComponent {
   loading = false;
   submitted = false;
   error = '';
+  private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,7 +38,7 @@ export class LoginFormComponent {
     private authService: AuthService
   ) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
       password: ['', Validators.required]
     });
 
@@ -61,8 +63,7 @@ export class LoginFormComponent {
     this.authService.login(this.f['email'].value, this.f['password'].value)
       .subscribe({
         next: (response) => {
-          if (response && response.success) { // login() retourne {success: true, token}
-            // Le rôle est défini dans AuthStateService via decodeJwt appelé dans authService.login
+          if (response && response.success) {
             this.redirectToDashboardByRole();
           } else {
             this.error = 'Échec de connexion, vérifiez vos identifiants';
