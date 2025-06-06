@@ -80,7 +80,6 @@ export class CourseCardComponent implements OnInit {
 
   loadRegistrationsForDog(dog: Dog) {
     if (dog.registrations && dog.registrations.length > 0) {
-      // Récupérer la date actuelle
       const currentDate = new Date();
 
       // Filtrer uniquement les cours à venir
