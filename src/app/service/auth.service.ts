@@ -72,14 +72,15 @@ export class AuthService {
   }
 
   // Méthode de connexion
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string, rememberMe: boolean = false): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, {email, password}, {responseType: 'text'}).pipe(
       map(token => {
         if (token) {
+          this.setToken(token, rememberMe); // ✅ Intégrer rememberMe
           this.decodeJwt(token);
           return {success: true, token};
         }
-        return null; // Gestion du cas où token est falsy
+        return null;
       }),
       catchError(error => {
         console.error('Erreur de connexion:', error);
@@ -87,7 +88,6 @@ export class AuthService {
       })
     );
   }
-
   // Décodage du JWT
   decodeJwt(jwt: string) {
     localStorage.setItem('jwt', jwt);
