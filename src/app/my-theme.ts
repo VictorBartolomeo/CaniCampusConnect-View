@@ -122,11 +122,15 @@ ICI C'EST LES COMPOSANTS
             },
             success :{
               background: "{success.500}",
-              color : "{alias.white}"
+              color : "{primary.500}",
+              HoverBackground : "{primary.500}",
+              HoverColor : "{alias.white}",
             },
             warning :{
               background: "{warning.500}",
-              color : "{alias.white}"
+              color : "{primary.500}",
+              HoverBackground : "{warning.900}",
+              HoverColor : "{alias.white}",
             },
             error :{
               background: "{error.500}",
