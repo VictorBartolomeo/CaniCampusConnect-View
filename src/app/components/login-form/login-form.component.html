@@ -1,10 +1,11 @@
+
 <div class="flex items-center justify-center">
   <div class="w-full max-w-md">
     <p-card styleClass="shadow-2xl rounded-xl overflow-hidden border-0 w-[500px]">
       <ng-template pTemplate="header">
         <div class="relative h-48 w-full flex justify-end pr-6 overflow-hidden">
           <div class="w-60 h-60 rounded-full flex items-center justify-center ">
-<img src="icons/register.png" alt="Image de bienvenue d'un chien tenant un jouet dans sa gueule" class="object-contain pb-10" />
+            <img src="icons/login.png" alt="Image de bienvenue d'un chien tenant un jouet dans sa gueule" class="object-contain pb-10" />
           </div>
 
           <div class="absolute bottom-0 left-0 p-4 w-full"
@@ -38,7 +39,7 @@
                 <i class="pi pi-exclamation-triangle mr-1"></i>
                 Email requis
               </small>
-            } @else if (submitted && f['email'].errors?.['pattern']) {
+            } @else if (submitted && f['email'].errors?.['email']) {
               <small class="p-error mt-1 block">
                 <i class="pi pi-exclamation-triangle mr-1"></i>
                 Format d'email invalide
@@ -47,24 +48,52 @@
           </div>
 
           <div class="field">
-            <label for="password" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-              <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE
-            </label>
-            <p-password
-              id="password"
-              formControlName="password"
-              [feedback]="false"
-              [toggleMask]="true"
-              placeholder="••••••••"
-              styleClass="w-full"
-              [ngClass]="{'p-invalid': submitted && f['password'].errors}"
-            ></p-password>
+            <div class="flex justify-between items-center mb-2">
+              <label for="password" class="text-sm font-medium" style="color: #1B2140;">
+                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE
+              </label>
+              <!-- ✅ Lien mot de passe oublié -->
+              <a
+                routerLink="/forgot-password"
+                class="text-sm font-medium transition-colors duration-200 hover:underline"
+                style="color: #93C01F;"
+                onmouseover="this.style.color='#759918'"
+                onmouseout="this.style.color='#93C01F'">
+                Mot de passe oublié ?
+              </a>
+            </div>
+            <div class="w-full">
+              <p-password
+                id="password"
+                formControlName="password"
+                [feedback]="false"
+                [toggleMask]="true"
+                placeholder="••••••••"
+                styleClass="password-full-width"
+                [ngClass]="{'p-invalid': submitted && f['password'].errors}"
+              />
+            </div>
             @if (submitted && f['password'].errors?.['required']) {
               <small class="p-error mt-1 block">
                 <i class="pi pi-exclamation-triangle mr-1"></i>
                 Mot de passe requis
               </small>
             }
+          </div>
+
+          <!-- ✅ Option "Se souvenir de moi" -->
+          <div class="field">
+            <div class="flex items-center">
+              <p-checkbox
+                id="rememberMe"
+                formControlName="rememberMe"
+                [binary]="true"
+                styleClass="mr-2"
+              />
+              <label for="rememberMe" class="text-sm" style="color: #1B2140;">
+                Se souvenir de moi
+              </label>
+            </div>
           </div>
 
           <div class="mt-6">
@@ -104,3 +133,6 @@
     </p-card>
   </div>
 </div>
+
+<!-- Toast notifications -->
+<p-toast position="bottom-center" [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}" />

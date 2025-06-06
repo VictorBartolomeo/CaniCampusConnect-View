@@ -1,26 +1,33 @@
-import {Component} from '@angular/core';
-import {ButtonDirective} from 'primeng/button';
-import {InputText} from 'primeng/inputtext';
-import {Router, RouterLink} from '@angular/router';
-import {NgClass, NgIf} from '@angular/common';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {AuthService} from '../../service/auth.service';
-import {PasswordModule} from 'primeng/password';
-import {Card} from 'primeng/card';
-
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { NgIf, NgClass } from '@angular/common';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox'; // ✅ Import pour "Se souvenir de moi"
+import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login-form',
+  standalone: true,
   imports: [
-    InputText,
+    InputTextModule,
     RouterLink,
     NgIf,
+    NgClass,
     ReactiveFormsModule,
     PasswordModule,
-    Card,
-    NgClass,
-    ButtonDirective
+    CardModule,
+    ButtonModule,
+    CheckboxModule, // ✅ Module checkbox ajouté
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss'
 })
@@ -29,21 +36,28 @@ export class LoginFormComponent {
   loading = false;
   submitted = false;
   error = '';
-  private emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient,
+    private messageService: MessageService
   ) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
-      password: ['', Validators.required]
+      email: ['', [
+        Validators.required,
+        Validators.email
+      ]],
+      password: ['', [
+        Validators.required
+      ]],
+      rememberMe: [false] // ✅ Nouveau champ "Se souvenir de moi"
     });
 
+    // Redirection si déjà connecté
     if (this.authService.isAuthenticated()) {
-      this.redirectToDashboardByRole();
+      this.redirectToDashboard();
     }
   }
 
@@ -56,52 +70,75 @@ export class LoginFormComponent {
     this.error = '';
 
     if (this.loginForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Échec',
+        detail: 'Veuillez corriger les erreurs du formulaire',
+        life: 3000
+      });
       return;
     }
 
     this.loading = true;
-    this.authService.login(this.f['email'].value, this.f['password'].value)
-      .subscribe({
-        next: (response) => {
-          if (response && response.success) {
-            this.redirectToDashboardByRole();
-          } else {
-            this.error = 'Échec de connexion, vérifiez vos identifiants';
-            this.loading = false;
-          }
-        },
-        error: (error) => {
-          console.error('Erreur détaillée:', error);
-          if (error.status === 401) {
-            this.error = 'Identifiants incorrects';
-          } else if (error.status === 0) {
-            this.error = 'Serveur inaccessible. Veuillez réessayer plus tard.';
-          } else {
-            this.error = error.error || 'Une erreur est survenue';
-          }
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
+
+    const loginData = {
+      email: this.loginForm.get('email')?.value.trim(),
+      password: this.loginForm.get('password')?.value,
+      rememberMe: this.loginForm.get('rememberMe')?.value
+    };
+
+    this.http.post("http://localhost:8080/auth/login", loginData).subscribe({
+      next: (response: any) => {
+        this.loading = false;
+
+        if (response.token) {
+          this.authService.setToken(response.token, loginData.rememberMe);
         }
-      });
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Connexion réussie',
+          detail: 'Vous êtes maintenant connecté !',
+          life: 3000
+        });
+
+        setTimeout(() => {
+          this.redirectToDashboard();
+        }, 1500);
+      },
+      error: error => {
+        this.loading = false;
+
+        if (error.status === 401) {
+          this.error = "Email ou mot de passe incorrect";
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Échec de connexion',
+            detail: "Email ou mot de passe incorrect",
+            life: 3000
+          });
+        } else if (error.status === 403) {
+          this.error = "Compte non activé ou suspendu";
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Compte non activé',
+            detail: "Votre compte n'est pas encore activé. Vérifiez vos emails.",
+            life: 5000
+          });
+        } else {
+          this.error = "Une erreur est survenue lors de la connexion";
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: "Une erreur est survenue lors de la connexion",
+            life: 3000
+          });
+        }
+      }
+    });
   }
-  private redirectToDashboardByRole(): void {
-    const userRole = this.authService.role; // AuthService a un getter 'role' qui utilise AuthStateService
 
-    if (userRole === "ROLE_COACH") {
-      this.router.navigateByUrl('/coach/dashboard');
-    } else if (userRole === "ROLE_OWNER") {
-      this.router.navigateByUrl('/dashboard');
-    } else if (userRole === "ROLE_CLUBOWNER") {
-      // Assurez-vous que la route '/clubowner/dashboard' est définie dans app.routes.ts
-      this.router.navigateByUrl('/clubowner/dashboard');
-    } else {
-      console.warn(`Rôle utilisateur non géré ('${userRole}') ou absent. Redirection vers la page de connexion ou un dashboard par défaut.`);
-      this.router.navigateByUrl('/login');
-    }
+  private redirectToDashboard(): void {
+    this.router.navigateByUrl('/dashboard');
   }
-
-
 }
-
