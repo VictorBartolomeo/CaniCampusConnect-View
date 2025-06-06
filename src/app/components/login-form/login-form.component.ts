@@ -52,10 +52,9 @@ export class LoginFormComponent {
       password: ['', [
         Validators.required
       ]],
-      rememberMe: [false] // ✅ Nouveau champ "Se souvenir de moi"
+      rememberMe: [false]
     });
 
-    // Redirection si déjà connecté
     if (this.authService.isAuthenticated()) {
       this.redirectToDashboard();
     }
@@ -81,30 +80,37 @@ export class LoginFormComponent {
 
     this.loading = true;
 
-    const loginData = {
-      email: this.loginForm.get('email')?.value.trim(),
-      password: this.loginForm.get('password')?.value,
-      rememberMe: this.loginForm.get('rememberMe')?.value
-    };
+    const email = this.loginForm.get('email')?.value.trim();
+    const password = this.loginForm.get('password')?.value;
+    const rememberMe = this.loginForm.get('rememberMe')?.value;
 
-    this.http.post("http://localhost:8080/auth/login", loginData).subscribe({
+    this.authService.login(email, password, rememberMe).subscribe({
       next: (response: any) => {
         this.loading = false;
 
-        if (response.token) {
-          this.authService.setToken(response.token, loginData.rememberMe);
+        if (response && response.success && response.token) {
+          this.authService.setToken(response.token, rememberMe);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Connexion réussie',
+            detail: 'Vous êtes maintenant connecté !',
+            life: 3000
+          });
+
+          setTimeout(() => {
+            this.redirectToDashboard();
+          }, 1500);
+        } else {
+          // ✅ Gérer le cas où la réponse est null (erreur)
+          this.error = "Email ou mot de passe incorrect";
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Échec de connexion',
+            detail: "Email ou mot de passe incorrect",
+            life: 3000
+          });
         }
-
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Connexion réussie',
-          detail: 'Vous êtes maintenant connecté !',
-          life: 3000
-        });
-
-        setTimeout(() => {
-          this.redirectToDashboard();
-        }, 1500);
       },
       error: error => {
         this.loading = false;
