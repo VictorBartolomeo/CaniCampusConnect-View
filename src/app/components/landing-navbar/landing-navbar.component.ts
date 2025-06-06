@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import { Ripple } from 'primeng/ripple';
 import { Badge } from 'primeng/badge';
 import { Menubar } from 'primeng/menubar';
@@ -12,7 +12,7 @@ import {StyleClass} from 'primeng/styleclass';
 
 @Component({
   selector: 'app-landing-navbar',
-  imports: [RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule, StyleClass, UpperCasePipe],
+  imports: [RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule, StyleClass, UpperCasePipe, RouterOutlet],
   templateUrl: './landing-navbar.component.html',
   styleUrl: './landing-navbar.component.scss'
 })
@@ -54,10 +54,14 @@ export class LandingNavbarComponent implements OnInit, AfterViewInit, OnDestroy 
     ];
   }
 
+
   ngAfterViewInit() {
     setTimeout(() => {
-      const height = this.elementRef.nativeElement.offsetHeight;
+      // ✅ Mesurer seulement le p-menubar, pas tout le composant
+      const menubar = this.elementRef.nativeElement.querySelector('p-menubar');
+      const height = menubar ? menubar.offsetHeight : 85; // fallback à 85px
       this.layoutService.setNavbarHeight(height);
+      console.log('Navbar height set to:', height); // Devrait maintenant être ~85px
     }, 0);
   }
 
