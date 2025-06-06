@@ -10,7 +10,7 @@ import { CheckboxModule } from 'primeng/checkbox'; // ✅ Import pour "Se souven
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { AuthService } from '../../service/auth.service';
+import { AuthService } from '../../../service/auth.service';
 
 @Component({
   selector: 'app-login-form',

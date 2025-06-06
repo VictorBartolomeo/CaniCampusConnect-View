@@ -7,7 +7,7 @@ import {NgClass, NgOptimizedImage, UpperCasePipe} from '@angular/common';
 import { Button } from 'primeng/button';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { MenuItem } from 'primeng/api';
-import { LayoutService } from '../../service/layout.service';
+import { LayoutService } from '../../../service/layout.service';
 import {StyleClass} from 'primeng/styleclass';
 
 @Component({

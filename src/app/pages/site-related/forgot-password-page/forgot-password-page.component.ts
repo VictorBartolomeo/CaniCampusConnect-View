@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {LandingNavbarComponent} from '../../components/landing-navbar/landing-navbar.component';
-import {ForgotPasswordFormComponent} from '../../components/forgot-password-form/forgot-password-form.component';
+import {LandingNavbarComponent} from '../../../components/site-related/landing-navbar/landing-navbar.component';
+import {ForgotPasswordFormComponent} from '../../../components/site-related/forgot-password-form/forgot-password-form.component';
 
 @Component({
   selector: 'app-forgot-password-page',

@@ -1,18 +1,20 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { Dog } from '../../../models/dog';
-import { differenceInMonths, differenceInYears, format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { Input } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { DogService } from '../../../service/dog.service';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faWeightScale, faMars, faVenus, faMarsStroke, faVenusDouble } from '@fortawesome/free-solid-svg-icons';
-import { Router } from '@angular/router';
-import { Gender } from '../../../models/gender.enum';
-import {StyleClass} from 'primeng/styleclass';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CardModule} from 'primeng/card';
+import {ButtonModule} from 'primeng/button';
+import {TagModule} from 'primeng/tag';
+import {BadgeModule} from 'primeng/badge';
+import {TooltipModule} from 'primeng/tooltip';
+import {Dog} from '../../../models/dog';
+import {differenceInMonths, differenceInYears, format} from 'date-fns';
+import {fr} from 'date-fns/locale';
+import {Subscription} from 'rxjs';
+import {DogService} from '../../../service/dog.service';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {faWeightScale} from '@fortawesome/free-solid-svg-icons';
+import {Router} from '@angular/router';
+import {Gender} from '../../../models/gender.enum';
+import {GENDER_OPTIONS} from '../../../models/gender.options';
 
 @Component({
   selector: 'app-dog-summary',
@@ -22,7 +24,9 @@ import {StyleClass} from 'primeng/styleclass';
     CardModule,
     ButtonModule,
     FontAwesomeModule,
-    StyleClass
+    TagModule,
+    BadgeModule,
+    TooltipModule
   ],
   templateUrl: './dog-summary.component.html',
   styleUrl: './dog-summary.component.scss'
@@ -30,16 +34,9 @@ import {StyleClass} from 'primeng/styleclass';
 export class DogSummaryComponent implements OnInit {
   @Input() dog: Dog | null = null;
   @Output() editRequested = new EventEmitter<void>();
-
-  // Icônes Font Awesome
   weightIcon = faWeightScale;
-  maleIcon = faMars;
-  femaleIcon = faVenus;
-  sterilizedMaleIcon = faMarsStroke;
-  sterilizedFemaleIcon = faVenusDouble;
-
   genderEnum = Gender;
-
+  genderOptions = GENDER_OPTIONS;
   private subscription!: Subscription;
 
   constructor(
@@ -69,56 +66,42 @@ export class DogSummaryComponent implements OnInit {
     }
   }
 
-  getGenderIcon(): { icon: any, color: string, mainColor: string } {
+  getGenderIcon(): { icon: any, color: string } {
+    // Trouve l'option correspondante dans GENDER_OPTIONS
     if (!this.dog || !this.dog.gender) {
       return {
-        icon: this.maleIcon,
-        color: 'text-gray-400',
-        mainColor: 'text-gray-500'
+        icon: 'pi pi-question',
+        color: 'text-gray-400'
       };
     }
 
-    switch (this.dog.gender) {
-      case Gender.MALE:
-        return {
-          icon: this.maleIcon,
-          color: 'text-blue-300',
-          mainColor: 'text-blue-600'
-        };
-      case Gender.STERILIZED_MALE:
-        return {
-          icon: this.sterilizedMaleIcon,
-          color: 'text-blue-300',
-          mainColor: 'text-blue-600'
-        };
-      case Gender.FEMALE:
-        return {
-          icon: this.femaleIcon,
-          color: 'text-pink-300',
-          mainColor: 'text-pink-600'
-        };
-      case Gender.STERILIZED_FEMALE:
-        return {
-          icon: this.sterilizedFemaleIcon,
-          color: 'text-pink-300',
-          mainColor: 'text-pink-600'
-        };
-      default:
-        return {
-          icon: this.maleIcon,
-          color: 'text-gray-400',
-          mainColor: 'text-gray-500'
-        };
+    // ✅ Créer une référence locale pour éviter les problèmes de nullabilité
+    const dogGender = this.dog.gender;
+    const genderOption = this.genderOptions.find(option => option.value === dogGender);
+
+    if (genderOption) {
+      return {
+        icon: genderOption.icon,
+        color: genderOption.color
+      };
     }
+
+    // Fallback
+    return {
+      icon: 'pi pi-question',
+      color: 'text-gray-400'
+    };
   }
 
-  getGenderDisplayName(): string {
+  getGenderLabel(): string {
     if (!this.dog || !this.dog.gender) {
       return 'Non spécifié';
     }
 
-    // Retourne directement la valeur de l'enum, qui contient déjà les libellés en français
-    return this.dog.gender;
+    // ✅ Créer une référence locale pour éviter les problèmes de nullabilité
+    const dogGender = this.dog.gender;
+    const genderOption = this.genderOptions.find(option => option.value === dogGender);
+    return genderOption ? genderOption.label : 'Non spécifié';
   }
 
   getDogAge(birthDate: string | Date | undefined): string {
@@ -166,6 +149,7 @@ export class DogSummaryComponent implements OnInit {
     }
   }
 
+
   getLatestWeight(): string {
     if (!this.dog?.dogWeights || this.dog.dogWeights.length === 0) {
       return 'Non enregistré';
@@ -175,7 +159,7 @@ export class DogSummaryComponent implements OnInit {
       new Date(b.measurementDate).getTime() - new Date(a.measurementDate).getTime()
     )[0];
 
-    return `${latestWeight.weightValue} kg (${format(new Date(latestWeight.measurementDate), 'dd/MM/yyyy')})`;
+    return `${latestWeight.weightValue} kg`;
   }
 
   getHealthStatus(): { label: string, color: string } {

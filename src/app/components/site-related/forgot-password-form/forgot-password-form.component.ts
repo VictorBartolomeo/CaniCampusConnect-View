@@ -9,7 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { EmailValidator } from '../../service/validators/email-validator';
+import { EmailValidator } from '../../../service/validators/email-validator';
 
 @Component({
   selector: 'app-forgot-password-form',

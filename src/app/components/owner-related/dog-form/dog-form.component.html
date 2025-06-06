@@ -6,7 +6,9 @@
     <form [formGroup]="form" (ngSubmit)="onSubmitEdit()" class="w-full h-full flex flex-col">
 
       <div class="flex flex-col gap-4 w-full flex-grow">
-        <h1 class="text-xl font-bold text-center mb-4">Modifier le profil du chien {{ updatedDog?.name | uppercase }}</h1>
+        <h1 class="text-xl font-bold text-center mb-4">
+          Modifier le profil {{ updatedDog?.gender === 'FEMALE' || updatedDog?.gender === 'STERILIZED_FEMALE' ? 'de la chienne' : 'du chien' }} {{ updatedDog?.name | uppercase }}
+        </h1>
 
         <label for="name" class="text-primary font-bold">Nom du chien</label>
         <input class="w-full text-primary" type="text" pInputText formControlName="name"/>
@@ -21,18 +23,18 @@
                   styleClass="w-full text-primary">
         </p-select>
 
-        <label class="block mb-2 text-primary" for="breed">Races</label>
+        <label class="block font-bold text-primary" for="breed">Races</label>
         <p-multiselect [options]="availableBreeds"
                        formControlName="breed"
                        optionLabel="name"
                        placeholder="Race.s du chien"
                        [maxSelectedLabels]="3"
-                       styleClass="w-full font-bold text-primary"></p-multiselect>
+                       styleClass="w-full text-primary"></p-multiselect>
 
-        <label for="chipNumber">Numéro de puce</label>
-        <input type="text" class="font-bold" pInputText formControlName="chipNumber"/>
+        <label class="font-bold text-primary" for="chipNumber">Numéro de puce</label>
+        <input type="text" class="w-full text-primary" pInputText formControlName="chipNumber"/>
 
-        <label for="birthDate">Date de naissance</label>
+        <label class="font-bold text-primary" for="birthDate">Date de naissance</label>
         <p-datepicker
           formControlName="birthDate"
           inputId="birthDate"
@@ -40,7 +42,7 @@
           iconDisplay="input"
           dateFormat="dd/mm/yy"
           [maxDate]="today"
-          styleClass="w-full font-bold z-10"></p-datepicker>
+          styleClass="w-full text-primary z-10"></p-datepicker>
 
         <div class="flex-grow"></div> <!-- Spacer pour pousser le bouton vers le bas -->
         <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="w-full flex justify-center"/>

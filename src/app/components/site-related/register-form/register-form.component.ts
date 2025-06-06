@@ -10,14 +10,14 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { AuthService } from '../../service/auth.service';
+import { AuthService } from '../../../service/auth.service';
 
 // ✅ Import des validators séparés
-import { PasswordValidator } from '../../service/validators/password-validator';
-import { EmailValidator } from '../../service/validators/email-validator';
-import { PhoneValidator } from '../../service/validators/phone-validator';
-import { NameValidator } from '../../service/validators/name-validator';
-import { PasswordMatchValidator } from '../../service/validators/password-match-validator';
+import { PasswordValidator } from '../../../service/validators/password-validator';
+import { EmailValidator } from '../../../service/validators/email-validator';
+import { PhoneValidator } from '../../../service/validators/phone-validator';
+import { NameValidator } from '../../../service/validators/name-validator';
+import { PasswordMatchValidator } from '../../../service/validators/password-match-validator';
 
 @Component({
   selector: 'app-register-form',

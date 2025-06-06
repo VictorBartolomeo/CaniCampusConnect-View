@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {LandingNavbarComponent} from '../../components/landing-navbar/landing-navbar.component';
+import {LandingNavbarComponent} from '../../../components/site-related/landing-navbar/landing-navbar.component';
 import {Button} from 'primeng/button';
 
 @Component({

@@ -1,21 +1,19 @@
 @if (dog) {
-  <p-card styleClass="h-full w-[500px]">
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden h-full">
 
     <ng-template pTemplate="header">
-      <div class="relative h-60 w-full overflow-hidden">
-
+      <div class="relative h-full w-full flex justify-end pr-10">
         <img
           [src]="getDogAvatarUrl()"
-          class="object-contain h-full w-full "
-          alt="Photo de {{dog?.name}}"
+          class="w-50 h-50 object-contain flex"
+          alt="{{dog.name}}"
         />
-
-        <div class="absolute bottom-0 left-0 p-3 bg-primary/60 w-full">
-          <h2 class="text-white text-xl font-bold flex items-center gap-2">
+        <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-r from-primary/60 via-primary/0 w-full">
+          <h2 class="text-white text-2xl font-bold flex items-center gap-2">
             {{dog.name}}
             <fa-icon [icon]="getGenderIcon().icon"
-                     [class]="getGenderIcon().color"
-                     [title]="getGenderDisplayName()"></fa-icon>
+                     class="text-white"
+                     [title]="getGenderLabel()"></fa-icon>
           </h2>
           <div class="flex gap-2 items-center text-white text-sm">
             <span>{{getDogAge(dog.birthDate)}}</span>
@@ -26,46 +24,51 @@
       </div>
     </ng-template>
 
-
-    <div class="flex flex-col justify-between h-full">
+    <div class="p-3 text-lg gap-10 flex flex-col justify-between h-full">
       <div class="flex items-center gap-2">
-        <i class="pi pi-id-card text-blue-600"></i>
-        <span class="font-semibold text-sm">Numéro de puce: {{dog.chipNumber || 'Non renseigné'}}</span>
+        <i class="pi pi-id-card text-primary"></i>
+        <span class="font-semibold">Numéro de puce:</span>
+        <span>{{dog.chipNumber || 'Non renseigné'}}</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <i class="pi pi-calendar text-blue-600"></i>
-        <span class="font-semibold text-sm ">Date de naissance: {{formatDate(dog.birthDate) || 'Non renseignée'}}</span>
+        <i class="pi pi-calendar text-primary"></i>
+        <span class="font-semibold">Date de naissance:</span>
+        <span>{{formatDate(dog.birthDate) || 'Non renseignée'}}</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <fa-icon [icon]="getGenderIcon().icon" [class]="getGenderIcon().mainColor"></fa-icon>
-        <span class="font-semibold text-sm">Genre: {{getGenderDisplayName()}}</span>
+        <fa-icon [icon]="getGenderIcon().icon" class="text-primary"></fa-icon>
+        <span class="font-semibold">Genre:</span>
+        <span>{{getGenderLabel()}}</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <fa-icon [icon]="weightIcon" class="text-blue-600"></fa-icon>
-        <span class="font-semibold text-sm">Dernier poids: {{getLatestWeight()}}</span>
+        <fa-icon [icon]="weightIcon" class="text-primary"></fa-icon>
+        <span class="font-semibold">Dernier poids:</span>
+        <span>{{getLatestWeight()}}</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <i class="pi pi-heart text-blue-600"></i>
-        <span class="font-semibold text-sm">État de santé:
-          <span [class]="getHealthStatus().color">{{getHealthStatus().label}}</span>
-        </span>
+        <i class="pi pi-heart text-primary"></i>
+        <span class="font-semibold">État de santé:</span>
+        <p-badge [value]="getHealthStatus().label"
+                 [severity]="getHealthStatus().label === 'En bonne santé' ? 'success' : 'warn'"
+                 [pTooltip]="getHealthStatus().label === 'En bonne santé' ? 'Aucun traitement en cours' : 'Ce chien suit actuellement un traitement'"></p-badge>
       </div>
 
       <div class="flex items-center gap-2">
-        <i class="pi pi-shield text-blue-600"></i>
-        <span class="font-semibold text-sm">Vaccinations:
-          <span [class]="getVaccinationStatus().color">{{getVaccinationStatus().label}}</span>
-        </span>
+        <i class="pi pi-shield text-primary"></i>
+        <span class="font-semibold">Vaccinations:</span>
+        <p-badge [value]="getVaccinationStatus().label"
+                 [severity]="getVaccinationStatus().label === 'À jour' ? 'success' : 'danger'"
+                 [pTooltip]="getVaccinationStatus().label === 'À jour' ? 'Tous les vaccins sont à jour' : 'Certains vaccins doivent être renouvelés'"></p-badge>
       </div>
     </div>
 
   </p-card>
 } @else {
-  <p-card class="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-full w-full p-4 flex flex-col justify-center items-center">
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
     <div class="text-center p-4">
       <i class="pi pi-exclamation-triangle text-3xl text-yellow-500 mb-3"></i>
       <h3 class="text-lg font-semibold mb-2">Aucun chien sélectionné</h3>
@@ -73,7 +76,6 @@
       <p-button
         label="Ajouter un chien"
         icon="pi pi-plus"
-        styleClass="p-button-sm"
         (onClick)="navigateToAddDog()"></p-button>
     </div>
   </p-card>
