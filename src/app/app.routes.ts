@@ -2,7 +2,7 @@ import {Routes} from '@angular/router';
 import {LandingPageComponent} from './pages/landing-page/landing-page.component';
 import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {LoginPageComponent} from './pages/login-page/login-page.component';
-import {RegisterPageComponent} from './pages/owner-related/register-page/register-page.component';
+import {RegisterPageComponent} from './pages/register-page/register-page.component';
 import {GeneralConditionsUseComponent} from './pages/general-conditions-use/general-conditions-use.component';
 import {DashboardUserPageComponent} from './pages/owner-related/dashboard-user-page/dashboard-user-page.component';
 import {DashboardNavbarComponent} from './components/owner-related/dashboard-navbar/dashboard-navbar.component';
@@ -26,6 +26,8 @@ import {
 import {CoachCalendarComponent} from './components/coach-related/coach-calendar/coach-calendar.component';
 import {CourseManagementComponent} from './pages/coach-related/course-management/course-management.component';
 import {CalendarComponent} from './components/owner-related/calendar/calendar.component';
+import {ForgotPasswordFormComponent} from './components/forgot-password-form/forgot-password-form.component';
+import {ForgotPasswordPageComponent} from './pages/forgot-password-page/forgot-password-page.component';
 
 export const routes: Routes = [
   {path: "", redirectTo: "home", pathMatch: "full"},
@@ -82,5 +84,6 @@ export const routes: Routes = [
 
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: "CGU", component: GeneralConditionsUseComponent},
-  {path: "**", component: NotFoundComponent}
+  {path: 'forgot-password',component: ForgotPasswordPageComponent},
+  {path: "**", component: NotFoundComponent},
 ];
