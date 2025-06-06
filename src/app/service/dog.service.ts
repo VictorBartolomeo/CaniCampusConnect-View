@@ -25,7 +25,6 @@ export class DogService {
     private userService: UserService,
     private breedService: BreedService
   ) {
-    // S'abonner aux changements d'ID utilisateur pour charger les chiens
     this.authStateService.userId$.subscribe(userId => {
       if (userId) {
         this.loadUserDogs(userId);
