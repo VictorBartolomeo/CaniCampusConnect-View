@@ -248,6 +248,37 @@ ICI C'EST LES COMPOSANTS
           }
         }
       }
+    },
+
+    inputtext :{
+      colorScheme: {
+        light : {
+          root: {
+            background: "{alias.white}",
+            color: "{primary.500}",
+            borderColor: "{form.field.borderColor}",
+            focusBorderColor: '{primary.500}',
+            invalidBorderColor: '{error.500}',
+            focusRing: {
+              width: '10rem',
+              style: '{form.field.focus.ring.style}',
+            }
+          }
+        },
+        dark : {
+          root: {
+            background: "{alias.black}",
+            color: "{alias.white}",
+            borderColor: "{form.field.borderColor}",
+            focusBorderColor: '{primary.500}',
+            invalidBorderColor: '{error.500}',
+            focusRing: {
+              width: '10rem',
+              style: '{form.field.focus.ring.style}',
+            }
+          }
+        }
+      }
     }
 
 
