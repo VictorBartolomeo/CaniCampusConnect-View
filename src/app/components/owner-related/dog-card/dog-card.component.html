@@ -11,7 +11,7 @@
         <h2 class="text-white text-2xl font-bold flex items-center gap-2">
           {{dog.name}}
           <fa-icon [icon]="getGenderIcon().icon"
-                   [class]="getGenderIcon().color"
+                   class="text-white"
                    [title]="getGenderLabel()"></fa-icon>
         </h2>
         <div class="flex gap-2 items-center text-white text-sm">
@@ -23,33 +23,32 @@
     </div>
   </ng-template>
 
-
   <div class="space-y-4 p-3">
 
     <div class="flex items-center gap-2">
-      <i class="pi pi-id-card text-blue-600"></i>
+      <i class="pi pi-id-card text-primary"></i>
       <span class="font-semibold">Numéro de puce: {{dog.chipNumber || 'Non renseigné'}}</span>
     </div>
 
     <div class="flex items-center gap-2">
-      <fa-icon [icon]="getGenderIcon().icon" [class]="getGenderIcon().color"></fa-icon>
+      <fa-icon [icon]="getGenderIcon().icon" class="text-primary"></fa-icon>
       <span class="font-semibold">Genre: {{getGenderLabel()}}</span>
     </div>
 
     <div class="flex items-center gap-2">
-      <fa-icon [icon]="weightIcon" class="text-blue-600"></fa-icon>
+      <fa-icon [icon]="weightIcon" class="text-primary"></fa-icon>
       <span class="font-semibold">Dernier poids: {{latestWeight ? latestWeight.weightValue + ' kg (' + (latestWeight.measurementDate | date:'dd/MM/yyyy') + ')' : 'Non enregistré'}}</span>
     </div>
 
     <div class="flex items-center gap-2">
-      <i class="pi pi-graduation-cap text-blue-600"></i>
+      <i class="pi pi-graduation-cap text-primary"></i>
       <span class="font-semibold">Type de cours préféré:</span>
       <p-tag [value]="mostCommonCourseType || 'Aucun cours suivi'"
              [severity]="mostCommonCourseType ? 'info' : 'secondary'"></p-tag>
     </div>
 
     <div class="flex items-center gap-2">
-      <i class="pi pi-heart text-blue-600"></i>
+      <i class="pi pi-heart text-primary"></i>
       <span class="font-semibold">Traitement en cours:</span>
       <p-badge [value]="hasMedication ? 'Oui' : 'Non'"
                [severity]="hasMedication ? 'warn' : 'success'"
@@ -57,7 +56,7 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <i class="pi pi-shield text-blue-600"></i>
+      <i class="pi pi-shield text-primary"></i>
       <span class="font-semibold">Vaccins à jour:</span>
       <p-badge [value]="areVaccinesUpToDate ? 'À jour' : 'À vérifier'"
                [severity]="areVaccinesUpToDate ? 'success' : 'danger'"
@@ -65,25 +64,24 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <i class="pi pi-user text-blue-600"></i>
+      <i class="pi pi-user text-primary"></i>
       <span class="font-semibold">Coach préféré: {{favoriteCoach || 'Aucun coach'}}</span>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2 pt-5">
-
-        <p-button
-          icon="pi pi-pencil"
-          label="Modifier"
-          [routerLink]="['/dashboard/manage-dog']"
-          severity="contrast"
-          (onClick)="selectDog()"></p-button>
-        <p-button
-          icon="pi pi-calendar"
-          label="Réserver un cours"
-          [routerLink]="['/dashboard/reserve-course']"
-          (onClick)="selectDog()"></p-button>
+      <p-button
+        icon="pi pi-pencil"
+        label="Modifier"
+        [routerLink]="['/dashboard/manage-dog']"
+        severity="contrast"
+        (onClick)="selectDog()"></p-button>
+      <p-button
+        icon="pi pi-calendar"
+        label="Réserver un cours"
+        [routerLink]="['/dashboard/reserve-course']"
+        (onClick)="selectDog()"></p-button>
     </div>
   </ng-template>
 </p-card>
