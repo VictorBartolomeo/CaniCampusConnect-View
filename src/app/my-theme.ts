@@ -283,6 +283,34 @@ ICI C'EST LES COMPOSANTS
           }
         }
       }
+    },
+
+    tabs :{
+      colorScheme: {
+        tab: {
+          light :{
+            background: "{alias.white}",
+            color: "{primary.500}",
+            activeBackground: "{primary.500}",
+            activeColor: "{alias.white}",
+            hoverBackground: "{primary.500}",
+            hoverColor: "{alias.white}",
+            borderRadius : "0.5rem",
+            padding: '0.90rem 1.125rem',
+          }
+        },
+        activeBar : {
+          light :{
+            background: "{primary.500}",
+          }
+        },
+        tabPanel : {
+          light :{
+            background: "{primary.500}",
+            color: "{primary.500}",
+          }
+        }
+      }
     }
 
 
