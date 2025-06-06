@@ -19,21 +19,29 @@ import {
 import {UnauthorizedComponent} from './pages/unauthorized/unauthorized.component';
 import {RoleGuard} from './service/guards/role.guard';
 import {CoachDashboardComponent} from './pages/coach-related/coach-dashboard/coach-dashboard.component';
-import {CoachCourseComponent} from './pages/coach-related/coach-course/coach-course.component';
 import {
   UpcomingCourseTableComponent
 } from './components/coach-related/upcoming-course-table/upcoming-course-table.component';
 import {CoachCalendarComponent} from './components/coach-related/coach-calendar/coach-calendar.component';
 import {CourseManagementComponent} from './pages/coach-related/course-management/course-management.component';
 import {CalendarComponent} from './components/owner-related/calendar/calendar.component';
-import {ForgotPasswordFormComponent} from './components/forgot-password-form/forgot-password-form.component';
 import {ForgotPasswordPageComponent} from './pages/forgot-password-page/forgot-password-page.component';
+import {LandingNavbarComponent} from './components/landing-navbar/landing-navbar.component';
 
 export const routes: Routes = [
-  {path: "", redirectTo: "home", pathMatch: "full"},
-  {path: "home", component: LandingPageComponent},
-  {path: "login", component: LoginPageComponent},
-  {path: "register", component: RegisterPageComponent},
+
+  //LANDING
+  {path: "",
+    component: LandingNavbarComponent,
+    children : [
+      {path: "", redirectTo: "home", pathMatch: "full"},
+      {path: "home", component: LandingPageComponent},
+      {path: "login", component: LoginPageComponent},
+      {path: "register", component: RegisterPageComponent},
+      {path: "CGU", component: GeneralConditionsUseComponent},
+      {path: "forgot-password", component: ForgotPasswordPageComponent},
+    ]
+  },
 
   //OWNERS
   {
@@ -43,7 +51,8 @@ export const routes: Routes = [
     data: {authorizedRoles: ['ROLE_OWNER']},
     children: [
       {
-        path: "user", component: DashboardUserPageComponent,
+        path: "user",
+        component: DashboardUserPageComponent,
         children: [
           {path: "", redirectTo: "course", pathMatch: "full"},
           {path: "course", component: CourseComponent},
@@ -82,8 +91,8 @@ export const routes: Routes = [
     ]
   },
 
+  {path: "**", redirectTo: "404-not-found", pathMatch: "full"},
+  {path: "404-not-found", component: NotFoundComponent},
   {path: 'unauthorized', component: UnauthorizedComponent},
-  {path: "CGU", component: GeneralConditionsUseComponent},
-  {path: 'forgot-password',component: ForgotPasswordPageComponent},
   {path: "**", component: NotFoundComponent},
 ];
