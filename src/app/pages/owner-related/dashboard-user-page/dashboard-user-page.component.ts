@@ -4,6 +4,7 @@ import {Tab, TabList, Tabs} from 'primeng/tabs';
 import {FormsModule} from '@angular/forms';
 import {DatePicker} from 'primeng/datepicker';
 import {Button} from 'primeng/button';
+import {StyleClass} from 'primeng/styleclass';
 
 @Component({
   selector: 'app-dashboard-user-page',
@@ -15,7 +16,8 @@ import {Button} from 'primeng/button';
     TabList,
     FormsModule,
     DatePicker,
-    Button
+    Button,
+    StyleClass
   ],
   templateUrl: './dashboard-user-page.component.html',
   styleUrl: './dashboard-user-page.component.scss'
