@@ -1,5 +1,5 @@
 import {FormsModule} from '@angular/forms';
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, ElementRef} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
 import {MegaMenu} from 'primeng/megamenu';
 import {ButtonModule} from 'primeng/button';
@@ -15,6 +15,7 @@ import {UserService} from '../../../service/user.service';
 import {Observable, Subscription} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
+import {LayoutService} from '../../../service/layout.service';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -39,6 +40,9 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     public dogService: DogService,
     public userService: UserService,
+    private elementRef: ElementRef,
+    private layoutService: LayoutService
+
   ) {
     this.userDogs$ = this.dogService.userDogs$;
     this.activeDog$ = this.dogService.activeDog$;
@@ -134,8 +138,18 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.activeDogSubscription) {
       this.activeDogSubscription.unsubscribe();
+      this.layoutService.setDashboardNavHeight(0);
     }
   }
+
+  ngAfterViewInit() {
+    // Mesure et notifie la hauteur de la dashboard navbar
+    setTimeout(() => {
+      const height = this.elementRef.nativeElement.offsetHeight;
+      this.layoutService.setDashboardNavHeight(height);
+    }, 0);
+  }
+
 
   onDogChange(dogId: number): void {
     if (!dogId) return;
