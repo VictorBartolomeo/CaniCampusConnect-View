@@ -1,13 +1,13 @@
-<div class="flex justify-evenly gap-10 items-stretch min-h-[600px] bg-gray-100">
+<div class="flex justify-evenly gap-10 items-stretch h-screen-minus-dashboard-nav bg-gray-100">
   <div class="py-10 w-[500px]">
-    <app-dog-summary class="h-full"/>
+    <app-dog-summary class="h-full" [dog]="currentDog"/>
   </div>
 
   <div class="py-10 w-[500px]">
     <app-dog-form class="h-full"/>
   </div>
 
-  <div class="absolute bottom-10 right-10">
+  <div class="absolute bottom-10 right-10 bg-gray-100">
     <app-dog-add-form/>
   </div>
 </div>
