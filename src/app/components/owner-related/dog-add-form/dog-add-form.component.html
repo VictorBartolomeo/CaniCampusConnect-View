@@ -56,6 +56,7 @@
         optionLabel="label"
         optionValue="value"
         placeholder="Sélectionner le genre"
+        emptyMessage="Aucune option disponible"
         class="w-full"
         [class.p-invalid]="hasFieldError('gender')"
         (onChange)="onFieldChange('gender')">
@@ -141,6 +142,7 @@
         optionLabel="label"
         optionValue="value"
         placeholder="Sélectionner les races"
+        emptyMessage="Aucune race disponible"
         class="w-full"
         [class.p-invalid]="hasFieldError('breed')"
         (onChange)="onFieldChange('breed')">

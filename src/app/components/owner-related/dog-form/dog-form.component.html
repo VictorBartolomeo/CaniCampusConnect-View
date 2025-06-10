@@ -20,6 +20,7 @@
                   optionValue="value"
                   dataKey="value"
                   placeholder="Sélectionner le genre"
+                  emptyMessage="Aucune option disponible"
                   styleClass="w-full text-primary">
         </p-select>
 
@@ -28,6 +29,7 @@
                        formControlName="breed"
                        optionLabel="name"
                        placeholder="Race.s du chien"
+                       emptyMessage="Aucune race disponible"
                        [maxSelectedLabels]="3"
                        styleClass="w-full text-primary"></p-multiselect>
 
