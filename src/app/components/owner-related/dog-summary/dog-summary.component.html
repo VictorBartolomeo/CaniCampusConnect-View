@@ -16,7 +16,7 @@
                      [title]="getGenderLabel()"></fa-icon>
           </h2>
           <div class="flex gap-2 items-center text-white text-sm">
-            <span>{{getDogAge(dog.birthDate)}}</span>
+            <span>{{getDogAge()}}</span>
             <span class="text-xl">•</span>
             <span>{{getBreedNames()}}</span>
           </div>
@@ -34,7 +34,7 @@
       <div class="flex items-center gap-2">
         <i class="pi pi-calendar text-primary"></i>
         <span class="font-semibold">Date de naissance:</span>
-        <span>{{formatDate(dog.birthDate) || 'Non renseignée'}}</span>
+        <span>{{formatDate() || 'Non renseignée'}}</span>
       </div>
 
       <div class="flex items-center gap-2">
@@ -73,10 +73,7 @@
       <i class="pi pi-exclamation-triangle text-3xl text-yellow-500 mb-3"></i>
       <h3 class="text-lg font-semibold mb-2">Aucun chien sélectionné</h3>
       <p class="text-gray-600 text-sm mb-4">Veuillez sélectionner un chien dans la liste pour afficher ses informations.</p>
-      <p-button
-        label="Ajouter un chien"
-        icon="pi pi-plus"
-        (onClick)="navigateToAddDog()"></p-button>
+      <app-dog-add-form/>
     </div>
   </p-card>
 }
