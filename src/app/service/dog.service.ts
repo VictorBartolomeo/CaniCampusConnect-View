@@ -1,4 +1,3 @@
-
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable, of} from 'rxjs';
@@ -256,7 +255,6 @@ export class DogService {
     );
   }
 
-  // ====== MÉTHODES EXISTANTES (inchangées) ======
 
   getDogAvatarUrl(dog: Dog): string {
     if (dog?.avatarUrl) {
