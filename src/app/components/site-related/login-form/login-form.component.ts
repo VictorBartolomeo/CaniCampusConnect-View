@@ -11,6 +11,9 @@ import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../service/auth.service';
+import {environment} from '../../../../environments/environment';
+import {EmailValidator} from '../../../service/validators/email-validator';
+import {PasswordValidator} from '../../../service/validators/password-validator';
 
 @Component({
   selector: 'app-login-form',
@@ -45,13 +48,8 @@ export class LoginFormComponent {
     private messageService: MessageService
   ) {
     this.loginForm = this.formBuilder.group({
-      email: ['', [
-        Validators.required,
-        Validators.email
-      ]],
-      password: ['', [
-        Validators.required
-      ]],
+      email: ['', [Validators.required, EmailValidator.validEmail()]],
+      password: ['', [Validators.required, PasswordValidator.strongPassword()]],
       rememberMe: [false]
     });
 
