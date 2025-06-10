@@ -17,6 +17,7 @@ import {Course} from '../../../models/course';
 import {RegistrationStatus} from '../../../models/registrationstatus.enum';
 import {ButtonDirective} from 'primeng/button';
 import {ActiveRegistrationsPipe} from '../../../Pipes/active-registrations.pipe';
+import {Card} from 'primeng/card';
 
 @Component({
   selector: 'app-register-course',
@@ -31,6 +32,7 @@ import {ActiveRegistrationsPipe} from '../../../Pipes/active-registrations.pipe'
     Dialog,
     ButtonDirective,
     ActiveRegistrationsPipe,
+    Card,
   ],
   templateUrl: './register-course.component.html',
   styleUrl: './register-course.component.scss',
