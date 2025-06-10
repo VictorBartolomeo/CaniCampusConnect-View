@@ -109,10 +109,13 @@ export class AuthService {
   // Déconnexion
   disconnection() {
     localStorage.removeItem('jwt');
+    sessionStorage.removeItem('jwt');
+    sessionStorage.clear();
     this.userService.clearUserData();
     this.authStateService.clearState();
     this.router.navigateByUrl('/login');
   }
+
 
   getToken(): string | null {
     // Vérifier d'abord sessionStorage puis localStorage
@@ -146,7 +149,6 @@ export class AuthService {
       localStorage.setItem('jwt', token);
       localStorage.setItem('rememberMe', 'true');
     } else {
-      // Sinon, stocker dans sessionStorage (supprimé à la fermeture du navigateur)
       sessionStorage.setItem('jwt', token);
       localStorage.removeItem('rememberMe');
       localStorage.removeItem('jwt'); // Nettoyer l'ancien token persistant
