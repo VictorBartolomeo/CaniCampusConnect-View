@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import {DogSummaryComponent} from '../../../components/owner-related/dog-summary/dog-summary.component';
 import {DogFormComponent} from '../../../components/owner-related/dog-form/dog-form.component';
 import {DogAddFormComponent} from '../../../components/owner-related/dog-add-form/dog-add-form.component';
+import {Card} from 'primeng/card';
 
 @Component({
   selector: 'app-manage-dogs-page',
@@ -13,9 +14,7 @@ import {DogAddFormComponent} from '../../../components/owner-related/dog-add-for
     DogSummaryComponent,
     DogFormComponent,
     DogAddFormComponent,
-    DogSummaryComponent,
-    DogFormComponent,
-    DogAddFormComponent
+    Card
   ],
   templateUrl: './manage-dogs-page.component.html',
   styleUrl: './manage-dogs-page.component.scss'
