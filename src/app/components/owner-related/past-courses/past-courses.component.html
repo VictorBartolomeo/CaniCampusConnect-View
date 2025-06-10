@@ -1,4 +1,4 @@
-<div class="card">
+<p-card>
   <div class="flex justify-between items-center mb-8">
     <h2 class="font-bold text-xl">Historique des cours</h2>
 
@@ -35,14 +35,25 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="5" class="text-center">
-          @if (activeDog && !dateFilter) {
-            <p>{{ activeDog.name }} n'a pas encore participé à des cours.</p>
+        <td colspan="5" class="text-center p-4">
+          @if (!activeDog) {
+            <div class="flex flex-col items-center py-4">
+              <i class="pi pi-info-circle text-3xl mb-2 text-blue-500"></i>
+              <p class="text-lg">Aucun chien sélectionné. Veuillez sélectionner un chien pour voir son historique de cours.</p>
+            </div>
+          } @else if (activeDog && !dateFilter) {
+            <div class="flex flex-col items-center py-4">
+              <i class="pi pi-calendar-times text-3xl mb-2 text-blue-500"></i>
+              <p class="text-lg">{{ activeDog.name }} n'a pas encore participé à des cours.</p>
+            </div>
           } @else if (activeDog && dateFilter) {
-            <p>Aucun cours trouvé pour {{ activeDog.name }} à partir du {{ dateFilter | date:'dd/MM/yyyy':'':'fr' }}.</p>
+            <div class="flex flex-col items-center py-4">
+              <i class="pi pi-filter-slash text-3xl mb-2 text-blue-500"></i>
+              <p class="text-lg">Aucun cours trouvé pour {{ activeDog.name }} à partir du {{ dateFilter | date:'dd/MM/yyyy':'':'fr' }}.</p>
+            </div>
           }
         </td>
       </tr>
     </ng-template>
   </p-table>
-</div>
+</p-card>

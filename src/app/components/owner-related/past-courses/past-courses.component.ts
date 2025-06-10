@@ -11,6 +11,7 @@ import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
 import {ButtonDirective, ButtonIcon} from 'primeng/button';
 import {DatePicker} from 'primeng/datepicker';
+import {Card} from 'primeng/card';
 
 
 @Component({
@@ -22,7 +23,8 @@ import {DatePicker} from 'primeng/datepicker';
     Calendar,
     ButtonDirective,
     ButtonIcon,
-    DatePicker
+    DatePicker,
+    Card
   ],
   templateUrl: './past-courses.component.html',
   styleUrl: './past-courses.component.scss'
