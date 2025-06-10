@@ -44,17 +44,17 @@ body {
 
 
 :root {
-  --navbar-height: 85px; // ✅ Valeur par défaut réaliste
-  --dashboard-navbar-height: 85px; // ✅ Idem pour dashboard
+  --navbar-height: 85px;
+  --dashboard-navbar-height: 85px;
 }
 
 .h-screen-minus-navbar {
-  height: calc(100vh - var(--navbar-height, 85px)); // ✅ Fallback au cas où
+  height: calc(100vh - var(--navbar-height, 85px));
   min-height: calc(100vh - var(--navbar-height, 85px));
 }
 
 .h-screen-minus-dashboard-nav {
-  height: calc(100vh - var(--dashboard-navbar-height, 85px)); // ✅ Fallback
+  height: calc(100vh - var(--dashboard-navbar-height, 85px));
   min-height: calc(100vh - var(--dashboard-navbar-height, 85px));
 }
 
