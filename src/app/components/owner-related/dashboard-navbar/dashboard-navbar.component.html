@@ -1,5 +1,5 @@
-<div class="card">
-  <p-megaMenu [model]="items" [style]="{ display: 'flex' }"
+<div #navbarContainer class="navbar-container">
+<p-megaMenu [model]="items" [style]="{ display: 'flex' }"
               styleClass="p-4 bg-surface-0 dark:bg-surface-900">
 
     {{(dogService.userDogsSubject | async)?.length}}
@@ -14,6 +14,7 @@
         placeholder="Choisir un chien"
         class="w-full md:w-56"
         styleClass="font-semibold"
+        emptyMessage="Aucun chien lié"
         (onChange)="onDogChange($event.value)">
 
         <ng-template pTemplate="selectedItem" let-selectedOption>

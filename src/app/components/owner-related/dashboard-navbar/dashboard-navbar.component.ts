@@ -62,6 +62,7 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
     });
   }
 
+
   private subscribeToActiveDog(): void {
     this.activeDogSubscription = this.activeDog$.subscribe(dog => {
       this.activeDog = dog;
@@ -143,11 +144,22 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Mesure et notifie la hauteur de la dashboard navbar
     setTimeout(() => {
-      const height = this.elementRef.nativeElement.offsetHeight;
-      this.layoutService.setDashboardNavHeight(height);
-    }, 0);
+      // ✅ Cherchez spécifiquement la navbar
+      const navbarElement = this.elementRef.nativeElement.querySelector('.p-megamenu') ||
+        this.elementRef.nativeElement.querySelector('p-megaMenu') ||
+        this.elementRef.nativeElement.querySelector('.navbar-container');
+
+      if (navbarElement) {
+        const height = navbarElement.offsetHeight;
+        this.layoutService.setDashboardNavHeight(height);
+        console.log('🎯 Navbar height from selector:', height);
+      } else {
+        // ✅ Fallback avec une hauteur raisonnable
+        console.warn('❌ Navbar element not found, using fallback');
+        this.layoutService.setDashboardNavHeight(80); // Hauteur standard
+      }
+    }, 100); // ✅ Augmentez le délai pour que les composants soient rendus
   }
 
 
