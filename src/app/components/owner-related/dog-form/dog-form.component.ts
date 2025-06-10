@@ -131,31 +131,29 @@ export class DogFormComponent implements OnInit, OnDestroy {
 
     const formBreeds = this.form.value.breed || [];
 
-    // ✅ Créer l'objet avec le genre mis à jour
     const dogData = {
       id: this.updatedDog.id,
-      name: this.form.value.name,
-      birthDate: this.form.value.birthDate,
-      chipNumber: this.form.value.chipNumber,
-      gender: this.form.value.gender, // ✅ Genre mis à jour
-      breeds: formBreeds.length > 0 ? formBreeds : this.updatedDog.breeds,
+      name: this.form.value.name!,
+      birthDate: this.dogService.formatDateForBackend(this.form.value.birthDate || null),
+      chipNumber: this.form.value.chipNumber!,
+      gender: this.form.value.gender!,
+      breeds: formBreeds.map((breed: Breed) => ({ id: breed.id }))
     };
 
-    console.log('Données à envoyer pour la mise à jour:', dogData);
+    console.log('📤 Données préparées pour la mise à jour:', dogData);
 
-    this.http.put(`${this.apiUrl}/dog/${this.updatedDog.id}`, dogData).subscribe({
+    this.dogService.updateDog(dogData).subscribe({
       next: (response) => {
-        console.log('Chien mis à jour avec succès:', response);
-        this.dogService.loadUserDogs();
+        console.log('🎉 Chien mis à jour avec succès', response);
+        // Optionnel : afficher un message de succès
       },
       error: (error) => {
-        console.error('Erreur lors de la mise à jour du chien:', error);
-        if (error.error && error.error.message) {
-          console.error('Message d\'erreur:', error.error.message);
-        }
+        console.error('❌ Erreur lors de la mise à jour du chien', error);
+        // Gérer l'erreur (afficher un message d'erreur, etc.)
       }
     });
   }
+
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.form.get(fieldName);
