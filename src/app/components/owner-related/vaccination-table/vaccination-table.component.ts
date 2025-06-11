@@ -2,6 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Dog} from '../../../models/dog';
 import {TableModule} from 'primeng/table';
+import {CardModule} from 'primeng/card';
 import {DatePipe, NgClass} from '@angular/common';
 import {Vaccination} from '../../../models/vaccination';
 import {Subscription} from 'rxjs';
@@ -14,6 +15,7 @@ import {DogService} from '../../../service/dog.service';
     TableModule,
     DatePipe,
     NgClass,
+    CardModule,
   ],
   standalone: true,
   templateUrl: './vaccination-table.component.html',
