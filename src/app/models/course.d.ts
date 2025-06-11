@@ -10,7 +10,6 @@ export type Course = {
   startDatetime: Date;
   endDatetime: Date;
   maxCapacity: number;
-  price: number;
   registrations: Registration[];
   club: Club;
   coach: Coach;
