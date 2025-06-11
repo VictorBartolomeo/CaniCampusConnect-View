@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {CourseCardComponent} from '../../../components/owner-related/course-card/course-card.component';
 import {PastCoursesComponent} from '../../../components/owner-related/past-courses/past-courses.component';
-import {CalendarComponent} from '../../../components/owner-related/calendar/calendar.component';
 
 @Component({
   selector: 'app-course',
@@ -9,7 +8,6 @@ import {CalendarComponent} from '../../../components/owner-related/calendar/cale
   imports: [
     CourseCardComponent,
     PastCoursesComponent,
-    CalendarComponent
   ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.scss'
