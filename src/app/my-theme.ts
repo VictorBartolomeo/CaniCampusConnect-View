@@ -297,6 +297,9 @@ ICI C'EST LES COMPOSANTS
             hoverColor: "{alias.white}",
             borderRadius : "0.5rem",
             padding: '0.90rem 1.125rem',
+          },
+          dark :{
+
           }
         },
         activeBar : {
@@ -308,6 +311,30 @@ ICI C'EST LES COMPOSANTS
           light :{
             background: "{primary.500}",
             color: "{primary.500}",
+          }
+        }
+      }
+    },
+
+    datatable : {
+      colorScheme: {
+        header: {
+          light: {
+            background: "{primary.500}",
+            color: "{alias.white}",
+            borderColor: "{form.field.borderColor}",
+          },
+          dark: {
+            background: "{alias.black}",
+            color: "{alias.white}",
+            borderColor: "{form.field.borderColor}",
+          }
+        },
+        headerCell: {
+          light: {
+            background: "{primary.500}",
+            color: "{alias.white}",
+            borderColor: "{form.field.borderColor}",
           }
         }
       }
