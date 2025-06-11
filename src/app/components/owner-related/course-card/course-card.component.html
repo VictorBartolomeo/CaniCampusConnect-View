@@ -8,7 +8,6 @@
     <ng-template let-item pTemplate="item">
       <div class="p-3 relative mx-auto h-full">
 
-        <!-- ✅ Card normale pour les inscriptions -->
         @if (item.registration) {
           <p-card>
             <div class="w-full h-full flex flex-col justify-between">
@@ -45,11 +44,11 @@
           </p-card>
         }
 
-        <!-- ✅ Card vide (exactement comme votre @if) -->
+
         @if (!item.registration) {
-          <p-card styleClass="text-center p-4 my-4 mx-auto w-50">
+          <p-card styleClass="text-center p-4 mx-auto">
             @if (!activeDog) {
-              <div class="flex flex-col items-center">
+              <div class="flex flex-col items-center bg">
                 <i class="pi pi-info-circle text-3xl mb-2 text-primary"></i>
                 <p class="text-lg text-primary">Aucun chien sélectionné. Veuillez sélectionner un chien pour voir ses inscriptions aux cours.</p>
               </div>
