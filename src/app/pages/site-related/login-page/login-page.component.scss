@@ -1,0 +1,14 @@
+::ng-deep {
+  // Force l'input du p-password à prendre toute la largeur
+  .p-password {
+    width: 100% !important;
+
+    .p-password-input {
+      width: 100% !important;
+    }
+
+    .p-inputwrapper {
+      width: 100% !important;
+    }
+  }
+}

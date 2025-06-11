@@ -1,0 +1,79 @@
+@if (dog) {
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden h-full">
+
+    <ng-template pTemplate="header">
+      <div class="relative h-full w-full flex justify-end pr-10">
+        <img
+          [src]="getDogAvatarUrl()"
+          class="w-50 h-50 object-contain flex"
+          alt="{{dog.name}}"
+        />
+        <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-r from-primary/60 via-primary/0 w-full">
+          <h2 class="text-white text-2xl font-bold flex items-center gap-2">
+            {{dog.name}}
+            <fa-icon [icon]="getGenderIcon().icon"
+                     class="text-white"
+                     [title]="getGenderLabel()"></fa-icon>
+          </h2>
+          <div class="flex gap-2 items-center text-white text-sm">
+            <span>{{getDogAge()}}</span>
+            <span class="text-xl">•</span>
+            <span>{{getBreedNames()}}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="p-3 text-lg gap-10 flex flex-col justify-between h-full">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-id-card text-primary"></i>
+        <span class="font-semibold">Numéro de puce:</span>
+        <span>{{dog.chipNumber || 'Non renseigné'}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-calendar text-primary"></i>
+        <span class="font-semibold">Date de naissance:</span>
+        <span>{{formatDate() || 'Non renseignée'}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="getGenderIcon().icon" class="text-primary"></fa-icon>
+        <span class="font-semibold">Genre:</span>
+        <span>{{getGenderLabel()}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <fa-icon [icon]="weightIcon" class="text-primary"></fa-icon>
+        <span class="font-semibold">Dernier poids:</span>
+        <span>{{getLatestWeight()}}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-heart text-primary"></i>
+        <span class="font-semibold">État de santé:</span>
+        <p-badge [value]="getHealthStatus().label"
+                 [severity]="getHealthStatus().label === 'En bonne santé' ? 'success' : 'warn'"
+                 [pTooltip]="getHealthStatus().label === 'En bonne santé' ? 'Aucun traitement en cours' : 'Ce chien suit actuellement un traitement'"></p-badge>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-shield text-primary"></i>
+        <span class="font-semibold">Vaccinations:</span>
+        <p-badge [value]="getVaccinationStatus().label"
+                 [severity]="getVaccinationStatus().label === 'À jour' ? 'success' : 'danger'"
+                 [pTooltip]="getVaccinationStatus().label === 'À jour' ? 'Tous les vaccins sont à jour' : 'Certains vaccins doivent être renouvelés'"></p-badge>
+      </div>
+    </div>
+
+  </p-card>
+} @else {
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
+    <div class="text-center p-4">
+      <i class="pi pi-exclamation-triangle text-3xl text-yellow-500 mb-3"></i>
+      <h3 class="text-lg font-semibold mb-2">Aucun chien sélectionné</h3>
+      <p class="text-gray-600 text-sm mb-4">Veuillez sélectionner un chien dans la liste pour afficher ses informations.</p>
+      <app-dog-add-form/>
+    </div>
+  </p-card>
+}

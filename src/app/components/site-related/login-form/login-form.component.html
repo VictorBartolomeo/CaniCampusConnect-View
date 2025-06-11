@@ -1,0 +1,135 @@
+<div class="flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <p-card styleClass="shadow-2xl rounded-xl overflow-hidden border-0 w-[500px]">
+      <ng-template pTemplate="header">
+        <div class="relative h-48 w-full flex justify-end pr-6 overflow-hidden">
+          <div class="w-60 h-60 rounded-full flex items-center justify-center ">
+            <img src="icons/login.png" alt="Image de bienvenue d'un chien tenant un jouet dans sa gueule" class="object-contain pb-10" />
+          </div>
+
+          <div class="absolute bottom-0 left-0 p-4 w-full"
+               style="background: linear-gradient(to right, rgba(27, 33, 64, 0.6) 0%, rgba(27, 33, 64, 0) 100%);">
+            <h2 class="text-white text-2xl font-bold">
+              Connexion
+            </h2>
+            <div class="text-white text-sm opacity-90">
+              Accédez à votre espace personnel
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="p-6">
+        <form [formGroup]="loginForm" (ngSubmit)="onConnection()" class="space-y-6">
+          <div class="field">
+            <label for="email" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+              <i class="pi pi-envelope mr-2" style="color: #1B2140;"></i>EMAIL
+            </label>
+            <input
+              pInputText
+              id="email"
+              formControlName="email"
+              placeholder="votre@email.com"
+              class="w-full"
+              [ngClass]="{'p-invalid': submitted && f['email'].errors}"
+            />
+            @if (submitted && f['email'].errors?.['required']) {
+              <small class="p-error mt-1 block">
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Email requis
+              </small>
+            } @else if (submitted && f['email'].errors?.['email']) {
+              <small class="p-error mt-1 block">
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Format d'email invalide
+              </small>
+            }
+          </div>
+
+          <div class="field">
+            <div class="flex justify-between items-center mb-2">
+              <label for="password" class="text-sm font-medium" style="color: #1B2140;">
+                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE
+              </label>
+
+              <a
+                routerLink="/forgot-password"
+                class="text-sm font-medium transition-colors duration-200 hover:underline"
+                style="color: #93C01F;"
+                onmouseover="this.style.color='#759918'"
+                onmouseout="this.style.color='#93C01F'">
+                Mot de passe oublié ?
+              </a>
+            </div>
+            <div class="w-full">
+              <p-password
+                id="password"
+                formControlName="password"
+                [feedback]="false"
+                [toggleMask]="true"
+                placeholder="••••••••"
+                styleClass="password-full-width"
+                [ngClass]="{'p-invalid': submitted && f['password'].errors}"
+              />
+            </div>
+            @if (submitted && f['password'].errors?.['required']) {
+              <small class="p-error mt-1 block">
+                <i class="pi pi-exclamation-triangle mr-1"></i>
+                Mot de passe requis
+              </small>
+            }
+          </div>
+
+          <!-- ✅ Option "Se souvenir de moi" -->
+          <div class="field">
+            <div class="flex items-center">
+              <p-checkbox
+                id="rememberMe"
+                formControlName="rememberMe"
+                [binary]="true"
+                styleClass="mr-2"
+              />
+              <label for="rememberMe" class="text-sm" style="color: #1B2140;">
+                Se souvenir de moi
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <button
+              pButton
+              label="Se connecter"
+              type="submit"
+              [loading]="loading"
+              class="w-full p-3 text-lg font-medium"
+              icon="pi pi-sign-in"
+            ></button>
+          </div>
+
+          @if (error) {
+            <div class="text-center mt-4">
+              <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <i class="pi pi-exclamation-circle mr-2"></i>
+                {{ error }}
+              </div>
+            </div>
+          }
+        </form>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="text-center py-4 border-t border-gray-100">
+          <p class="text-sm text-gray-600 mb-2">Pas encore de compte ?</p>
+          <a routerLink="/register" class="font-medium transition-colors duration-200"
+             style="color: #1B2140;"
+             onmouseover="this.style.color='#4e566f'"
+             onmouseout="this.style.color='#1B2140'">
+            <i class="pi pi-user-plus mr-1"></i>
+            S'inscrire gratuitement
+          </a>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>
+

@@ -1,0 +1,26 @@
+  <h2 class="text-xl font-bold mb-4 text-primary">Suivi du poids</h2>
+
+  @if (weightChartData) {
+    <p-card styleClass="p-4">
+      <div class="mt-4">
+        <p-chart type="line"
+                [data]="weightChartData"
+                [options]="weightChartOptions"
+                height="400px"></p-chart>
+      </div>
+    </p-card>
+  } @else if (selectedDog) {
+    <p-card styleClass="text-center p-4 mx-auto">
+      <div class="flex flex-col items-center">
+        <i class="pi pi-chart-line text-3xl mb-2 text-primary"></i>
+        <p class="text-lg text-primary">Aucune donnée de poids enregistrée pour {{selectedDog.name}}.</p>
+      </div>
+    </p-card>
+  } @else {
+    <p-card styleClass="text-center p-4 mx-auto">
+      <div class="flex flex-col items-center">
+        <i class="pi pi-info-circle text-3xl mb-2 text-primary"></i>
+        <p class="text-lg text-primary">Aucun chien sélectionné. Veuillez sélectionner un chien pour voir ses données de poids.</p>
+      </div>
+    </p-card>
+  }

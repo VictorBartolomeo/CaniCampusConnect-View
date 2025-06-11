@@ -1,0 +1,31 @@
+<div class="card">
+  <p-megaMenu [model]="items" [style]="{ display: 'flex' }"
+              styleClass="p-4 bg-surface-0 dark:bg-surface-900">
+
+    <ng-template pTemplate="item" let-item>
+      <a pRipple [routerLink]="item.route"
+         class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase"
+         style="border-radius: 2rem">
+        <i [ngClass]="item.icon"></i>
+        <span class="ml-2">{{ item.label }}</span>
+        @if (item.badge && item.badge !== '0') {
+          <p-badge
+            [value]="item.badge"
+            [severity]="getBadgeSeverity(item.badgeStyleClass)"
+            class="ml-2">
+          </p-badge>
+        }
+      </a>
+    </ng-template>
+
+    <ng-template pTemplate="end">
+      <p-menu #menu [model]="avatar" [popup]="true"></p-menu>
+      <p-button rounded="false" size="small" (click)="menu.toggle($event)" class="rounded-full avatar-button">
+        <p-avatar image="/img/avatars/user-default-avatar.png" class="" size="large"
+                  shape="circle"></p-avatar>
+      </p-button>
+    </ng-template>
+  </p-megaMenu>
+</div>
+
+<router-outlet></router-outlet>
