@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UIChart} from "primeng/chart";
+import {CardModule} from 'primeng/card';
 import {Dog} from '../../../models/dog';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
@@ -10,7 +11,8 @@ import {DogService} from '../../../service/dog.service';
   imports: [
     ReactiveFormsModule,
     UIChart,
-    FormsModule
+    FormsModule,
+    CardModule
   ],
   templateUrl: './weight-chart.component.html',
   styleUrl: './weight-chart.component.scss'
