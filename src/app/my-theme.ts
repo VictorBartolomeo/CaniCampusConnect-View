@@ -1,3 +1,4 @@
+
 import { definePreset } from "@primeng/themes";
 import Aura from "@primeng/themes/aura";
 
@@ -81,19 +82,19 @@ export const MyPreset = definePreset(Aura, {
       900: '#37768b',
       950: '#214754'
     },
-  alias: {
-    secondary: '#93C01F',
-    secondary_20 : 'rgba(147, 192, 31, 0.2)',
-    tertiary: '#5BC4F1',
-    muted: '#64748B',
-    muted_foreground: '#1B21407F',
-    muted_secondary: '#93C01F33',
-    accent: '#EA8F16',
-    accent_2: '#F3BF00',
-    white: '#fff',
-    black: '#000',
-    transparent: 'transparent',
-  }
+    alias: {
+      secondary: '#93C01F',
+      secondary_20 : 'rgba(147, 192, 31, 0.2)',
+      tertiary: '#5BC4F1',
+      muted: '#64748B',
+      muted_foreground: '#1B21407F',
+      muted_secondary: '#93C01F33',
+      accent: '#EA8F16',
+      accent_2: '#F3BF00',
+      white: '#fff',
+      black: '#000',
+      transparent: 'transparent',
+    }
   },
 
   /*
@@ -104,6 +105,93 @@ ICI C'EST LES COMPOSANTS
 *****************
 */
   components: {
+
+    // ✅ Configuration des toasts ajoutée
+    toast: {
+      colorScheme: {
+        light: {
+          root: {
+            background: "{alias.white}",
+            borderRadius: "8px",
+            borderWidth: "1px",
+            borderColor: "{primary.500}",
+            shadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+            padding: "1rem",
+            gap: "0.5rem"
+          },
+          icon: {
+            size: "1.125rem"
+          },
+          content: {
+            gap: "0.5rem"
+          },
+          text: {
+            gap: "0.25rem"
+          },
+          summary: {
+            fontWeight: "600",
+            fontSize: "0.875rem",
+            color: "{primary.500}"
+          },
+          detail: {
+            fontWeight: "400",
+            fontSize: "0.75rem",
+            color: "{primary.600}"
+          },
+          closeButton: {
+            width: "1.5rem",
+            height: "1.5rem",
+            borderRadius: "50%",
+            focusRing: {
+              width: "2px",
+              style: "solid",
+              color: "{primary.500}",
+              offset: "2px",
+              shadow: "none"
+            }
+          },
+          closeIcon: {
+            size: "1rem",
+            color: "{primary.500}"
+          },
+          // Styles spécifiques par severité
+          success: {
+            background: "{success.50}",
+            borderColor: "{success.500}",
+            color: "{success.700}",
+            shadow: "0 4px 12px rgba(147, 192, 31, 0.15)"
+          },
+          info: {
+            background: "{info.50}",
+            borderColor: "{info.500}",
+            color: "{info.700}",
+            shadow: "0 4px 12px rgba(91, 196, 241, 0.15)"
+          },
+          warn: {
+            background: "{warning.50}",
+            borderColor: "{warning.500}",
+            color: "{warning.700}",
+            shadow: "0 4px 12px rgba(234, 143, 22, 0.15)"
+          },
+          error: {
+            background: "{error.50}",
+            borderColor: "{error.500}",
+            color: "{error.700}",
+            shadow: "0 4px 12px rgba(255, 0, 0, 0.15)"
+          }
+        },
+        dark: {
+          root: {
+            background: "{primary.900}",
+            borderColor: "{primary.700}",
+            color: "{alias.white}"
+          },
+          closeIcon: {
+            color: "{alias.white}"
+          }
+        }
+      }
+    },
 
     button: {
       colorScheme: {
@@ -218,21 +306,21 @@ ICI C'EST LES COMPOSANTS
       colorScheme: {
         root: {
           light: {
-          background: "{alias.white}",
-          color: "{primary.500}",
-        },
-        overlay :{
-          color: "{primary.500}"
-        },
-          dark: {
-          background: "{alias.white}",
-          color: "{alias.white}",
-          }
+            background: "{alias.white}",
+            color: "{primary.500}",
           },
+          overlay :{
+            color: "{primary.500}"
+          },
+          dark: {
+            background: "{alias.white}",
+            color: "{alias.white}",
+          }
+        },
         item : {
           light: {
-          background: "{alias.white}",
-          color: "{primary.500}",
+            background: "{alias.white}",
+            color: "{primary.500}",
           }
 
         }
@@ -243,12 +331,12 @@ ICI C'EST LES COMPOSANTS
       colorScheme: {
         root: {
           light: {
-          background: "{alias.white}",
-          color: "{primary.500}",
+            background: "{alias.white}",
+            color: "{primary.500}",
           },
           dark: {
-          background: "{alias.white}",
-          color: "{alias.white}",
+            background: "{alias.white}",
+            color: "{alias.white}",
           }
         }
       }
@@ -348,9 +436,6 @@ ICI C'EST LES COMPOSANTS
 
 
 
-    }
+  }
 
 })
-
-
-
