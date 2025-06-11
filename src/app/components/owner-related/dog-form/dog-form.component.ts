@@ -1,15 +1,17 @@
+
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {InputText} from 'primeng/inputtext';
 import {MultiSelect} from 'primeng/multiselect';
-import {Select} from 'primeng/select'; // ✅ Ajout du Select
+import {Select} from 'primeng/select';
 import {Button} from 'primeng/button';
 import {Calendar} from 'primeng/calendar';
 import {HttpClient} from '@angular/common/http';
 import {Subscription} from 'rxjs';
 import {DatePicker} from 'primeng/datepicker';
-
+import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import {Dog} from '../../../models/dog';
 import {Breed} from '../../../models/breed';
 import {GENDER_OPTIONS} from '../../../models/gender.options';
@@ -29,6 +31,7 @@ import {Card} from 'primeng/card';
     Button,
     DatePicker,
     Card
+    // Retiré Router et MessageService des imports car ce ne sont pas des composants
   ],
   styleUrls: ['./dog-form.component.scss']
 })
@@ -43,8 +46,10 @@ export class DogFormComponent implements OnInit, OnDestroy {
 
   http = inject(HttpClient);
   dogService = inject(DogService);
-
   formBuilder = inject(FormBuilder);
+  router = inject(Router);
+  messageService = inject(MessageService);
+
   form = this.formBuilder.group({
     name: ['', Validators.required],
     breed: [[] as Breed[], [Validators.required, Validators.minLength(1)]],
@@ -76,14 +81,14 @@ export class DogFormComponent implements OnInit, OnDestroy {
 
           const selectedBreeds = this.mapDogBreedsToAvailableBreeds(dog.breeds || []);
 
-            this.form.patchValue({
-              name: dog.name,
-              breed: selectedBreeds,
-              chipNumber: dog.chipNumber,
-              birthDate: dog.birthDate ? new Date(dog.birthDate) : null,
-              gender: dog.gender,
-              avatar: null
-            });
+          this.form.patchValue({
+            name: dog.name,
+            breed: selectedBreeds,
+            chipNumber: dog.chipNumber,
+            birthDate: dog.birthDate ? new Date(dog.birthDate) : null,
+            gender: dog.gender,
+            avatar: null
+          });
         }
       },
       error: (error: any) => {
@@ -145,19 +150,53 @@ export class DogFormComponent implements OnInit, OnDestroy {
     this.dogService.updateDog(dogData).subscribe({
       next: (response) => {
         console.log('🎉 Chien mis à jour avec succès', response);
-        // Optionnel : afficher un message de succès
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Chien mis à jour avec succès.'
+        });
       },
       error: (error) => {
         console.error('❌ Erreur lors de la mise à jour du chien', error);
-        // Gérer l'erreur (afficher un message d'erreur, etc.)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Erreur lors de la mise à jour du chien.'
+        });
       }
     });
   }
 
-
   isFieldInvalid(fieldName: string): boolean {
     const field = this.form.get(fieldName);
     return !!(field && field.invalid && field.touched);
+  }
+
+  deleteDog(): void {
+    // Correction : utilisation d'updatedDog au lieu de dog
+    if (this.updatedDog?.id) {
+      if (confirm(`Êtes-vous sûr de vouloir supprimer ${this.updatedDog.name} ? Cette action est irréversible.`)) {
+        this.dogService.deleteDog(this.updatedDog.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: `${this.updatedDog!.name} a été supprimé avec succès.`
+            });
+            // Rediriger vers la liste des chiens
+            this.router.navigate(['/dashboard/owner-profile']);
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'Erreur lors de la suppression du chien.'
+            });
+          }
+        });
+      }
+    }
   }
 
   ngOnDestroy() {

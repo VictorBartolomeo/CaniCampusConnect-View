@@ -47,7 +47,18 @@
           styleClass="w-full text-primary z-10"></p-datepicker>
 
         <div class="flex-grow"></div> <!-- Spacer pour pousser le bouton vers le bas -->
-        <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="w-full flex justify-center"/>
+
+        <div class="flex gap-2">
+          <p-button label="Mettre à jour" type="submit" icon="pi pi-sync" class="flex-1"/>
+          <p-button
+            label="Supprimer"
+            icon="pi pi-trash"
+            severity="danger"
+            (click)="deleteDog()"
+            [disabled]="!updatedDog?.id"
+            type="button">
+          </p-button>
+        </div>
       </div>
     </form>
   </p-card>
