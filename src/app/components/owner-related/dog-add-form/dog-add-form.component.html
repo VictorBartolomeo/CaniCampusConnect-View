@@ -130,7 +130,6 @@
       </small>
     </div>
 
-    <!-- Races -->
     <div class="field">
       <label for="breed" class="block text-sm font-bold mb-2 text-primary">
         Races *
@@ -158,7 +157,7 @@
       <p-button
         type="button"
         label="Annuler"
-        severity="secondary"
+        severity="warn"
         icon="pi pi-times"
         (onClick)="visible = false"
         [disabled]="isLoading">
@@ -168,6 +167,7 @@
         type="submit"
         label="Créer le chien"
         icon="pi pi-check"
+        severity="success"
         [disabled]="form.invalid || isLoading"
         [loading]="isLoading">
       </p-button>
