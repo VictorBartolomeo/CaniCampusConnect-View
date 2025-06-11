@@ -239,6 +239,11 @@ export class DogService {
     );
   }
 
+
+  deleteDog(dogId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/dog/${dogId}`, { observe: 'response' });
+  }
+
   /**
    * Met à jour un chien existant
    */
