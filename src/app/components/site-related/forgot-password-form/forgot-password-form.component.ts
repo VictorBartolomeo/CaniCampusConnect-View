@@ -1,15 +1,14 @@
-
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { NgIf, NgClass } from '@angular/common';
-import { InputTextModule } from 'primeng/inputtext';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { HttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
-import { EmailValidator } from '../../../service/validators/email-validator';
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router, RouterLink} from '@angular/router';
+import {NgClass} from '@angular/common';
+import {InputTextModule} from 'primeng/inputtext';
+import {CardModule} from 'primeng/card';
+import {ButtonModule} from 'primeng/button';
+import {HttpClient} from '@angular/common/http';
+import {MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
+import {EmailValidator} from '../../../service/validators/email-validator';
 
 @Component({
   selector: 'app-forgot-password-form',
@@ -17,7 +16,6 @@ import { EmailValidator } from '../../../service/validators/email-validator';
   imports: [
     InputTextModule,
     RouterLink,
-    NgIf,
     NgClass,
     ReactiveFormsModule,
     CardModule,

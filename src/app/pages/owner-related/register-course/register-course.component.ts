@@ -7,7 +7,6 @@ import {InputTextModule} from 'primeng/inputtext';
 import {Toast} from 'primeng/toast';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {Dialog} from 'primeng/dialog';
-import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {faEye, faPaw} from '@fortawesome/free-solid-svg-icons';
 import {differenceInMonths, isAfter, startOfDay} from 'date-fns'; // ✅ Ajouter isAfter et startOfDay
 import {AgeRangeCategory, getAgeRangeCategory} from '../../../models/age-range-category.enum';
@@ -29,7 +28,6 @@ import {Card} from 'primeng/card';
     InputTextModule,
     Toast,
     ConfirmPopupModule,
-    FaIconComponent,
     Dialog,
     ButtonDirective,
     ActiveRegistrationsPipe,

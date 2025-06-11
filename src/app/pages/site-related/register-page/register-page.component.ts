@@ -5,7 +5,6 @@ import {RegisterFormComponent} from '../../../components/site-related/register-f
 @Component({
   selector: 'app-register-page',
   imports: [
-    LandingNavbarComponent,
     RegisterFormComponent
   ],
   templateUrl: './register-page.component.html',

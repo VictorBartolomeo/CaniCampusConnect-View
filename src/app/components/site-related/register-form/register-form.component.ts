@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgIf, NgClass } from '@angular/common';
@@ -8,9 +8,8 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { HttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { AuthService } from '../../../service/auth.service';
+import { NotificationService } from '../../../service/notifications.service';
 
 // ✅ Import des validators séparés
 import { PasswordValidator } from '../../../service/validators/password-validator';
@@ -25,32 +24,29 @@ import { PasswordMatchValidator } from '../../../service/validators/password-mat
   imports: [
     InputTextModule,
     RouterLink,
-    NgIf,
-    NgClass,
     ReactiveFormsModule,
     PasswordModule,
     CardModule,
     ButtonModule,
-    CheckboxModule,
-    ToastModule
+    CheckboxModule
   ],
-  providers: [MessageService],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.scss'
 })
-export class RegisterFormComponent {
-  registerForm: FormGroup;
+export class RegisterFormComponent implements OnInit {
+  // 🚀 Injection moderne avec inject()
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
+
+  registerForm!: FormGroup;
   loading = false;
   submitted = false;
   error = '';
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private authService: AuthService,
-    private http: HttpClient,
-    private messageService: MessageService
-  ) {
+  ngOnInit() {
     this.registerForm = this.formBuilder.group({
       firstname: ['', [
         Validators.required,
@@ -99,23 +95,19 @@ export class RegisterFormComponent {
     this.error = '';
 
     if (this.registerForm.invalid) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Échec',
-        detail: 'Veuillez corriger les erreurs du formulaire avant de continuer',
-        life: 3000
-      });
+      this.notificationService.showError(
+        'Échec',
+        'Veuillez corriger les erreurs du formulaire avant de continuer'
+      );
       return;
     }
 
     if (!this.registerForm.get('acceptTerms')?.value) {
       this.error = "Vous devez accepter les conditions générales d'utilisation";
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Attention',
-        detail: "Vous devez accepter les conditions générales d'utilisation",
-        life: 3000
-      });
+      this.notificationService.showWarning(
+        'Attention',
+        "Vous devez accepter les conditions générales d'utilisation"
+      );
       return;
     }
 
@@ -132,12 +124,10 @@ export class RegisterFormComponent {
     this.http.post("http://localhost:8080/owner/register", registerData).subscribe({
       next: response => {
         this.loading = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Inscription réussie',
-          detail: 'Votre compte a été créé avec succès. Vous allez être redirigé vers la page de connexion.',
-          life: 3000
-        });
+        this.notificationService.showSuccess(
+          'Inscription réussie',
+          'Votre compte a été créé avec succès. Vous allez être redirigé vers la page de connexion.'
+        );
 
         setTimeout(() => {
           this.router.navigateByUrl('/login');
@@ -148,20 +138,16 @@ export class RegisterFormComponent {
 
         if (error.status === 409) {
           this.error = "Un compte avec cet email existe déjà";
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: "Un compte avec cet email existe déjà, un e-mail de proposition de changement de mot de passe vous a été envoyé",
-            life: 3000
-          });
+          this.notificationService.showError(
+            'Erreur',
+            "Un compte avec cet email existe déjà, un e-mail de proposition de changement de mot de passe vous a été envoyé"
+          );
         } else {
           this.error = "Une erreur est survenue lors de la création du compte";
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: "Une erreur est survenue lors de la création du compte",
-            life: 3000
-          });
+          this.notificationService.showError(
+            'Erreur',
+            "Une erreur est survenue lors de la création du compte"
+          );
         }
       }
     });

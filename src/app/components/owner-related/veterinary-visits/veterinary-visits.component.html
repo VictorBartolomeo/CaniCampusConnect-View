@@ -1,36 +1,37 @@
-<h2 class="text-xl font-bold mb-4">Visites vétérinaire</h2>
+<h2 class="text-xl font-bold mb-4 text-primary">Visites vétérinaire</h2>
 
 @if (currentDog) {
   @if (paginatedVisits && paginatedVisits.length > 0) {
-    <h3 class="text-lg font-semibold mt-4 mb-2">{{ currentDog.name }}</h3>
-    <p-accordion [value]="0">
-      @for (veterinaryVisit of paginatedVisits; track veterinaryVisit.id) {
-        <p-accordion-panel [value]="veterinaryVisit.visitDate">
-          <p-accordion-header>{{ veterinaryVisit.visitDate | date:'dd/MM/yyyy' }} - {{ veterinaryVisit.reasonForVisit }}</p-accordion-header>
-          <p-accordion-content>
-            <h4 class="font-medium">{{ veterinaryVisit.veterinarian }}</h4>
-            <p>Raison de la visite : {{ veterinaryVisit.reasonForVisit }}</p>
-            <p class="m-0">Diagnostique : {{ veterinaryVisit.diagnosis }}</p>
-            <p>Traitement : {{ veterinaryVisit.treatment }}</p>
-          </p-accordion-content>
-        </p-accordion-panel>
-      }
-    </p-accordion>
+    <p-card styleClass="p-4">
+      <p-accordion [value]="0">
+        @for (veterinaryVisit of paginatedVisits; track veterinaryVisit.id) {
+          <p-accordion-panel [value]="veterinaryVisit.visitDate">
+            <p-accordion-header>{{ veterinaryVisit.visitDate | date:'dd/MM/yyyy' }} - {{ veterinaryVisit.reasonForVisit }}</p-accordion-header>
+            <p-accordion-content>
+              <h4 class="font-medium text-primary">{{ veterinaryVisit.veterinarian }}</h4>
+              <p><span class="font-medium text-primary">Raison de la visite :</span> {{ veterinaryVisit.reasonForVisit }}</p>
+              <p class="m-0"><span class="font-medium text-primary">Diagnostique :</span> {{ veterinaryVisit.diagnosis }}</p>
+              <p><span class="font-medium text-primary">Traitement :</span> {{ veterinaryVisit.treatment }}</p>
+            </p-accordion-content>
+          </p-accordion-panel>
+        }
+      </p-accordion>
 
-    <!-- Pagination -->
-    <div class="mt-4">
-      <p-paginator
-        [rows]="pageSize"
-        [totalRecords]="totalVisits"
-        [first]="first"
-        (onPageChange)="onPageChange($event)">
-      </p-paginator>
-    </div>
+      <!-- Pagination -->
+      <div class="mt-4">
+        <p-paginator
+          [rows]="pageSize"
+          [totalRecords]="totalVisits"
+          [first]="first"
+          (onPageChange)="onPageChange($event)">
+        </p-paginator>
+      </div>
+    </p-card>
   } @else {
     <p-card styleClass="text-center p-4 mx-auto">
       <div class="flex flex-col items-center">
         <i class="pi pi-calendar-times text-3xl mb-2 text-primary"></i>
-        <p class="text-lg">Aucune visite vétérinaire enregistrée pour {{ currentDog.name }}.</p>
+        <p class="text-lg text-primary">Aucune visite vétérinaire enregistrée pour {{ currentDog.name }}.</p>
       </div>
     </p-card>
   }

@@ -1,37 +1,39 @@
-<h2 class="text-xl font-bold mb-4">Vaccinations</h2>
+<h2 class="text-xl font-bold mb-4 text-primary">Vaccinations</h2>
 
 @if (currentDog) {
   @if (vaccinations && vaccinations.length > 0) {
-    <p-table [value]="vaccinations" [tableStyle]="{ 'min-width': '50rem' }">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Vaccin</th>
-          <th>Date de vaccination</th>
-          <th>Numéro de lot</th>
-          <th>Rappel de vaccin</th>
-          <th>Vétérinaire</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-vaccination>
-        <tr>
-          <td>{{ vaccination.vaccine.name }}</td>
-          <td>{{ vaccination.vaccinationDate | date : "dd/MM/yyyy" }}</td>
-          <td>{{ vaccination.batchNumber }}</td>
-          <td [ngClass]="{
-              'text-yellow-500 font-bold': isReminderSoon(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay)),
-              'text-red-500 font-bold': isReminderOverdue(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay))
-            }">
-            {{ calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay) | date:'dd/MM/yyyy' }}
-          </td>
-          <td>{{ vaccination.veterinarian }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
+    <p-card styleClass="p-4">
+      <p-table [value]="vaccinations" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="text-primary">Vaccin</th>
+            <th class="text-primary">Date de vaccination</th>
+            <th class="text-primary">Numéro de lot</th>
+            <th class="text-primary">Rappel de vaccin</th>
+            <th class="text-primary">Vétérinaire</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-vaccination>
+          <tr>
+            <td>{{ vaccination.vaccine.name }}</td>
+            <td>{{ vaccination.vaccinationDate | date : "dd/MM/yyyy" }}</td>
+            <td>{{ vaccination.batchNumber }}</td>
+            <td [ngClass]="{
+                'text-yellow-500 font-bold': isReminderSoon(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay)),
+                'text-red-500 font-bold': isReminderOverdue(calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay))
+              }">
+              {{ calculateReminderDate(vaccination.vaccinationDate, vaccination.vaccine.renewDelay) | date:'dd/MM/yyyy' }}
+            </td>
+            <td>{{ vaccination.veterinarian }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
   } @else {
     <p-card styleClass="text-center p-4 mx-auto">
       <div class="flex flex-col items-center">
         <i class="pi pi-syringe text-3xl mb-2 text-primary"></i>
-        <p class="text-lg">Aucune vaccination enregistrée pour {{currentDog.name}}.</p>
+        <p class="text-lg text-primary">Aucune vaccination enregistrée pour {{currentDog.name}}.</p>
       </div>
     </p-card>
   }

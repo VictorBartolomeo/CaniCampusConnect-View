@@ -1,19 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-
-  constructor(private messageService: MessageService) {}
+  private messageService = inject(MessageService);
 
   showSuccess(summary: string, detail: string): void {
     this.messageService.add({
       severity: 'success',
       summary,
       detail,
-      life: 3000
+      life: 3000,
+      closable:true
     });
   }
 
@@ -22,7 +22,8 @@ export class NotificationService {
       severity: 'error',
       summary,
       detail,
-      life: 5000
+      life: 5000,
+      closable:true
     });
   }
 
@@ -31,7 +32,8 @@ export class NotificationService {
       severity: 'warn',
       summary,
       detail,
-      life: 4000
+      life: 4000,
+      closable:true
     });
   }
 
@@ -40,7 +42,8 @@ export class NotificationService {
       severity: 'info',
       summary,
       detail,
-      life: 3000
+      life: 3000,
+      closable:true
     });
   }
 }

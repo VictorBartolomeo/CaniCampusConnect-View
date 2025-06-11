@@ -1,18 +1,17 @@
-import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
-import { Ripple } from 'primeng/ripple';
-import { Badge } from 'primeng/badge';
-import { Menubar } from 'primeng/menubar';
+import {Ripple} from 'primeng/ripple';
+import {Badge} from 'primeng/badge';
+import {Menubar} from 'primeng/menubar';
 import {NgClass, NgOptimizedImage, UpperCasePipe} from '@angular/common';
-import { Button } from 'primeng/button';
-import { TieredMenuModule } from 'primeng/tieredmenu';
-import { MenuItem } from 'primeng/api';
-import { LayoutService } from '../../../service/layout.service';
-import {StyleClass} from 'primeng/styleclass';
+import {Button} from 'primeng/button';
+import {TieredMenuModule} from 'primeng/tieredmenu';
+import {MenuItem} from 'primeng/api';
+import {LayoutService} from '../../../service/layout.service';
 
 @Component({
   selector: 'app-landing-navbar',
-  imports: [RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule, StyleClass, UpperCasePipe, RouterOutlet],
+  imports: [RouterLink, Ripple, Badge, Menubar, NgClass, NgOptimizedImage, Button, TieredMenuModule, UpperCasePipe, RouterOutlet],
   templateUrl: './landing-navbar.component.html',
   styleUrl: './landing-navbar.component.scss'
 })

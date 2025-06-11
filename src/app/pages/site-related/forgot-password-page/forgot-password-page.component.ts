@@ -5,7 +5,6 @@ import {ForgotPasswordFormComponent} from '../../../components/site-related/forg
 @Component({
   selector: 'app-forgot-password-page',
   imports: [
-    LandingNavbarComponent,
     ForgotPasswordFormComponent
   ],
   templateUrl: './forgot-password-page.component.html',

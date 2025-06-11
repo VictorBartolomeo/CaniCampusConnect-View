@@ -30,7 +30,7 @@ export class VeterinaryVisitsComponent implements OnInit {
 
 
   // Pagination
-  pageSize = 5;
+  pageSize = 3;
   first = 0;
   totalVisits = 0;
   sortedVisits: any[] = [];

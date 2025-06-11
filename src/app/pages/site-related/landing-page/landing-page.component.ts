@@ -4,7 +4,7 @@ import {Button} from 'primeng/button';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [LandingNavbarComponent, Button],
+  imports: [Button],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
