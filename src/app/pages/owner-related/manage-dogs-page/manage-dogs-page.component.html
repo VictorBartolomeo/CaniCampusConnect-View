@@ -1,16 +1,16 @@
 <div class="h-screen-minus-dashboard-nav bg-gray-100">
   @if (currentDog) {
     <!-- Interface normale quand un chien est sélectionné -->
-    <div class="flex justify-evenly gap-10 items-stretch h-full">
-      <div class="py-10 w-[500px]">
+    <div class="flex justify-evenly items-stretch h-full">
+      <div class="py-10 w-1/3">
         <app-dog-summary class="h-full" [dog]="currentDog"/>
       </div>
 
-      <div class="py-10 w-[500px]">
+      <div class="py-10 w-1/3">
         <app-dog-form class="h-full"/>
       </div>
 
-      <div class="absolute bottom-10 right-10 bg-gray-100">
+      <div class="absolute bottom-5 right-5 bg-gray-100">
         <app-dog-add-form/>
       </div>
     </div>
