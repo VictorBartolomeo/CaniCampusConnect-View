@@ -12,6 +12,17 @@
   --breakpoint-md: 1024px;
   --breakpoint-lg: 1440px;
   --breakpoint-xl: 1920px;
+
+  --color-primary: #1B2140;
+  --color-secondary: #93C01F;
+  --color-tertiary: #5BC4F1;
+  --color-muted: #64748B;
+  --color-muted-foreground: #1B21407F;
+  --color-accent: #EA8F16;
+  --color-accent-2: #F3BF00;
+  --color-white: #fff;
+  --color-black: #000;
+  --color-error: #ff6b6b;
 }
 
 $my-primary: #1B2140;
@@ -26,15 +37,33 @@ $my-accent-2: #F3BF00;
 $my-white: #fff;
 $my-black: #000;
 
-$my-button-corner-radius: 8.92px;
-$my-input-field-corner-radius: 8.92px;
-$my-round-radius: 50%;
-
-
-
 body {
   margin: 0;
   font-family: "Montserrat", 'Calibri', serif;
 }
 
 
+:root {
+  --navbar-height: 85px;
+  --dashboard-navbar-height: 85px;
+}
+
+.h-screen-minus-navbar {
+  height: calc(100vh - var(--navbar-height, 85px));
+  min-height: calc(100vh - var(--navbar-height, 85px));
+}
+
+.h-screen-minus-dashboard-nav {
+  height: calc(100vh - var(--dashboard-navbar-height, 85px));
+  min-height: calc(100vh - var(--dashboard-navbar-height, 85px));
+}
+
+.h-mobile-screen-minus-navbar {
+  height: calc((var(--vh, 1vh) * 100) - var(--navbar-height, 85px));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--navbar-height, 85px));
+}
+
+.h-mobile-screen-minus-dashboard {
+  height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height, 85px));
+  min-height: calc((var(--vh, 1vh) * 100) - var(--dashboard-navbar-height, 85px));
+}

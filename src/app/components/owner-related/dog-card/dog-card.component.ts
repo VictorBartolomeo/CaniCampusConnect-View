@@ -11,8 +11,9 @@ import { Dog } from '../../../models/dog';
 import { DogService } from '../../../service/dog.service';
 import { differenceInMonths, differenceInYears } from 'date-fns';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faWeightScale, faMars, faVenus, faMarsStroke, faVenusDouble } from '@fortawesome/free-solid-svg-icons';
+import { faWeightScale } from '@fortawesome/free-solid-svg-icons';
 import { Gender } from '../../../models/gender.enum';
+import { GENDER_OPTIONS, GenderOptions } from '../../../models/gender.options';
 
 @Component({
   selector: 'app-dog-card',
@@ -36,13 +37,12 @@ export class DogCardComponent implements OnInit {
 
   // Icônes
   weightIcon = faWeightScale;
-  maleIcon = faMars;
-  femaleIcon = faVenus;
-  sterilizedMaleIcon = faMarsStroke;
-  sterilizedFemaleIcon = faVenusDouble;
 
   // Enum Gender pour être utilisé dans le template
   genderEnum = Gender;
+
+  // Options de genre pour faciliter l'accès
+  genderOptions = GENDER_OPTIONS;
 
   latestWeight: any | undefined;
   hasMedication: boolean = false;
@@ -72,73 +72,20 @@ export class DogCardComponent implements OnInit {
   }
 
   getGenderIcon(): { icon: any, color: string } {
-    if (!this.dog || !this.dog.gender) {
-      return {
-        icon: this.maleIcon,
-        color: 'text-gray-400'
-      };
-    }
-
-    switch (this.dog.gender) {
-      case Gender.MALE:
-        return {
-          icon: this.maleIcon,
-          color: 'text-blue-600'
-        };
-      case Gender.STERILIZED_MALE:
-        return {
-          icon: this.sterilizedMaleIcon,
-          color: 'text-blue-600'
-        };
-      case Gender.FEMALE:
-        return {
-          icon: this.femaleIcon,
-          color: 'text-pink-600'
-        };
-      case Gender.STERILIZED_FEMALE:
-        return {
-          icon: this.sterilizedFemaleIcon,
-          color: 'text-pink-600'
-        };
-      default:
-        return {
-          icon: this.maleIcon,
-          color: 'text-gray-400'
-        };
-    }
+    return this.dogService.getGenderIcon(this.dog.gender);
   }
 
-  getDogAge(birthDate: string | Date | undefined): string | null {
-    if (birthDate === undefined || birthDate === null) {
-      return null;
-    }
-    const birth = new Date(birthDate);
+  getGenderLabel(): string {
+    return this.dogService.getGenderLabel(this.dog.gender);
+  }
 
-    if (isNaN(birth.getTime())) {
-      console.error('Invalid birth date provided to getDogAge:', birthDate);
-      return null;
-    }
-
-    const now = new Date();
-    const years = differenceInYears(now, birth);
-
-    if (years < 1) {
-      const months = differenceInMonths(now, birth);
-      if (months <= 0) {
-        return "Nouveau-né";
-      }
-      return `${months} mois`;
-    } else {
-      return `${years} an(s)`;
-    }
+  getDogAge(): string {
+    const age = this.dogService.getDogAge(this.dog.birthDate);
+    return age === 'Âge inconnu' ? 'Âge inconnu' : age;
   }
 
   getBreedNames(): string {
-    if (!this.dog.breeds || this.dog.breeds.length === 0) {
-      return 'Race inconnue';
-    }
-
-    return this.dog.breeds.map(breed => breed.name).join(' × ');
+    return this.dogService.getBreedNames(this.dog.breeds);
   }
 
   private processWeights() {

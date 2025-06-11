@@ -1,52 +1,67 @@
 <div class="lg:py-10">
   <p-carousel
-    [value]="registrations"
+    [value]="getCarouselItems()"
     [numVisible]="3"
     [numScroll]="3"
     [responsiveOptions]="responsiveOptions"
     [circular]="false">
-    <ng-template let-registration pTemplate="item">
+    <ng-template let-item pTemplate="item">
       <div class="p-3 relative mx-auto h-full">
-        <p-card>
-          <div class="w-full h-full flex flex-col justify-between">
-            <div class="mb-2">
-              <div class="inline-flex items-center rounded-full text-sm"
-                   [ngClass]="getStatusClass(registration.status)">
-                <i [class]="getStatusIcon(registration.status)" class="mr-1"></i>
-                <span>{{ getStatusLabel(registration.status) }}</span>
+
+        @if (item.registration) {
+          <p-card>
+            <div class="w-full h-full flex flex-col justify-between">
+              <div class="mb-2">
+                <div class="inline-flex items-center rounded-full text-sm"
+                     [ngClass]="getStatusClass(item.registration.status)">
+                  <i [class]="getStatusIcon(item.registration.status)" class="mr-1"></i>
+                  <span>{{ getStatusLabel(item.registration.status) }}</span>
+                </div>
+              </div>
+
+              <div>
+                <p class="font-medium text-[24px]">
+                  {{ item.registration.course.title }}
+                </p>
+                <p-chip label="{{item.registration.course.courseType?.name}}" class="mt-1"/>
+              </div>
+
+              <div>
+                <p class="font-bold text-[43px]">
+                  {{ item.registration.course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
+                </p>
+                <p class="font-bold text-[24px]">
+                  {{ item.registration.course.startDatetime | date:'HH:mm':'':'fr' }}
+                </p>
+              </div>
+
+              <div>
+                <p class="font-light text-[22px]">
+                  {{ item.registration.course.coach.firstname }} {{ item.registration.course.coach.lastname }}
+                </p>
               </div>
             </div>
+          </p-card>
+        }
 
-            <div>
-              <p class="font-medium text-[24px]">
-                {{ registration.course.title }}
-              </p>
-              <p-chip label="{{registration.course.courseType?.name}}" class="mt-1"/>
-            </div>
 
-            <div>
-              <p class="font-bold text-[43px]">
-                {{ registration.course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
-              </p>
-              <p class="font-bold text-[24px]">
-                {{ registration.course.startDatetime | date:'HH:mm':'':'fr' }}
-              </p>
-            </div>
+        @if (!item.registration) {
+          <p-card styleClass="text-center p-4 mx-auto">
+            @if (!activeDog) {
+              <div class="flex flex-col items-center bg">
+                <i class="pi pi-info-circle text-3xl mb-2 text-primary"></i>
+                <p class="text-lg text-primary">Aucun chien sélectionné. Veuillez sélectionner un chien pour voir ses inscriptions aux cours.</p>
+              </div>
+            } @else {
+              <div class="flex flex-col items-center">
+                <i class="pi pi-calendar-times text-3xl mb-2 text-primary"></i>
+                <p class="text-lg">Aucune inscription aux cours pour {{activeDog.name}}.</p>
+              </div>
+            }
+          </p-card>
+        }
 
-            <div>
-              <p class="font-light text-[22px]">
-                {{ registration.course.coach.firstname }} {{ registration.course.coach.lastname }}
-              </p>
-            </div>
-          </div>
-        </p-card>
       </div>
     </ng-template>
   </p-carousel>
 </div>
-
-@if (registrations.length === 0 || !registrations) {
-  <div class="text-center p-4">
-    <p>Aucune inscription aux cours pour {{activeDog?.name}}.</p>
-  </div>
-}

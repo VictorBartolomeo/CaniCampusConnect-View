@@ -1,18 +1,23 @@
 <p-toast position="bottom-center"></p-toast>
+<p-confirmDialog
+  [baseZIndex]="10000"
+  appendTo="body"
+  styleClass="custom-confirm-dialog">
+</p-confirmDialog>
 
 <p-card header="Informations personnelles" styleClass="h-full border-1 border-gray-300" [style]="{'max-width': '700px', 'margin': '0 auto', 'padding': '1.5rem'}">
   @if (memberSinceText) {
-  <div class="text-center mb-4 text-gray-600 italic">
+  <div class="text-center mb-4 text-primary italic">
     <p>
     {{ memberSinceText }} (date d'inscription : {{owner?.registrationDate | date:'dd/MM/yyyy'}})
     </p>
   </div>
   }
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col h-full">
+  <form [formGroup]="userForm" class="flex flex-col h-full">
     <div class="p-fluid px-4 flex-grow flex flex-col justify-between">
       <div class="space-y-6">
         <div>
-          <label for="firstname" class="block mb-2">Prénom</label>
+          <label for="firstname" class="block mb-2 text-primary">Prénom</label>
           <p-iconfield styleClass="w-full">
             <p-inputicon styleClass="pi pi-user" />
             <input id="firstname" type="text" pInputText formControlName="firstname" class="w-full p-inputtext-lg" />
@@ -23,7 +28,7 @@
         </div>
 
         <div>
-          <label for="lastname" class="block mb-2">Nom</label>
+          <label for="lastname" class="block mb-2 text-primary">Nom</label>
           <p-iconfield styleClass="w-full">
             <p-inputicon styleClass="pi pi-id-card" />
             <input id="lastname" type="text" pInputText formControlName="lastname" class="w-full p-inputtext-lg" />
@@ -34,7 +39,7 @@
         </div>
 
           <div>
-            <label for="email" class="block mb-2">Email</label>
+            <label for="email" class="block mb-2 text-primary">Email</label>
             <p-iconfield styleClass="w-full">
               <p-inputicon styleClass="pi pi-envelope" />
               <input id="email" type="email" pInputText formControlName="email"
@@ -54,7 +59,7 @@
 
 
         <div>
-          <label for="phone" class="block mb-2">Téléphone</label>
+          <label for="phone" class="block mb-2 text-primary">Téléphone</label>
           <p-iconfield styleClass="w-full">
             <p-inputicon styleClass="pi pi-phone" />
             <input id="phone" type="tel" pInputText formControlName="phone" placeholder="06 12 34 56 78" class="w-full p-inputtext-lg" />
@@ -70,7 +75,7 @@
       </div>
 
       <div class="flex justify-center mt-6">
-        <p-button type="submit" label="Enregistrer" icon="pi pi-save" [loading]="loading" [disabled]="userForm.invalid" styleClass="p-button-lg"></p-button>
+        <p-button type="button" label="Enregistrer" icon="pi pi-save" [loading]="loading" [disabled]="userForm.invalid" styleClass="p-button-lg" (click)="confirmUpdate($event)"></p-button>
       </div>
     </div>
   </form>

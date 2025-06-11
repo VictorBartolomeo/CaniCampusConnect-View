@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UIChart} from "primeng/chart";
+import {CardModule} from 'primeng/card';
 import {Dog} from '../../../models/dog';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
@@ -10,7 +11,8 @@ import {DogService} from '../../../service/dog.service';
   imports: [
     ReactiveFormsModule,
     UIChart,
-    FormsModule
+    FormsModule,
+    CardModule
   ],
   templateUrl: './weight-chart.component.html',
   styleUrl: './weight-chart.component.scss'
@@ -50,25 +52,24 @@ export class WeightChartComponent implements OnInit {
       plugins: {
         legend: {
           labels: {
-            color: '#495057'
-          }
+            color: "#1B2140"         }
         }
       },
       scales: {
         x: {
           ticks: {
-            color: '#495057'
+            color: '#1B2140'
           },
           grid: {
-            color: '#ebedef'
+            color: '#1B2140'
           }
         },
         y: {
           ticks: {
-            color: '#495057'
+            color: '#1B2140'
           },
           grid: {
-            color: '#ebedef'
+            color: '#1B2140'
           },
           title: {
             display: true,
@@ -104,7 +105,7 @@ export class WeightChartComponent implements OnInit {
           label: `${this.selectedDog.name || 'votre chien'}`,
           data: weightValues,
           fill: false,
-          borderColor: '#42A5F5',
+          borderColor: '#1B2140',
           tension: 0.4
         }
       ]

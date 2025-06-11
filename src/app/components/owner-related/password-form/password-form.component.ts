@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, AbstractControl } from '@angular/forms';
+
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
-import { MessageService } from 'primeng/api';
 import { UserService } from '../../../service/user.service';
+import { NotificationService } from '../../../service/notifications.service';
+import { AuthService } from '../../../service/auth.service';
+import { PasswordValidator } from '../../../service/validators/password-validator';
+import { PasswordMatchValidator } from '../../../service/validators/password-match-validator';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-password-form',
@@ -17,61 +21,44 @@ import { UserService } from '../../../service/user.service';
     ButtonModule,
     PasswordModule,
     CardModule,
-    ToastModule
   ],
   providers: [MessageService],
   templateUrl: './password-form.component.html',
   styleUrl: './password-form.component.scss',
 })
-export class PasswordFormComponent {
-  passwordForm: FormGroup;
+export class PasswordFormComponent implements OnInit {
+  // 🚀 Injection moderne avec inject()
+  private formBuilder = inject(FormBuilder);
+  private userService = inject(UserService);
+  private notificationsService = inject(NotificationService);
+  private authService = inject(AuthService);
+
+  passwordForm!: FormGroup;
   loading = false;
 
-  // Regex pour un mot de passe fort (correspond à celle du backend)
-  strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,64}$/;
-
-  // Regex individuelles pour chaque critère
+  // Regex individuelles pour chaque critère (pour l'affichage visuel)
   hasLowercaseRegex = /[a-z]/;
   hasUppercaseRegex = /[A-Z]/;
   hasDigitRegex = /\d/;
   hasSpecialCharRegex = /\W/;
   hasMinLengthRegex = /.{8,}/;
 
-  constructor(
-    private formDataPassword: FormBuilder,
-    private userService: UserService,
-    private messageService: MessageService
-  ) {
-    this.passwordForm = this.formDataPassword.group({
+  ngOnInit() {
+    this.passwordForm = this.formBuilder.group({
       currentPassword: ['', Validators.required],
       newPassword: ['', [
         Validators.required,
         Validators.minLength(8),
         Validators.maxLength(64),
-        this.strongPasswordValidator()
+        PasswordValidator.strongPassword()
       ]],
       confirmPassword: ['', Validators.required]
-    }, { validators: this.checkPasswords });
+    }, {
+      validators: PasswordMatchValidator.passwordsMatch('newPassword', 'confirmPassword')
+    });
   }
 
-  // Validateur personnalisé pour vérifier que le mot de passe correspond à la regex
-  strongPasswordValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      if (!control.value) {
-        return null; // Ne pas valider si vide (c'est le rôle de required)
-      }
-      const valid = this.strongPasswordRegex.test(control.value);
-      return valid ? null : { strongPassword: true };
-    };
-  }
-
-  checkPasswords(group: FormGroup) {
-    const pass = group.get('newPassword')?.value;
-    const confirmPass = group.get('confirmPassword')?.value;
-    return pass === confirmPass ? null : { notSame: true };
-  }
-
-  // Méthodes pour vérifier chaque critère individuellement
+  // Méthodes pour vérifier chaque critère individuellement (pour l'affichage visuel)
   hasLowercase(password: string): boolean {
     return this.hasLowercaseRegex.test(password || '');
   }
@@ -99,30 +86,51 @@ export class PasswordFormComponent {
 
       this.userService.updatePassword(currentPassword, newPassword).subscribe({
         next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Succès',
-            detail: 'Mot de passe mis à jour avec succès'
-          });
+          this.notificationsService.showSuccess(
+            'Succès',
+            'Mot de passe mis à jour avec succès'
+          );
           this.passwordForm.reset();
           this.loading = false;
         },
         error: (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: 'Impossible de mettre à jour le mot de passe'
-          });
           this.loading = false;
-          console.error('Erreur lors de la mise à jour du mot de passe:', error);
+          this.handleError(error);
         }
       });
     } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Attention',
-        detail: 'Veuillez corriger les erreurs dans le formulaire'
-      });
+      this.notificationsService.showError(
+        'Attention',
+        'Veuillez corriger les erreurs dans le formulaire'
+      );
     }
+  }
+
+  private handleError(error: any): void {
+
+    if (error.status === 400) {
+      console.log('Affichage toast pour erreur 400');
+      this.notificationsService.showError(
+        'Erreur',
+        'Mot de passe actuel incorrect'
+      );
+    } else if (error.status === 401) {
+      this.notificationsService.showError(
+        'Session expirée',
+        'Veuillez vous reconnecter'
+      );
+      this.authService.disconnection();
+    } else if (error.status === 500) {
+      this.notificationsService.showError(
+        'Erreur serveur',
+        'Une erreur interne s\'est produite. Veuillez réessayer plus tard.'
+      );
+    } else {
+      this.notificationsService.showError(
+        'Erreur',
+        'Impossible de mettre à jour le mot de passe'
+      );
+    }
+    console.error('Erreur lors de la mise à jour du mot de passe:', error);
   }
 }

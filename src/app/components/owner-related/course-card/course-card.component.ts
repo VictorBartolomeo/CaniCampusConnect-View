@@ -77,10 +77,18 @@ export class CourseCardComponent implements OnInit {
       this.subscription.unsubscribe();
     }
   }
+  getCarouselItems() {
+    if (this.registrations && this.registrations.length > 0) {
+      // ✅ Si on a des inscriptions, on les wrappe
+      return this.registrations.map(registration => ({ registration }));
+    } else {
+      // ✅ Sinon, on retourne un item vide
+      return [{ registration: null }];
+    }
+  }
 
   loadRegistrationsForDog(dog: Dog) {
     if (dog.registrations && dog.registrations.length > 0) {
-      // Récupérer la date actuelle
       const currentDate = new Date();
 
       // Filtrer uniquement les cours à venir

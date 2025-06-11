@@ -1,0 +1,40 @@
+
+<!-- ✅ Seulement la navbar dans ce composant -->
+<div class="navbar-container">
+  <p-menubar [model]="items">
+
+    <ng-template #start>
+      <img routerLink="/home" ngSrc="/img/LOGO_RVB_POSITIF.png" alt="Logo" class="w-16" height="85" width="120"/>
+    </ng-template>
+
+    <ng-template #item let-item let-root="root">
+      <div class="">
+        <a pRipple [routerLink]="item.route" class="flex items-center p-menubar-item-link font-bold">
+          <span>{{ item.label | uppercase}}</span>
+
+          @if (item.badge) {
+            <p-badge [ngClass]="{ 'ml-auto': !root, 'ml-2': root }" [value]="item.badge"/>
+            @if (item.shortcut) {
+              <span class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
+              @if (item.items) {
+                <i [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"></i>
+              }
+            }
+          }
+        </a>
+      </div>
+    </ng-template>
+
+    <ng-template #end>
+      <div class="flex items-center gap-3">
+        <p-button routerLink="/login" label="Connexion" icon="pi pi-sign-in" severity="success"/>
+        <p-button routerLink="/register" label="Créer un compte" icon="pi pi-user-plus"/>
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>
+
+<!-- ✅ router-outlet SÉPARÉ (ne sera plus mesuré) -->
+<div class="content-container">
+  <router-outlet/>
+</div>

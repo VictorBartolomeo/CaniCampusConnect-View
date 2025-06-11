@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Dog} from '../../../models/dog';
 import {CommonModule} from '@angular/common';
 import {ChartModule} from 'primeng/chart';
+import {CardModule} from 'primeng/card';
 import {FormsModule} from '@angular/forms';
 import {WeightChartComponent} from '../../../components/owner-related/weight-chart/weight-chart.component';
 import {VaccinationTableComponent} from '../../../components/owner-related/vaccination-table/vaccination-table.component';
@@ -14,7 +15,7 @@ import {Subscription} from 'rxjs';
 @Component({
   selector: 'app-health-record',
   standalone: true,
-  imports: [CommonModule, ChartModule, FormsModule, WeightChartComponent, VaccinationTableComponent, VeterinaryVisitsComponent
+  imports: [CommonModule, ChartModule, CardModule, FormsModule, WeightChartComponent, VaccinationTableComponent, VeterinaryVisitsComponent
   ],
   templateUrl: './health-record.component.html',
   styleUrl: './health-record.component.scss'

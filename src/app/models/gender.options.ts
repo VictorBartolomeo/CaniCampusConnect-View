@@ -1,35 +1,36 @@
 import { Gender } from './gender.enum';
-
+import {faMars, faMarsStroke, faVenus, faVenusDouble} from '@fortawesome/free-solid-svg-icons';
 export interface GenderOptions {
   label: string;
   value: Gender;
-  icon: string;
+  icon: any;
   color: string;
 }
+
 
 export const GENDER_OPTIONS = [
   {
     label: 'Mâle',
     value: 'MALE',
-    icon: 'pi pi-mars',
-    color: 'text-blue-500'
+    icon: faMars,
+    color: 'text-white'
   },
   {
     label: 'Femelle',
     value: 'FEMALE',
-    icon: 'pi pi-venus',
-    color: 'text-pink-500'
+    icon: faVenus,
+    color: 'text-white'
   },
   {
     label: 'Mâle stérilisé',
     value: 'STERILIZED_MALE',
-    icon: 'pi pi-mars',
-    color: 'text-blue-400'
+    icon: faMarsStroke,
+    color: 'text-white'
   },
   {
     label: 'Femelle stérilisée',
     value: 'STERILIZED_FEMALE',
-    icon: 'pi pi-venus',
-    color: 'text-pink-400'
+    icon: faVenusDouble,
+    color: 'text-white'
   }
 ];

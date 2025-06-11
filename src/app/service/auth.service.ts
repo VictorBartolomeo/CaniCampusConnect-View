@@ -19,7 +19,7 @@ export class AuthService {
     private authStateService: AuthStateService,
     private userService: UserService
   ) {
-    const jwt = localStorage.getItem('jwt');
+    const jwt = this.getToken();
     if (jwt != null) {
       this.decodeJwt(jwt);
     }
@@ -72,14 +72,15 @@ export class AuthService {
   }
 
   // Méthode de connexion
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string, rememberMe: boolean = false): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, {email, password}, {responseType: 'text'}).pipe(
       map(token => {
         if (token) {
+          this.setToken(token, rememberMe); // ✅ Intégrer rememberMe
           this.decodeJwt(token);
           return {success: true, token};
         }
-        return null; // Gestion du cas où token est falsy
+        return null;
       }),
       catchError(error => {
         console.error('Erreur de connexion:', error);
@@ -87,7 +88,6 @@ export class AuthService {
       })
     );
   }
-
   // Décodage du JWT
   decodeJwt(jwt: string) {
     localStorage.setItem('jwt', jwt);
@@ -109,9 +109,17 @@ export class AuthService {
   // Déconnexion
   disconnection() {
     localStorage.removeItem('jwt');
+    sessionStorage.removeItem('jwt');
+    sessionStorage.clear();
     this.userService.clearUserData();
     this.authStateService.clearState();
     this.router.navigateByUrl('/login');
+  }
+
+
+  getToken(): string | null {
+    // Vérifier d'abord sessionStorage puis localStorage
+    return sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
   }
 
   // Vérifier si l'utilisateur est authentifié
@@ -128,10 +136,6 @@ export class AuthService {
     return this.userService.getCurrentUser();
   }
 
-  getUserFullName(): string {
-    return this.userService.getFullName();
-  }
-
   refreshUserInfo(): void {
     const userId = this.authStateService.getUserId();
     if (userId) {
@@ -139,7 +143,21 @@ export class AuthService {
     }
   }
 
-  // Vérifier l'état du JWT
+  setToken(token: string, rememberMe: boolean = false): void {
+    if (rememberMe) {
+      // Si "Se souvenir de moi" est coché, stocker dans localStorage (persistant)
+      localStorage.setItem('jwt', token);
+      localStorage.setItem('rememberMe', 'true');
+    } else {
+      sessionStorage.setItem('jwt', token);
+      localStorage.removeItem('rememberMe');
+      localStorage.removeItem('jwt'); // Nettoyer l'ancien token persistant
+    }
+  }
+
+
+
+    // Vérifier l'état du JWT
   checkJwtStatus() {
     const jwt = localStorage.getItem('jwt');
 

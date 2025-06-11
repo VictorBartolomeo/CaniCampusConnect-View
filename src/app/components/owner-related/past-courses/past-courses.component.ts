@@ -1,15 +1,14 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {TableModule} from 'primeng/table';
 import {DatePipe} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {Course} from '../../../models/course';
-import {Calendar} from 'primeng/calendar';
 import {Dog} from '../../../models/dog';
 import {Registration} from '../../../models/registration';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
 import {ButtonDirective, ButtonIcon} from 'primeng/button';
+import {DatePicker} from 'primeng/datepicker';
+import {Card} from 'primeng/card';
 
 
 @Component({
@@ -18,15 +17,15 @@ import {ButtonDirective, ButtonIcon} from 'primeng/button';
     TableModule,
     DatePipe,
     FormsModule,
-    Calendar,
     ButtonDirective,
-    ButtonIcon
+    ButtonIcon,
+    DatePicker,
+    Card
   ],
   templateUrl: './past-courses.component.html',
   styleUrl: './past-courses.component.scss'
 })
 export class PastCoursesComponent implements OnInit, OnDestroy {
-
   activeDog: Dog | null = null;
   pastRegistrations: Registration[] = [];
   filteredRegistrations: Registration[] = [];

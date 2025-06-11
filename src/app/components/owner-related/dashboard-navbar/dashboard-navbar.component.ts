@@ -1,6 +1,5 @@
-
 import {FormsModule} from '@angular/forms';
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit, OnDestroy, ElementRef} from '@angular/core';
 import {MegaMenuItem} from 'primeng/api';
 import {MegaMenu} from 'primeng/megamenu';
 import {ButtonModule} from 'primeng/button';
@@ -16,6 +15,7 @@ import {UserService} from '../../../service/user.service';
 import {Observable, Subscription} from 'rxjs';
 import {DropdownModule} from 'primeng/dropdown';
 import {Ripple} from 'primeng/ripple';
+import {LayoutService} from '../../../service/layout.service';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -40,22 +40,37 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     public dogService: DogService,
     public userService: UserService,
+    private elementRef: ElementRef,
+    private layoutService: LayoutService
+
   ) {
     this.userDogs$ = this.dogService.userDogs$;
     this.activeDog$ = this.dogService.activeDog$;
   }
 
   ngOnInit() {
+    this.subscribeToActiveDog();
+    this.initializeStaticItems();
+
     if (this.authService.getUserId()) {
       this.dogService.loadUserDogs();
     }
 
-    // ✅ S'abonner au chien actif
+    // ✅ S'abonner aux changements d'owner pour mettre à jour le menu
+    this.userService.owner$.subscribe(owner => {
+      this.buildAvatarMenu();
+    });
+  }
+
+
+  private subscribeToActiveDog(): void {
     this.activeDogSubscription = this.activeDog$.subscribe(dog => {
       this.activeDog = dog;
       this.selectedDogId = dog?.id || null;
     });
+  }
 
+  private initializeStaticItems(): void {
     this.items = [
       {
         label: 'Général',
@@ -78,12 +93,15 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
         route: "/dashboard/settings"
       }
     ];
+  }
 
+  // ✅ Construire le menu avatar (appelé à chaque changement d'owner)
+  private buildAvatarMenu(): void {
     this.avatar = [
       {
-        label: this.userService.getFullName(),
+        label: this.userService.getFullName(), // ✅ Utilise directement la méthode du service
         styleClass: 'name-item',
-        disabled:true
+        disabled: true
       },
       {
         label: 'Profile',
@@ -93,7 +111,7 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
       {
         label: 'Payements',
         icon: 'pi pi-credit-card',
-        disabled : true
+        disabled: true
       },
       {
         label: this.authService.isDarkMode() ? 'Mode Clair' : 'Mode Sombre',
@@ -113,7 +131,7 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
       {
         label: 'Déconnexion',
         icon: 'pi pi-sign-out',
-        command: ()=> this.authService.disconnection()
+        command: () => this.authService.disconnection()
       }
     ];
   }
@@ -121,8 +139,29 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.activeDogSubscription) {
       this.activeDogSubscription.unsubscribe();
+      this.layoutService.setDashboardNavHeight(0);
     }
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      // ✅ Cherchez spécifiquement la navbar
+      const navbarElement = this.elementRef.nativeElement.querySelector('.p-megamenu') ||
+        this.elementRef.nativeElement.querySelector('p-megaMenu') ||
+        this.elementRef.nativeElement.querySelector('.navbar-container');
+
+      if (navbarElement) {
+        const height = navbarElement.offsetHeight;
+        this.layoutService.setDashboardNavHeight(height);
+        console.log('🎯 Navbar height from selector:', height);
+      } else {
+        // ✅ Fallback avec une hauteur raisonnable
+        console.warn('❌ Navbar element not found, using fallback');
+        this.layoutService.setDashboardNavHeight(80); // Hauteur standard
+      }
+    }, 100); // ✅ Augmentez le délai pour que les composants soient rendus
+  }
+
 
   onDogChange(dogId: number): void {
     if (!dogId) return;

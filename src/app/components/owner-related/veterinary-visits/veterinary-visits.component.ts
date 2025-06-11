@@ -4,6 +4,7 @@ import {Dog} from '../../../models/dog';
 import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primeng/accordion';
 import {DatePipe} from '@angular/common';
 import {Paginator} from 'primeng/paginator';
+import {CardModule} from 'primeng/card';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
 
@@ -15,7 +16,8 @@ import {DogService} from '../../../service/dog.service';
     AccordionHeader,
     AccordionContent,
     DatePipe,
-    Paginator
+    Paginator,
+    CardModule
   ],
   templateUrl: './veterinary-visits.component.html',
   styleUrl: './veterinary-visits.component.scss'
@@ -28,7 +30,7 @@ export class VeterinaryVisitsComponent implements OnInit {
 
 
   // Pagination
-  pageSize = 5;
+  pageSize = 3;
   first = 0;
   totalVisits = 0;
   sortedVisits: any[] = [];

@@ -16,7 +16,7 @@
 
 
   <div class="card">
-    <p-tabs value="/dashboard">
+    <p-tabs value="/dashboard" class="mb-5">
       <p-tablist>
         @for (tab of tabs; track tab.route) {
           <p-tab [value]="tab.route" [routerLink]="tab.route" routerLinkActive="active-tab"

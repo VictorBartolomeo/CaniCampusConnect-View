@@ -29,19 +29,75 @@ export class UserService {
     private http: HttpClient,
     private authStateService: AuthStateService
   ) {
+    console.log('🏗️ UserService constructeur initialisé');
+
     // S'abonner aux changements d'ID utilisateur pour charger les informations utilisateur
     this.authStateService.userId$.subscribe(userId => {
+      console.log('🔑 UserService - userId changed:', userId);
       if (userId) {
         const role = this.authStateService.getRole();
-        if (role === 'OWNER') {
-          this.loadOwnerInfo(userId).subscribe();
-        } else if (role === 'COACH') {
+        console.log('👥 UserService - role:', role);
+
+        if (role === 'ROLE_OWNER') {
+          console.log('📞 UserService - Chargement des infos owner pour userId:', userId);
+          this.loadOwnerInfo(userId).subscribe({
+            next: (owner) => console.log('✅ UserService - Owner chargé avec succès:', owner),
+            error: (error) => console.error('❌ UserService - Erreur chargement owner:', error)
+          });
+        } else if (role === 'ROLE_COACH') {
           this.loadCoachInfo(userId).subscribe();
-        } else if (role === 'CLUB_OWNER') {
+        } else if (role === 'ROLE_CLUB_OWNER') {
           this.loadClubOwnerInfo(userId).subscribe();
         }
+      } else {
+        console.log('🚫 UserService - Aucun userId, clear des données');
+        this.clearUserData();
       }
     });
+
+    // Debug de l'observable owner$
+    this.owner$.subscribe(owner => {
+      console.log('🔄 UserService - owner$ émis:', owner);
+    });
+  }
+
+  // ✅ MÉTHODE getFullName() - La méthode principale que vous voulez utiliser
+  getFullName(user?: User | null): string {
+    console.log('🏷️ getFullName appelé avec user:', user);
+
+    if (!user) {
+      const role = this.authStateService.getRole();
+      console.log('🔍 Pas d\'user fourni, récupération selon le rôle:', role);
+
+      switch (role) {
+        case 'ROLE_OWNER':
+        case 'OWNER':
+          user = this.getCurrentOwner();
+          console.log('👤 Owner récupéré:', user);
+          break;
+        case 'ROLE_COACH':
+        case 'COACH':
+          user = this.getCurrentCoach();
+          break;
+        case 'ROLE_CLUB_OWNER':
+        case 'CLUB_OWNER':
+          user = this.getCurrentClubOwner();
+          break;
+      }
+    }
+
+    if (!user) {
+      console.log('🚫 Aucun user trouvé, retour "Utilisateur"');
+      return 'Utilisateur';
+    }
+
+    const fullName = `${user.firstname || ''} ${user.lastname || ''}`.trim();
+    console.log('🏷️ Nom complet généré:', fullName, 'depuis:', {
+      firstname: user.firstname,
+      lastname: user.lastname
+    });
+
+    return fullName || 'Utilisateur';
   }
 
   // Méthodes génériques pour tous les utilisateurs
@@ -49,19 +105,23 @@ export class UserService {
     const userId = this.authStateService.getUserId();
     const role = this.authStateService.getRole();
 
+    console.log('🔍 getCurrentUser - userId:', userId, 'role:', role);
+
     if (!userId || !role) {
       return of(null as unknown as T);
     }
 
-    // Déterminer l'endpoint en fonction du rôle
     let endpoint = '';
     switch (role) {
+      case 'ROLE_OWNER':
       case 'OWNER':
         endpoint = `owner/${userId}`;
         break;
+      case 'ROLE_COACH':
       case 'COACH':
         endpoint = `coach/${userId}`;
         break;
+      case 'ROLE_CLUB_OWNER':
       case 'CLUB_OWNER':
         endpoint = `clubowner/${userId}`;
         break;
@@ -71,23 +131,31 @@ export class UserService {
 
     return this.http.get<T>(`${this.apiUrl}/${endpoint}`).pipe(
       tap(user => {
+        console.log('📥 getCurrentUser - user reçu:', user);
         this.updateUserSubject(user, role);
       }),
       catchError(error => {
-        console.error(`Erreur lors du chargement des informations de l'utilisateur:`, error);
+        console.error(`❌ getCurrentUser - Erreur lors du chargement des informations de l'utilisateur:`, error);
         return of(null as unknown as T);
       })
     );
   }
 
+  // ✅ CORRECTION : Gérer les rôles avec préfixe ROLE_
   private updateUserSubject(user: any, role: string): void {
+    console.log('🔄 updateUserSubject appelé avec:', { user, role });
+
     switch (role) {
+      case 'ROLE_OWNER':
       case 'OWNER':
         this.ownerSubject.next(user as Owner);
+        console.log('✅ ownerSubject mis à jour avec ROLE_OWNER');
         break;
+      case 'ROLE_COACH':
       case 'COACH':
         this.coachSubject.next(user as Coach);
         break;
+      case 'ROLE_CLUB_OWNER':
       case 'CLUB_OWNER':
         this.clubOwnerSubject.next(user as ClubOwner);
         break;
@@ -102,15 +170,18 @@ export class UserService {
       return of(null as unknown as T);
     }
 
-    // Déterminer l'endpoint en fonction du rôle
+    // ✅ CORRECTION : Gérer les rôles avec préfixe ROLE_
     let endpoint = '';
     switch (role) {
+      case 'ROLE_OWNER':
       case 'OWNER':
         endpoint = `owner/${userId}`;
         break;
+      case 'ROLE_COACH':
       case 'COACH':
         endpoint = `coach/${userId}`;
         break;
+      case 'ROLE_CLUB_OWNER':
       case 'CLUB_OWNER':
         endpoint = `clubowner/${userId}`;
         break;
@@ -130,47 +201,52 @@ export class UserService {
   }
 
   updatePassword(currentPassword: string, newPassword: string): Observable<any> {
-    const userId = this.authStateService.getUserId();
-    const role = this.authStateService.getRole();
-
-    if (!userId || !role) {
-      return of(null);
-    }
-
-    let endpoint = '';
-    switch (role) {
-      case 'OWNER':
-        endpoint = `owner/${userId}/password`;
-        break;
-      case 'COACH':
-        endpoint = `coach/${userId}/password`;
-        break;
-      case 'CLUB_OWNER':
-        endpoint = `clubowner/${userId}/password`;
-        break;
-      default:
-        return of(null);
-    }
-
-    return this.http.put(`${this.apiUrl}/${endpoint}`, {
+    return this.http.put(`${this.apiUrl}/change-password`, {
       currentPassword,
       newPassword
     });
   }
 
+
   // Méthodes spécifiques pour Owner
   loadOwnerInfo(ownerId: number | null): Observable<Owner | null> {
+    console.log('📡 loadOwnerInfo appelé avec ownerId:', ownerId);
+
     if (!ownerId) {
+      console.log('🚫 ownerId null, réinitialisation ownerSubject');
       this.ownerSubject.next(null);
       return of(null);
     }
 
-    return this.http.get<Owner>(`${this.apiUrl}/owner/${ownerId}`).pipe(
+    const url = `${this.apiUrl}/owner/${ownerId}`;
+    console.log('🌐 Requête HTTP vers:', url);
+
+    return this.http.get<Owner>(url).pipe(
       tap(owner => {
+        console.log('📥 Réponse HTTP reçue:', owner);
+        console.log('📋 Détails owner:', {
+          firstname: owner?.firstname,
+          lastname: owner?.lastname,
+          email: owner?.email,
+          phone: owner?.phone,
+          registrationDate: owner?.registrationDate
+        });
+
         this.ownerSubject.next(owner);
+        console.log('✅ ownerSubject.next() appelé avec:', owner);
+
+        // Vérification immédiate
+        const currentValue = this.ownerSubject.getValue();
+        console.log('🔍 Valeur actuelle dans ownerSubject:', currentValue);
       }),
       catchError(error => {
-        console.error('Erreur lors du chargement des informations du propriétaire:', error);
+        console.error('❌ Erreur HTTP lors du chargement des informations du propriétaire:', error);
+        console.error('📊 Détails erreur:', {
+          status: error.status,
+          statusText: error.statusText,
+          url: error.url,
+          message: error.message
+        });
         this.ownerSubject.next(null);
         return of(null);
       })
@@ -178,7 +254,9 @@ export class UserService {
   }
 
   getCurrentOwner(): Owner | null {
-    return this.ownerSubject.getValue();
+    const owner = this.ownerSubject.getValue();
+    console.log('🔍 getCurrentOwner() retourne:', owner);
+    return owner;
   }
 
   // Méthodes spécifiques pour Coach
@@ -230,30 +308,9 @@ export class UserService {
     );
   }
 
-  // Utilitaires
-  getFullName(user?: User | null): string {
-    if (!user) {
-      // Essayer de récupérer l'utilisateur selon le rôle
-      const role = this.authStateService.getRole();
-      switch (role) {
-        case 'OWNER':
-          user = this.getCurrentOwner();
-          break;
-        case 'COACH':
-          user = this.getCurrentCoach();
-          break;
-        case 'CLUB_OWNER':
-          user = this.getCurrentClubOwner();
-          break;
-      }
-    }
-
-    if (!user) return 'Utilisateur';
-    return `${user.firstname || ''} ${user.lastname || ''}`.trim() || 'Utilisateur';
-  }
-
   // Méthode pour réinitialiser toutes les données utilisateur (à la déconnexion)
   clearUserData(): void {
+    console.log('🧹 clearUserData appelé');
     this.ownerSubject.next(null);
     this.coachSubject.next(null);
     this.clubOwnerSubject.next(null);

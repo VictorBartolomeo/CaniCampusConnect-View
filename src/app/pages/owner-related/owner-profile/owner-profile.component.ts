@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
 import { DividerModule } from 'primeng/divider';
+import {Card} from 'primeng/card';
 
 @Component({
   selector: 'app-owner-profile',
@@ -18,7 +19,8 @@ import { DividerModule } from 'primeng/divider';
     OwnerCardComponent,
     ButtonModule,
     RouterModule,
-    DividerModule
+    DividerModule,
+    Card
   ],
   templateUrl: './owner-profile.component.html',
   styleUrl: './owner-profile.component.scss'
