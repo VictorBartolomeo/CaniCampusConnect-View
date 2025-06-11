@@ -1,4 +1,9 @@
 <p-toast position="bottom-center"></p-toast>
+<p-confirmDialog
+  [baseZIndex]="10000"
+  appendTo="body"
+  styleClass="custom-confirm-dialog">
+</p-confirmDialog>
 
 <p-card header="Informations personnelles" styleClass="h-full border-1 border-gray-300" [style]="{'max-width': '700px', 'margin': '0 auto', 'padding': '1.5rem'}">
   @if (memberSinceText) {
@@ -8,7 +13,7 @@
     </p>
   </div>
   }
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col h-full">
+  <form [formGroup]="userForm" class="flex flex-col h-full">
     <div class="p-fluid px-4 flex-grow flex flex-col justify-between">
       <div class="space-y-6">
         <div>
@@ -70,7 +75,7 @@
       </div>
 
       <div class="flex justify-center mt-6">
-        <p-button type="submit" label="Enregistrer" icon="pi pi-save" [loading]="loading" [disabled]="userForm.invalid" styleClass="p-button-lg"></p-button>
+        <p-button type="button" label="Enregistrer" icon="pi pi-save" [loading]="loading" [disabled]="userForm.invalid" styleClass="p-button-lg" (click)="confirmUpdate($event)"></p-button>
       </div>
     </div>
   </form>

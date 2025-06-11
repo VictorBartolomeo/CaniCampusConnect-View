@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {UserService} from '../../../service/user.service';
-import {MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {CommonModule} from '@angular/common';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
@@ -10,9 +10,10 @@ import {ToastModule} from 'primeng/toast';
 import {Owner} from '../../../models/user';
 import {IconField} from 'primeng/iconfield';
 import {InputIcon} from 'primeng/inputicon';
-import {differenceInMonths, differenceInYears, format, parseISO} from 'date-fns';
+import {differenceInDays, differenceInMonths, differenceInYears, format, parseISO} from 'date-fns';
 import {fr} from 'date-fns/locale';
 import {AuthService} from '../../../service/auth.service';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-owner-settings',
@@ -25,9 +26,10 @@ import {AuthService} from '../../../service/auth.service';
     CardModule,
     ToastModule,
     IconField,
-    InputIcon
+    InputIcon,
+    ConfirmDialogModule
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './owner-settings.component.html',
   styleUrl: './owner-settings.component.scss'
 })
@@ -44,7 +46,8 @@ export class OwnerSettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) {
   }
 
@@ -127,47 +130,27 @@ export class OwnerSettingsComponent implements OnInit {
   }
 
 
-  onSubmit(): void {
+  confirmUpdate(event: Event): void {
     if (this.userForm.valid) {
-      this.loading = true;
-
-      const currentEmail = this.userForm.value.email || '';
-
-      const emailChanged = currentEmail !== this.originalEmail;
-      this.userService.updateUser(this.userForm.value).subscribe({
-        next: (updatedOwner) => {
-          this.owner = updatedOwner;
-
-
-          if (emailChanged) {
-            this.messageService.add({
-              severity: 'info',
-              summary: 'Email modifié',
-              detail: 'Votre adresse email a été modifiée. Vous allez être déconnecté dans 3 secondes. Un email de validation a été envoyé à votre nouvelle adresse. Veuillez valider votre email avant de vous reconnecter.',
-              sticky: true
-            });
-
-            setTimeout(() => {
-              this.authService.disconnection();
-            }, 3000);
-          } else {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Succès',
-              detail: 'Informations mises à jour avec succès'
-            });
-          }
-
-          this.loading = false;
+      this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Êtes-vous sûr de vouloir mettre à jour vos informations personnelles ?',
+        header: 'Confirmation de mise à jour',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Oui, mettre à jour',
+        rejectLabel: 'Non, annuler',
+        acceptButtonStyleClass: 'p-button-primary',
+        rejectButtonStyleClass: 'p-button-outlined',
+        accept: () => {
+          this.onSubmit();
         },
-        error: (error) => {
+        reject: () => {
           this.messageService.add({
-            severity: 'error',
-            summary: 'Erreur',
-            detail: 'Impossible de mettre à jour les informations'
+            severity: 'info',
+            summary: 'Annulé',
+            detail: 'La mise à jour a été annulée',
+            life: 1500
           });
-          this.loading = false;
-          console.error('Erreur lors de la mise à jour des données:', error);
         }
       });
     } else {
@@ -177,5 +160,53 @@ export class OwnerSettingsComponent implements OnInit {
         detail: 'Veuillez corriger les erreurs dans le formulaire'
       });
     }
+  }
+
+  onSubmit(): void {
+    this.loading = true;
+
+    const currentEmail = this.userForm.value.email || '';
+    const emailChanged = currentEmail !== this.originalEmail;
+
+    this.userService.updateUser<Owner>(this.userForm.value).subscribe({
+      next: (updatedOwner) => {
+        this.owner = updatedOwner;
+
+        // Recalculate membership duration
+        if (updatedOwner.registrationDate) {
+          this.memberSinceText = this.getMemberSinceText(updatedOwner.registrationDate);
+        }
+
+        if (emailChanged) {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Email modifié',
+            detail: 'Votre adresse email a été modifiée. Vous allez être déconnecté dans 3 secondes. Un email de validation a été envoyé à votre nouvelle adresse. Veuillez valider votre email avant de vous reconnecter.',
+            sticky: true
+          });
+
+          setTimeout(() => {
+            this.authService.disconnection();
+          }, 3000);
+        } else {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Informations mises à jour avec succès'
+          });
+        }
+
+        this.loading = false;
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erreur',
+          detail: 'Impossible de mettre à jour les informations'
+        });
+        this.loading = false;
+        console.error('Erreur lors de la mise à jour des données:', error);
+      }
+    });
   }
 }
