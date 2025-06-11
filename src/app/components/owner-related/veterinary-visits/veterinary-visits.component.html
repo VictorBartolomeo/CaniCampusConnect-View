@@ -1,9 +1,8 @@
 <h2 class="text-xl font-bold mb-4">Visites vétérinaire</h2>
 
 @if (currentDog) {
-  <h3 class="text-lg font-semibold mt-4 mb-2">{{ currentDog.name }}</h3>
-
   @if (paginatedVisits && paginatedVisits.length > 0) {
+    <h3 class="text-lg font-semibold mt-4 mb-2">{{ currentDog.name }}</h3>
     <p-accordion [value]="0">
       @for (veterinaryVisit of paginatedVisits; track veterinaryVisit.id) {
         <p-accordion-panel [value]="veterinaryVisit.visitDate">
@@ -28,8 +27,18 @@
       </p-paginator>
     </div>
   } @else {
-    <p class="italic text-gray-600">Aucune visite vétérinaire enregistrée.</p>
+    <p-card styleClass="text-center p-4 mx-auto">
+      <div class="flex flex-col items-center">
+        <i class="pi pi-calendar-times text-3xl mb-2 text-primary"></i>
+        <p class="text-lg">Aucune visite vétérinaire enregistrée pour {{ currentDog.name }}.</p>
+      </div>
+    </p-card>
   }
 } @else {
-  <p class="italic text-gray-600">Aucun chien trouvé.</p>
+  <p-card styleClass="text-center p-4 mx-auto">
+    <div class="flex flex-col items-center">
+      <i class="pi pi-info-circle text-3xl mb-2 text-primary"></i>
+      <p class="text-lg text-primary">Aucun chien sélectionné. Veuillez sélectionner un chien pour voir ses visites vétérinaires.</p>
+    </div>
+  </p-card>
 }
