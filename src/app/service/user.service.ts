@@ -201,37 +201,12 @@ export class UserService {
   }
 
   updatePassword(currentPassword: string, newPassword: string): Observable<any> {
-    const userId = this.authStateService.getUserId();
-    const role = this.authStateService.getRole();
-
-    if (!userId || !role) {
-      return of(null);
-    }
-
-    // ✅ CORRECTION : Gérer les rôles avec préfixe ROLE_
-    let endpoint = '';
-    switch (role) {
-      case 'ROLE_OWNER':
-      case 'OWNER':
-        endpoint = `owner/${userId}/password`;
-        break;
-      case 'ROLE_COACH':
-      case 'COACH':
-        endpoint = `coach/${userId}/password`;
-        break;
-      case 'ROLE_CLUB_OWNER':
-      case 'CLUB_OWNER':
-        endpoint = `clubowner/${userId}/password`;
-        break;
-      default:
-        return of(null);
-    }
-
-    return this.http.put(`${this.apiUrl}/${endpoint}`, {
+    return this.http.put(`${this.apiUrl}/change-password`, {
       currentPassword,
       newPassword
     });
   }
+
 
   // Méthodes spécifiques pour Owner
   loadOwnerInfo(ownerId: number | null): Observable<Owner | null> {
