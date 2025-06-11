@@ -10,6 +10,7 @@ import {Dialog} from 'primeng/dialog';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {faEye, faPaw} from '@fortawesome/free-solid-svg-icons';
 import {differenceInMonths, isAfter, startOfDay} from 'date-fns'; // ✅ Ajouter isAfter et startOfDay
+import {AgeRangeCategory, getAgeRangeCategory} from '../../../models/age-range-category.enum';
 
 import {DogService} from '../../../service/dog.service';
 import {Dog} from '../../../models/dog';
@@ -180,16 +181,28 @@ export class RegisterCourseComponent implements OnInit {
     const ageInMonths = differenceInMonths(new Date(), dogBirthDate);
 
     if (ageInMonths >= 0 && ageInMonths <= 12) {
-      return "Chiot";
+      return AgeRangeCategory.PUPPY;
     } else if (ageInMonths >= 13 && ageInMonths <= 36) {
-      return "Jeune chien";
+      return AgeRangeCategory.YOUNG_DOG;
     } else if (ageInMonths >= 37 && ageInMonths <= 84) {
-      return "Adulte";
+      return AgeRangeCategory.ADULT;
     } else if (ageInMonths >= 85) {
-      return "Senior";
+      return AgeRangeCategory.SENIOR;
     } else {
       return "Âge inconnu";
     }
+  }
+
+  // Obtenir la catégorie d'âge pour un cours (basé sur l'âge requis)
+  getCourseAgeRangeCategory(course: Course): string {
+    if (!course || !course.courseType || !course.courseType.ageRange) {
+      return "Toutes catégories";
+    }
+
+    const minAge = course.courseType.ageRange.minAge;
+    const maxAge = course.courseType.ageRange.maxAge;
+
+    return getAgeRangeCategory(minAge, maxAge);
   }
 
   isDogEligibleForCourse(dog: Dog, course: Course): boolean {
