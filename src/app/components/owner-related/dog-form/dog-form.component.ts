@@ -11,12 +11,13 @@ import {HttpClient} from '@angular/common/http';
 import {Subscription} from 'rxjs';
 import {DatePicker} from 'primeng/datepicker';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import {Dog} from '../../../models/dog';
 import {Breed} from '../../../models/breed';
 import {GENDER_OPTIONS} from '../../../models/gender.options';
 import {DogService} from '../../../service/dog.service';
 import {Card} from 'primeng/card';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-dog-form',
@@ -30,7 +31,8 @@ import {Card} from 'primeng/card';
     Select,
     Button,
     DatePicker,
-    Card
+    Card,
+    ConfirmDialogModule
     // Retiré Router et MessageService des imports car ce ne sont pas des composants
   ],
   styleUrls: ['./dog-form.component.scss']
@@ -49,11 +51,12 @@ export class DogFormComponent implements OnInit, OnDestroy {
   formBuilder = inject(FormBuilder);
   router = inject(Router);
   messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
 
   form = this.formBuilder.group({
     name: ['', Validators.required],
     breed: [[] as Breed[], [Validators.required, Validators.minLength(1)]],
-    chipNumber: ['', Validators.required],
+    chipNumber: [''],
     birthDate: [null as Date | null, Validators.required],
     gender: ['', Validators.required],
     avatar: [null]
@@ -123,7 +126,7 @@ export class DogFormComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  onSubmitEdit() {
+  confirmUpdate(event: Event): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -134,10 +137,34 @@ export class DogFormComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: `Êtes-vous sûr de vouloir mettre à jour les informations de ${this.updatedDog.name} ?`,
+      header: 'Confirmation de mise à jour',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui, mettre à jour',
+      rejectLabel: 'Non, annuler',
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-outlined',
+      accept: () => {
+        this.onSubmitEdit();
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Annulé',
+          detail: 'La mise à jour a été annulée',
+          life: 1500
+        });
+      }
+    });
+  }
+
+  onSubmitEdit() {
     const formBreeds = this.form.value.breed || [];
 
     const dogData = {
-      id: this.updatedDog.id,
+      id: this.updatedDog!.id,
       name: this.form.value.name!,
       birthDate: this.dogService.formatDateForBackend(this.form.value.birthDate || null),
       chipNumber: this.form.value.chipNumber!,
@@ -172,30 +199,48 @@ export class DogFormComponent implements OnInit, OnDestroy {
     return !!(field && field.invalid && field.touched);
   }
 
-  deleteDog(): void {
+  deleteDog(event?: Event): void {
     // Correction : utilisation d'updatedDog au lieu de dog
     if (this.updatedDog?.id) {
-      if (confirm(`Êtes-vous sûr de vouloir supprimer ${this.updatedDog.name} ? Cette action est irréversible.`)) {
-        this.dogService.deleteDog(this.updatedDog.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Succès',
-              detail: `${this.updatedDog!.name} a été supprimé avec succès.`
-            });
-            // Rediriger vers la liste des chiens
-            this.router.navigate(['/dashboard/owner-profile']);
-          },
-          error: (error) => {
-            console.error('Erreur lors de la suppression:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erreur',
-              detail: 'Erreur lors de la suppression du chien.'
-            });
-          }
-        });
-      }
+      this.confirmationService.confirm({
+        target: event?.target as EventTarget,
+        message: `Êtes-vous sûr de vouloir supprimer ${this.updatedDog.name} ? Cette action est irréversible.`,
+        header: 'Confirmation de suppression',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Oui, supprimer',
+        rejectLabel: 'Non, annuler',
+        acceptButtonStyleClass: 'p-button-danger',
+        rejectButtonStyleClass: 'p-button-outlined',
+        accept: () => {
+          this.dogService.deleteDog(this.updatedDog!.id).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Succès',
+                detail: `${this.updatedDog!.name} a été supprimé avec succès.`
+              });
+              // Rediriger vers la liste des chiens
+              this.router.navigate(['/dashboard/owner-profile']);
+            },
+            error: (error) => {
+              console.error('Erreur lors de la suppression:', error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Erreur',
+                detail: 'Erreur lors de la suppression du chien.'
+              });
+            }
+          });
+        },
+        reject: () => {
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Annulé',
+            detail: 'La suppression a été annulée',
+            life: 1500
+          });
+        }
+      });
     }
   }
 
