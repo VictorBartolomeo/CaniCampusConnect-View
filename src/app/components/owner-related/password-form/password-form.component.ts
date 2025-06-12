@@ -58,7 +58,6 @@ export class PasswordFormComponent implements OnInit {
     });
   }
 
-  // Méthodes pour vérifier chaque critère individuellement (pour l'affichage visuel)
   hasLowercase(password: string): boolean {
     return this.hasLowercaseRegex.test(password || '');
   }
@@ -88,9 +87,10 @@ export class PasswordFormComponent implements OnInit {
         next: () => {
           this.notificationsService.showSuccess(
             'Succès',
-            'Mot de passe mis à jour avec succès'
+            'Mot de passe mis à jour avec succès, vous allez être déconnecté dans 3 secondes'
           );
           this.passwordForm.reset();
+          setTimeout(() => {this.authService.disconnection();}, 3000);
           this.loading = false;
         },
         error: (error) => {
