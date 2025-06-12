@@ -1,31 +1,47 @@
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthStateService } from './auth-state.service';
 import { UserService } from './user.service';
+import {DogService} from './dog.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit{
   router = inject(Router);
   private apiUrl = 'http://localhost:8080';
   private darkMode: boolean = false;
+  http = inject(HttpClient);
+  authStateService = inject(AuthStateService);
+  userService = inject(UserService);
+  dogService = inject(DogService);
 
-  constructor(
-    private http: HttpClient,
-    private authStateService: AuthStateService,
-    private userService: UserService
+  constructor() {
+    // Initialiser l'état d'authentification au démarrage
+    this.initializeAuthState();
+  }
+
+  private initializeAuthState(): void {
+    const jwt = this.getToken();
+    if (jwt != null && this.checkJwtStatus()) {
+      this.decodeJwt(jwt);
+    }
+    this.loadThemePreference();
+  }
+
+
+  ngOnInit(
   ) {
     const jwt = this.getToken();
     if (jwt != null) {
       this.decodeJwt(jwt);
     }
 
-    // Charger la préférence de thème
     this.loadThemePreference();
+    this.dogService.loadUserDogs();
   }
 
   // Méthode pour charger la préférence de thème
@@ -76,7 +92,7 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, {email, password}, {responseType: 'text'}).pipe(
       map(token => {
         if (token) {
-          this.setToken(token, rememberMe); // ✅ Intégrer rememberMe
+          this.setToken(token, rememberMe);
           this.decodeJwt(token);
           return {success: true, token};
         }
@@ -88,9 +104,10 @@ export class AuthService {
       })
     );
   }
-  // Décodage du JWT
+
+// Décodage du JWT
   decodeJwt(jwt: string) {
-    localStorage.setItem('jwt', jwt);
+
     try {
       const jsonBody = atob(jwt.split('.')[1]);
       const body = JSON.parse(jsonBody);
@@ -105,6 +122,7 @@ export class AuthService {
       this.disconnection();
     }
   }
+
 
   // Déconnexion
   disconnection() {
@@ -158,8 +176,8 @@ export class AuthService {
 
 
     // Vérifier l'état du JWT
-  checkJwtStatus() {
-    const jwt = localStorage.getItem('jwt');
+  checkJwtStatus(): boolean {
+    const jwt = this.getToken(); // ← Utiliser getToken() au lieu de localStorage direct
 
     if (jwt) {
       try {
