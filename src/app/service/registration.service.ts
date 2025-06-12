@@ -19,11 +19,9 @@ export interface CourseWithPendingRegistrations {
 export class RegistrationService {
   private apiUrl = API_CONFIG_URL.apiUrl;
 
-  // Subject pour les notifications en temps réel
   private pendingCountSubject = new BehaviorSubject<number>(0);
   public pendingCount$ = this.pendingCountSubject.asObservable();
 
-  // ✅ AJOUT : Subject pour notifier les mises à jour de cours
   private courseUpdatedSubject = new Subject<number>();
   public courseUpdated$ = this.courseUpdatedSubject.asObservable();
 
