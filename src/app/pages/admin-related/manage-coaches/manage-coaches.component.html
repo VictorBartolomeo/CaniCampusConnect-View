@@ -12,7 +12,6 @@
         (coachEdit)="editCoach($event)"
         (addCoachRequest)="showAddCoachDialog()">
       </app-coach-list>
-
     </div>
 
     <!-- Détails du coach sélectionné à droite -->
@@ -25,10 +24,10 @@
   </div>
 </div>
 
-
-<!-- Coach edit form component -->
+<!-- Coach edit form component avec mode admin -->
 <app-coach-edit-form
   [coach]="coachToEdit"
+  [adminMode]="true"
   [(visible)]="editFormVisible"
   (coachUpdated)="onCoachUpdated($event)">
 </app-coach-edit-form>

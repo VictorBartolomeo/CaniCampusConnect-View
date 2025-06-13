@@ -55,6 +55,14 @@ export class ManageCoachesComponent implements OnInit {
     // Subscribe to coaches observable
     this.adminService.coaches$.subscribe(coaches => {
       this.coaches = coaches;
+
+      // Mettre à jour le coach sélectionné si il a été modifié
+      if (this.selectedCoach) {
+        const updatedSelectedCoach = coaches.find(coach => coach.id === this.selectedCoach.id);
+        if (updatedSelectedCoach) {
+          this.selectedCoach = updatedSelectedCoach;
+        }
+      }
     });
   }
 
@@ -81,7 +89,6 @@ export class ManageCoachesComponent implements OnInit {
 
   showCoachDetails(coach: any) {
     this.selectedCoach = coach;
-    // No longer opening the modal dialog, just selecting the coach for the card
   }
 
   /**
@@ -89,7 +96,8 @@ export class ManageCoachesComponent implements OnInit {
    * @param coach The coach to edit
    */
   editCoach(coach: any) {
-    this.coachToEdit = coach;
+    console.log('🔧 Editing coach:', coach);
+    this.coachToEdit = { ...coach }; // ✅ Créer une copie pour éviter les références
     this.editFormVisible = true;
   }
 
@@ -98,11 +106,20 @@ export class ManageCoachesComponent implements OnInit {
    * @param updatedCoach The updated coach
    */
   onCoachUpdated(updatedCoach: any) {
-    // The AdminService will handle updating the coaches array
-    // We just need to update the selected coach if it was the one that was updated
-    if (this.selectedCoach && this.selectedCoach.id === updatedCoach.id) {
-      this.selectedCoach = updatedCoach;
-    }
+    // ✅ SOLUTION SIMPLIFIÉE : Juste mettre à jour via AdminService
+    console.log('Coach updated successfully:', updatedCoach);
+
+    // Mettre à jour la liste des coaches via AdminService
+    this.adminService.updateCoach(updatedCoach).subscribe({
+      next: () => {
+        console.log('Coach list updated successfully');
+      },
+      error: (error) => {
+        console.error('Error updating coach list:', error);
+        // Recharger la liste en cas d'erreur
+        this.loadCoaches();
+      }
+    });
   }
 
   /**
@@ -110,7 +127,6 @@ export class ManageCoachesComponent implements OnInit {
    * @param newCoach The newly added coach
    */
   onCoachAdded(newCoach: any) {
-    // The AdminService will handle adding the coach to the coaches array
     console.log('Coach added:', newCoach);
   }
 }
