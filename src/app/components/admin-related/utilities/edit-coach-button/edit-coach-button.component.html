@@ -1,0 +1,14 @@
+@if (small) {
+  <p-button
+    icon="pi pi-pencil"
+    styleClass="p-button-sm p-button-text"
+    (onClick)="onEditCoach()"
+    pTooltip="Modifier">
+  </p-button>
+} @else {
+  <p-button
+    icon="pi pi-pencil"
+    label="Modifier"
+    (onClick)="onEditCoach()">
+  </p-button>
+}
