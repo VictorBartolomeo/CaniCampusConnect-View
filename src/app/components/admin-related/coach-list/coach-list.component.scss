@@ -1,0 +1,19 @@
+.coach-list-container {
+  width: 100%;
+}
+
+:host ::ng-deep {
+  .p-datatable .p-datatable-tbody > tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--surface-hover);
+    }
+  }
+
+  .p-button.p-button-sm {
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
