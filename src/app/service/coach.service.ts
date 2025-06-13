@@ -42,4 +42,13 @@ export class CoachService {
   registerCoach(coachData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/coach/register`, coachData);
   }
+
+  /**
+   * Update an existing coach
+   * @param coachData Coach data to update
+   * @returns Observable with the updated coach
+   */
+  updateCoach(coachData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/coachs/${coachData.id}`, coachData);
+  }
 }
