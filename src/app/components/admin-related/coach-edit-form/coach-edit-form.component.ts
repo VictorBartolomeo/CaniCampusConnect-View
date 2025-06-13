@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,6 +8,8 @@ import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { NotificationService } from '../../../service/notifications.service';
 import { CoachService } from '../../../service/coach.service';
+import { UserService } from '../../../service/user.service';
+import { AuthStateService } from '../../../service/auth-state.service';
 
 // Import validators
 import { EmailValidator } from '../../../service/validators/email-validator';
@@ -30,38 +33,54 @@ import { NameValidator } from '../../../service/validators/name-validator';
 export class CoachEditFormComponent implements OnInit, OnChanges {
   @Input() coach: any = null;
   @Input() visible: boolean = false;
+  @Input() adminMode: boolean = false; // ✅ Nouveau : Pour différencier admin vs self-edit
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() coachUpdated = new EventEmitter<any>();
+
+  private formBuilder = inject(FormBuilder);
+  private coachService = inject(CoachService);
+  private userService = inject(UserService);
+  private authStateService = inject(AuthStateService);
+  private notificationService = inject(NotificationService);
 
   coachEditForm!: FormGroup;
   loading: boolean = false;
   submitted: boolean = false;
   error: string = '';
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private coachService: CoachService,
-    private notificationService: NotificationService
-  ) {}
+  isCurrentUser: boolean = false;
 
   ngOnInit() {
     this.initForm();
+    this.checkIfCurrentUser();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // When coach input changes, reset and populate the form
     if (changes['coach'] && changes['coach'].currentValue) {
       if (this.coachEditForm) {
         this.resetForm();
         this.populateForm();
       }
+      this.checkIfCurrentUser();
     }
 
-    // When visible changes, emit the change
     if (changes['visible']) {
       this.visibleChange.emit(this.visible);
     }
+  }
+
+  /**
+   * Vérifier si c'est l'utilisateur actuel qui modifie ses propres infos
+   */
+  private checkIfCurrentUser(): void {
+    const currentUserId = this.authStateService.getUserId();
+    const currentRole = this.authStateService.getRole();
+
+    this.isCurrentUser = (
+      this.coach &&
+      currentUserId === this.coach.id &&
+      (currentRole === 'ROLE_COACH' || currentRole === 'COACH')
+    );
   }
 
   /**
@@ -166,7 +185,12 @@ export class CoachEditFormComponent implements OnInit, OnChanges {
       acacedNumber: this.coachEditForm.get('acacedNumber')?.value.trim()
     };
 
-    this.coachService.updateCoach(updateData).subscribe({
+    // ✅ Choisir le service selon le contexte
+    const updateObservable = this.isCurrentUser
+      ? this.userService.updateUser(updateData)  // Coach modifie ses propres infos
+      : this.coachService.updateCoach(updateData); // Admin modifie un coach
+
+    updateObservable.subscribe({
       next: (updatedCoach) => {
         this.loading = false;
         this.notificationService.showSuccess(
@@ -178,25 +202,17 @@ export class CoachEditFormComponent implements OnInit, OnChanges {
       },
       error: (error) => {
         this.loading = false;
+        console.error('Erreur lors de la mise à jour:', error);
 
         if (error.status === 409) {
           this.error = "Un compte avec cet email existe déjà";
-          this.notificationService.showError(
-            'Erreur',
-            "Un compte avec cet email existe déjà"
-          );
+          this.notificationService.showError('Erreur', "Un compte avec cet email existe déjà");
         } else if (error.status === 400) {
           this.error = "Données invalides";
-          this.notificationService.showError(
-            'Erreur de validation',
-            "Veuillez vérifier les informations saisies"
-          );
+          this.notificationService.showError('Erreur de validation', "Veuillez vérifier les informations saisies");
         } else {
           this.error = "Une erreur est survenue lors de la mise à jour du compte";
-          this.notificationService.showError(
-            'Erreur',
-            "Une erreur est survenue lors de la mise à jour du compte"
-          );
+          this.notificationService.showError('Erreur', "Une erreur est survenue lors de la mise à jour du compte");
         }
       }
     });
