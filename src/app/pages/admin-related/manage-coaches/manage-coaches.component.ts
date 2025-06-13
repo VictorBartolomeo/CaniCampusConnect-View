@@ -8,6 +8,10 @@ import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
 import {TooltipModule} from 'primeng/tooltip';
+import {CardModule} from 'primeng/card';
+import {BadgeModule} from 'primeng/badge';
+import {CoachListComponent} from '../../../components/admin-related/coach-list/coach-list.component';
+import {CoachEditFormComponent} from '../../../components/admin-related/coach-edit-form/coach-edit-form.component';
 
 @Component({
   selector: 'app-manage-coaches',
@@ -15,10 +19,14 @@ import {TooltipModule} from 'primeng/tooltip';
   imports: [
     CommonModule,
     CoachRegisterFormComponent,
+    CoachListComponent,
+    CoachEditFormComponent,
     TableModule,
     ButtonModule,
     DialogModule,
-    TooltipModule
+    TooltipModule,
+    CardModule,
+    BadgeModule
   ],
   templateUrl: './manage-coaches.component.html',
   styleUrl: './manage-coaches.component.scss'
@@ -28,6 +36,8 @@ export class ManageCoachesComponent implements OnInit {
   loading: boolean = true;
   selectedCoach: any = null;
   detailsVisible: boolean = false;
+  editFormVisible: boolean = false;
+  coachToEdit: any = null;
 
   @ViewChild(CoachRegisterFormComponent) coachForm!: CoachRegisterFormComponent;
 
@@ -90,5 +100,31 @@ export class ManageCoachesComponent implements OnInit {
   showCoachDetails(coach: any) {
     this.selectedCoach = coach;
     this.detailsVisible = true;
+  }
+
+  /**
+   * Show the edit form for a coach
+   * @param coach The coach to edit
+   */
+  editCoach(coach: any) {
+    this.coachToEdit = coach;
+    this.editFormVisible = true;
+  }
+
+  /**
+   * Handle coach updated event
+   * @param updatedCoach The updated coach
+   */
+  onCoachUpdated(updatedCoach: any) {
+    // Find and update the coach in the array
+    const index = this.coaches.findIndex(c => c.id === updatedCoach.id);
+    if (index !== -1) {
+      this.coaches[index] = updatedCoach;
+    }
+
+    // If this was the selected coach, update it
+    if (this.selectedCoach && this.selectedCoach.id === updatedCoach.id) {
+      this.selectedCoach = updatedCoach;
+    }
   }
 }
