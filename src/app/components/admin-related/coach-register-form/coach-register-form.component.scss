@@ -1,0 +1,42 @@
+:host ::ng-deep {
+  .p-card {
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .p-card-header {
+    padding: 0;
+  }
+
+  .p-card-body {
+    padding: 0;
+  }
+
+  .p-card-content {
+    padding: 0;
+  }
+
+  .p-password-panel {
+    margin-top: 0.5rem;
+  }
+
+  .p-button {
+    background-color: #1B2140;
+    border-color: #1B2140;
+
+    &:hover {
+      background-color: #2a3356;
+      border-color: #2a3356;
+    }
+  }
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.p-error {
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}

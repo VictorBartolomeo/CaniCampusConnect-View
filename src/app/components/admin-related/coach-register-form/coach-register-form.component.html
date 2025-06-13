@@ -1,0 +1,257 @@
+<p-button
+  (onClick)="showDialog()"
+  icon="pi pi-plus"
+  label="Ajouter un coach">
+</p-button>
+
+<p-dialog
+  header="Ajouter un nouveau coach"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '50rem'}"
+  [draggable]="false"
+  [resizable]="false">
+
+  <form [formGroup]="coachRegisterForm" (ngSubmit)="onRegister()" class="space-y-6">
+    <!-- Messages d'erreur -->
+    @if (error) {
+      <div class="p-message p-message-error w-full">
+        <div class="p-message-wrapper">
+          <span class="p-message-icon pi pi-exclamation-triangle"></span>
+          <div class="p-message-text">{{ error }}</div>
+        </div>
+      </div>
+    }
+
+    <!-- Nom et Prénom sur la même ligne -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="field">
+        <label for="firstname" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+          <i class="pi pi-user mr-2" style="color: #1B2140;"></i>PRÉNOM
+        </label>
+        <input
+          pInputText
+          id="firstname"
+          formControlName="firstname"
+          placeholder="Prénom du coach"
+          class="w-full"
+          [class.p-invalid]="submitted && f['firstname'].errors"
+          maxlength="100"
+        />
+        @if (submitted && f['firstname'].errors?.['required']) {
+          <small class="p-error mt-1 block">
+            <i class="pi pi-exclamation-triangle mr-1"></i>
+            Prénom requis
+          </small>
+        } @else if (submitted && f['firstname'].errors?.['maxlength']) {
+          <small class="p-error mt-1 block">
+            <i class="pi pi-exclamation-triangle mr-1"></i>
+            100 caractères maximum
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="lastname" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+          <i class="pi pi-user mr-2" style="color: #1B2140;"></i>NOM
+        </label>
+        <input
+          pInputText
+          id="lastname"
+          formControlName="lastname"
+          placeholder="Nom du coach"
+          class="w-full"
+          [class.p-invalid]="submitted && f['lastname'].errors"
+          maxlength="100"
+        />
+        @if (submitted && f['lastname'].errors?.['required']) {
+          <small class="p-error mt-1 block">
+            <i class="pi pi-exclamation-triangle mr-1"></i>
+            Nom requis
+          </small>
+        } @else if (submitted && f['lastname'].errors?.['maxlength']) {
+          <small class="p-error mt-1 block">
+            <i class="pi pi-exclamation-triangle mr-1"></i>
+            100 caractères maximum
+          </small>
+        }
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="field">
+      <label for="email" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+        <i class="pi pi-envelope mr-2" style="color: #1B2140;"></i>EMAIL
+      </label>
+      <input
+        pInputText
+        id="email"
+        formControlName="email"
+        placeholder="email@example.com"
+        class="w-full"
+        [class.p-invalid]="submitted && f['email'].errors"
+        maxlength="150"
+      />
+      @if (submitted && f['email'].errors?.['required']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Email requis
+        </small>
+      } @else if (submitted && f['email'].errors?.['email'] || submitted && f['email'].errors?.['pattern']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Format d'email invalide
+        </small>
+      } @else if (submitted && f['email'].errors?.['maxlength']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          150 caractères maximum
+        </small>
+      }
+    </div>
+
+    <!-- Numéro ACACED (spécifique aux coachs) -->
+    <div class="field">
+      <label for="acacedNumber" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+        <i class="pi pi-id-card mr-2" style="color: #1B2140;"></i>NUMÉRO ACACED
+      </label>
+      <input
+        pInputText
+        id="acacedNumber"
+        formControlName="acacedNumber"
+        placeholder="ACACED123456"
+        class="w-full"
+        [class.p-invalid]="submitted && f['acacedNumber'].errors"
+        maxlength="100"
+      />
+      @if (submitted && f['acacedNumber'].errors?.['required']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Numéro ACACED requis
+        </small>
+      } @else if (submitted && f['acacedNumber'].errors?.['maxlength']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          100 caractères maximum
+        </small>
+      }
+    </div>
+
+    <!-- Téléphone (optionnel) -->
+    <div class="field">
+      <label for="phone" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+        <i class="pi pi-phone mr-2" style="color: #1B2140;"></i>TÉLÉPHONE
+        <span class="text-gray-500 font-normal">(optionnel)</span>
+      </label>
+      <input
+        pInputText
+        id="phone"
+        formControlName="phone"
+        placeholder="0123456789"
+        class="w-full"
+        [class.p-invalid]="submitted && f['phone'].errors"
+        maxlength="50"
+      />
+      @if (submitted && f['phone'].errors?.['pattern']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Format: 10 chiffres sans espaces
+        </small>
+      } @else if (submitted && f['phone'].errors?.['maxlength']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          50 caractères maximum
+        </small>
+      }
+    </div>
+
+    <!-- Mot de passe -->
+    <div class="field">
+      <label for="password" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+        <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE
+      </label>
+      <p-password
+        id="password"
+        formControlName="password"
+        [feedback]="true"
+        [toggleMask]="true"
+        placeholder="••••••••"
+        [class.p-invalid]="submitted && f['password'].errors"
+        promptLabel="Entrez un mot de passe"
+        weakLabel="Faible"
+        mediumLabel="Moyen"
+        strongLabel="Fort"
+        [maxLength]="64"
+        styleClass="w-full"
+      />
+      @if (submitted && f['password'].errors?.['required']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Mot de passe requis
+        </small>
+      } @else if (submitted && f['password'].errors?.['minlength']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          8 caractères minimum
+        </small>
+      } @else if (submitted && f['password'].errors?.['maxlength']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          64 caractères maximum
+        </small>
+      } @else if (submitted && f['password'].errors?.['strongPassword']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial
+        </small>
+      }
+    </div>
+
+    <!-- Confirmation mot de passe -->
+    <div class="field">
+      <label for="confirmPassword" class="block text-sm font-medium mb-2" style="color: #1B2140;">
+        <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>CONFIRMER
+      </label>
+      <p-password
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        [feedback]="false"
+        [toggleMask]="true"
+        placeholder="••••••••"
+        [class.p-invalid]="submitted && f['confirmPassword'].errors"
+        styleClass="w-full"
+      />
+      @if (submitted && f['confirmPassword'].errors?.['required']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Confirmation requise
+        </small>
+      } @else if (submitted && f['confirmPassword'].errors?.['mismatch']) {
+        <small class="p-error mt-1 block">
+          <i class="pi pi-exclamation-triangle mr-1"></i>
+          Les mots de passe ne correspondent pas
+        </small>
+      }
+    </div>
+
+    <div class="flex justify-end gap-3 pt-4">
+      <p-button
+        type="button"
+        label="Annuler"
+        severity="warn"
+        icon="pi pi-times"
+        (onClick)="visible = false"
+        [disabled]="loading">
+      </p-button>
+
+      <p-button
+        type="submit"
+        label="Créer le coach"
+        icon="pi pi-check"
+        severity="success"
+        [disabled]="coachRegisterForm.invalid || loading"
+        [loading]="loading">
+      </p-button>
+    </div>
+  </form>
+</p-dialog>
