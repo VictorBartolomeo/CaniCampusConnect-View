@@ -31,7 +31,7 @@ export class CoachService {
    * @returns Observable with coach details
    */
   getCoachById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/coachs/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/coach/${id}`);
   }
 
   /**
@@ -49,6 +49,6 @@ export class CoachService {
    * @returns Observable with the updated coach
    */
   updateCoach(coachData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/coachs/${coachData.id}`, coachData);
+    return this.http.put<any>(`${this.apiUrl}/coach/${coachData.id}`, coachData);
   }
 }
