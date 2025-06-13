@@ -13,152 +13,18 @@
         (addCoachRequest)="showAddCoachDialog()">
       </app-coach-list>
 
-      <!-- Register form component (hidden, accessed via ViewChild) -->
-      <app-coach-register-form #coachForm (coachAdded)="loadCoaches()"></app-coach-register-form>
     </div>
 
     <!-- Détails du coach sélectionné à droite -->
-    @if (selectedCoach) {
-      <div class="w-1/3">
-        <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
-          <ng-template pTemplate="header">
-            <div class="relative h-full w-full flex justify-end pr-10">
-              <img
-                src="/icons/token_valid.png"
-                alt="Coach"
-                class="w-50 h-50 object-contain flex"
-              />
-              <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-r from-primary/60 via-primary/0 w-full">
-                <h2 class="text-white text-2xl font-bold">{{ selectedCoach.firstname }} {{ selectedCoach.lastname }}</h2>
-                <div class="flex gap-2 items-center text-white text-sm">
-                  <span>Coach</span>
-                  <span class="text-xl">•</span>
-                  <span>{{ selectedCoach.email }}</span>
-                </div>
-              </div>
-            </div>
-          </ng-template>
-
-          <div class="p-3 text-lg space-y-4">
-            <div class="flex items-center gap-2">
-              <i class="pi pi-id-card text-primary"></i>
-              <span class="font-semibold">Numéro ACACED:</span>
-              <span>{{ selectedCoach.acacedNumber }}</span>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <i class="pi pi-phone text-primary"></i>
-              <span class="font-semibold">Téléphone:</span>
-              <span>{{ selectedCoach.phone || 'Non renseigné' }}</span>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <i class="pi pi-calendar text-primary"></i>
-              <span class="font-semibold">Date d'inscription:</span>
-              <span>{{ selectedCoach.registrationDate | date:'dd/MM/yyyy' }}</span>
-            </div>
-
-            @if (selectedCoach.emailValidated !== undefined) {
-              <div class="flex items-center gap-2">
-                <i class="pi pi-envelope text-primary"></i>
-                <span class="font-semibold">Email validé:</span>
-                <p-badge [value]="selectedCoach.emailValidated ? 'Oui' : 'Non'"
-                         [severity]="selectedCoach.emailValidated ? 'success' : 'danger'"></p-badge>
-              </div>
-            }
-
-            @if (selectedCoach.isActive !== undefined) {
-              <div class="flex items-center gap-2">
-                <i class="pi pi-check-circle text-primary"></i>
-                <span class="font-semibold">Compte actif:</span>
-                <p-badge [value]="selectedCoach.isActive ? 'Oui' : 'Non'"
-                         [severity]="selectedCoach.isActive ? 'success' : 'danger'"></p-badge>
-              </div>
-            }
-          </div>
-
-          <ng-template pTemplate="footer">
-            <div class="flex justify-end pt-4">
-              <p-button
-                icon="pi pi-pencil"
-                label="Modifier"
-                (onClick)="editCoach(selectedCoach)">
-              </p-button>
-            </div>
-          </ng-template>
-        </p-card>
-      </div>
-    } @else {
-      <!-- Message si aucun coach n'est sélectionné -->
-      <div class="w-1/3">
-        <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
-          <div class="text-center p-6">
-            <i class="pi pi-user text-5xl text-primary mb-4"></i>
-            <h3 class="text-xl font-semibold mb-2">Aucun coach sélectionné</h3>
-            <p class="text-gray-600">Sélectionnez un coach dans la liste pour voir ses détails</p>
-          </div>
-        </p-card>
-      </div>
-    }
+    <div class="w-1/3">
+      <app-coach-card
+        [coach]="selectedCoach"
+        (editCoach)="editCoach($event)">
+      </app-coach-card>
+    </div>
   </div>
 </div>
 
-<!-- Modal de détails du coach -->
-<p-dialog
-  header="Détails du coach"
-  [(visible)]="detailsVisible"
-  [modal]="true"
-  [style]="{width: '30rem'}"
-  [draggable]="false"
-  [resizable]="false">
-
-  @if (selectedCoach) {
-    <div class="coach-details p-4">
-      <div class="mb-3">
-        <span class="font-semibold">Nom:</span> {{ selectedCoach.lastname }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Prénom:</span> {{ selectedCoach.firstname }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Email:</span> {{ selectedCoach.email }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Téléphone:</span> {{ selectedCoach.phone || 'Non renseigné' }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Numéro ACACED:</span> {{ selectedCoach.acacedNumber }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Date d'inscription:</span> {{ selectedCoach.registrationDate | date:'dd/MM/yyyy' }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Email validé:</span> {{ selectedCoach.emailValidated ? 'Oui' : 'Non' }}
-      </div>
-      <div class="mb-3">
-        <span class="font-semibold">Compte actif:</span> {{ selectedCoach.isActive ? 'Oui' : 'Non' }}
-      </div>
-    </div>
-  }
-
-  <ng-template pTemplate="footer">
-    <div class="flex justify-between">
-      <button
-        pButton
-        label="Modifier"
-        icon="pi pi-pencil"
-        class="p-button-primary"
-        (click)="editCoach(selectedCoach); detailsVisible = false">
-      </button>
-      <button
-        pButton
-        label="Fermer"
-        icon="pi pi-times"
-        (click)="detailsVisible = false">
-      </button>
-    </div>
-  </ng-template>
-</p-dialog>
 
 <!-- Coach edit form component -->
 <app-coach-edit-form
@@ -166,3 +32,8 @@
   [(visible)]="editFormVisible"
   (coachUpdated)="onCoachUpdated($event)">
 </app-coach-edit-form>
+
+<!-- Coach register form component -->
+<app-coach-register-form
+  (coachAdded)="onCoachAdded($event)">
+</app-coach-register-form>

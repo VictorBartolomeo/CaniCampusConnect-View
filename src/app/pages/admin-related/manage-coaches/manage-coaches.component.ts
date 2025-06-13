@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {
   CoachRegisterFormComponent
 } from '../../../components/admin-related/coach-register-form/coach-register-form.component';
-import {CoachResponse, CoachService} from '../../../service/coach.service';
+import {CoachResponse} from '../../../service/coach.service';
 import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
@@ -12,6 +12,10 @@ import {CardModule} from 'primeng/card';
 import {BadgeModule} from 'primeng/badge';
 import {CoachListComponent} from '../../../components/admin-related/coach-list/coach-list.component';
 import {CoachEditFormComponent} from '../../../components/admin-related/coach-edit-form/coach-edit-form.component';
+import {CoachCardComponent} from '../../../components/admin-related/coach-card/coach-card.component';
+import {AdminService} from '../../../service/admin.service';
+import {AddCoachButtonComponent} from '../../../components/admin-related/utilities/add-coach-button/add-coach-button.component';
+import {EditCoachButtonComponent} from '../../../components/admin-related/utilities/edit-coach-button/edit-coach-button.component';
 
 @Component({
   selector: 'app-manage-coaches',
@@ -21,6 +25,9 @@ import {CoachEditFormComponent} from '../../../components/admin-related/coach-ed
     CoachRegisterFormComponent,
     CoachListComponent,
     CoachEditFormComponent,
+    CoachCardComponent,
+    AddCoachButtonComponent,
+    EditCoachButtonComponent,
     TableModule,
     ButtonModule,
     DialogModule,
@@ -35,53 +42,28 @@ export class ManageCoachesComponent implements OnInit {
   coaches: any[] = [];
   loading: boolean = true;
   selectedCoach: any = null;
-  detailsVisible: boolean = false;
   editFormVisible: boolean = false;
   coachToEdit: any = null;
 
   @ViewChild(CoachRegisterFormComponent) coachForm!: CoachRegisterFormComponent;
 
-  constructor(private coachService: CoachService) {}
+  constructor(private adminService: AdminService) {}
 
   ngOnInit() {
     this.loadCoaches();
+
+    // Subscribe to coaches observable
+    this.adminService.coaches$.subscribe(coaches => {
+      this.coaches = coaches;
+    });
   }
 
   loadCoaches() {
     this.loading = true;
     console.log('Loading coaches...');
-    this.coachService.getAllCoaches().subscribe({
-      next: (response: any[] | CoachResponse) => {
-        console.log('API response received:', response);
-
-        // Handle different possible response formats
-        if (Array.isArray(response)) {
-          // Response is already an array
-          this.coaches = response;
-        } else if (response && typeof response === 'object') {
-          // Response might be wrapped in an object
-          if (Array.isArray(response.data)) {
-            this.coaches = response.data;
-          } else if (Array.isArray(response.content)) {
-            this.coaches = response.content;
-          } else if (Array.isArray(response.coaches)) {
-            this.coaches = response.coaches;
-          } else {
-            // If we can't find an array property, try to convert the object to an array
-            const possibleArray = Object.values(response).find(val => Array.isArray(val));
-            if (possibleArray) {
-              this.coaches = possibleArray;
-            } else {
-              console.error('Could not extract coaches array from response:', response);
-              this.coaches = [];
-            }
-          }
-        } else {
-          console.error('Unexpected response format:', response);
-          this.coaches = [];
-        }
-
-        console.log('Processed coaches array:', this.coaches);
+    this.adminService.loadCoaches().subscribe({
+      next: () => {
+        console.log('Coaches loaded successfully');
         this.loading = false;
       },
       error: (error) => {
@@ -99,7 +81,7 @@ export class ManageCoachesComponent implements OnInit {
 
   showCoachDetails(coach: any) {
     this.selectedCoach = coach;
-    this.detailsVisible = true;
+    // No longer opening the modal dialog, just selecting the coach for the card
   }
 
   /**
@@ -116,15 +98,19 @@ export class ManageCoachesComponent implements OnInit {
    * @param updatedCoach The updated coach
    */
   onCoachUpdated(updatedCoach: any) {
-    // Find and update the coach in the array
-    const index = this.coaches.findIndex(c => c.id === updatedCoach.id);
-    if (index !== -1) {
-      this.coaches[index] = updatedCoach;
-    }
-
-    // If this was the selected coach, update it
+    // The AdminService will handle updating the coaches array
+    // We just need to update the selected coach if it was the one that was updated
     if (this.selectedCoach && this.selectedCoach.id === updatedCoach.id) {
       this.selectedCoach = updatedCoach;
     }
+  }
+
+  /**
+   * Handle coach added event
+   * @param newCoach The newly added coach
+   */
+  onCoachAdded(newCoach: any) {
+    // The AdminService will handle adding the coach to the coaches array
+    console.log('Coach added:', newCoach);
   }
 }
