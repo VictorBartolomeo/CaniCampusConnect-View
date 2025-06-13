@@ -1,0 +1,196 @@
+<p-card styleClass="shadow-lg rounded-xl overflow-hidden">
+
+  <ng-template pTemplate="header">
+    <div class="relative w-full">
+      <!-- Image background -->
+      <div class="h-40 flex justify-end pr-8">
+        @if (loading) {
+          <img
+            src="/icons/token_valid.png"
+            alt="Chien valide le token"
+            class="w-50 h-50 object-contain flex">
+        } @else if (!loading && validationResult?.tokenStatus === 'VALID') {
+          <img
+            src="/icons/token_valid.png"
+            alt="Chien heureux"
+            class="w-50 h-50 object-contain flex">
+        } @else if (!loading && validationResult?.tokenStatus === 'USED') {
+          <img
+            src="/icons/token_invalid.png"
+            alt="Chien avec token déjà utilisé"
+            class="w-50 h-50 object-contain flex">
+        } @else if (!loading && validationResult?.tokenStatus === 'EXPIRED') {
+          <img
+            src="/icons/token_expired.png"
+            alt="Chien avec token expiré"
+            class="w-50 h-50 object-contain flex">
+        } @else if (!loading && validationResult?.code === 'ACTIVATION_FAILED') {
+          <img
+            src="/icons/token_invalid.png"
+            alt="Chien avec activation échouée"
+            class="w-50 h-50 object-contain flex">
+        } @else if (!loading && validationResult?.code === 'INTERNAL_ERROR') {
+          <img
+            src="/icons/token_invalid.png"
+            alt="Chien avec erreur interne"
+            class="w-50 h-50 object-contain flex">
+        } @else {
+          <img
+            src="/icons/token_expired.png"
+            alt="Chien avec token expiré"
+            class="w-50 h-50 object-contain flex">
+        }
+      </div>
+
+      <!-- Title with gradient overlay -->
+      <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-r from-primary/60 via-primary/0 w-full">
+        <h2 class="text-white text-xl font-bold">Validation mail</h2>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="p-4 space-y-4">
+    <!-- Loading state -->
+    @if (loading) {
+      <div class="flex flex-col items-center justify-center py-4">
+        <p-progressSpinner></p-progressSpinner>
+        <p class="mt-4 text-gray-600 font-bold">Validation en cours...</p>
+      </div>
+    }
+
+    <!-- Error message when parameters are missing -->
+    @if (!loading && errorMessage) {
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 justify-center">
+          <i class="pi pi-exclamation-triangle text-red-500"></i>
+          <span class="font-semibold">Erreur de validation</span>
+        </div>
+        <p class="text-red-500 text-center font-bold">{{ errorMessage }}</p>
+      </div>
+    }
+
+    <!-- Validation result -->
+    @if (!loading && validationResult) {
+      <div class="space-y-3">
+        <!-- Success -->
+        @if (validationResult.code === 'VALIDATION_SUCCESS') {
+          <div class="flex items-center gap-2 justify-center">
+            <i class="pi pi-check-circle text-green-500"></i>
+            <span class="font-semibold">Statut de validation</span>
+            <p-badge value="Succès" severity="success"></p-badge>
+          </div>
+          <p class="text-green-600 text-center mt-2 font-bold">
+            {{ validationResult.message || 'Compte validé avec succès ! Vous pouvez maintenant vous connecter.' }}
+          </p>
+        }
+
+        <!-- Invalid token -->
+        @if (validationResult.code === 'INVALID_TOKEN') {
+          <div class="flex items-center gap-2 justify-center">
+            <i class="pi pi-exclamation-circle text-red-500"></i>
+            <span class="font-semibold">Statut de validation</span>
+            <p-badge value="Échec" severity="danger"></p-badge>
+          </div>
+
+          <!-- Different messages based on token status -->
+          @if (validationResult.tokenStatus === 'EXPIRED') {
+            <p class="text-red-500 text-center mt-2 font-bold">
+              {{ validationResult.error || 'Votre lien de validation a expiré. Veuillez demander un nouvel email de validation.' }}
+            </p>
+            <div class="flex justify-center mt-4">
+              <p-button
+                icon="pi pi-refresh"
+                label="Renvoyer l'email de validation"
+                (onClick)="requestResendEmail()"
+                styleClass="p-button-outlined p-button-danger">
+              </p-button>
+            </div>
+          } @else if (validationResult.tokenStatus === 'USED') {
+            <p class="text-red-500 text-center mt-2 font-bold">
+              {{ validationResult.error || 'Ce token a déjà été utilisé. Votre compte est probablement déjà validé.' }}
+            </p>
+          } @else {
+            <p class="text-red-500 text-center mt-2 font-bold">
+              {{ validationResult.error || 'Token invalide ou expiré.' }}
+            </p>
+          }
+        }
+
+        <!-- Activation failed -->
+        @if (validationResult.code === 'ACTIVATION_FAILED') {
+          <div class="flex items-center gap-2 justify-center">
+            <i class="pi pi-times-circle text-red-500"></i>
+            <span class="font-semibold">Statut de validation</span>
+            <p-badge value="Échec" severity="danger"></p-badge>
+          </div>
+          <p class="text-red-500 text-center mt-2 font-bold">
+            {{ validationResult.error || 'Impossible d\'activer le compte.' }}
+          </p>
+        }
+
+        <!-- Internal error -->
+        @if (validationResult.code === 'INTERNAL_ERROR') {
+          <div class="flex items-center gap-2 justify-center">
+            <i class="pi pi-server text-red-500"></i>
+            <span class="font-semibold">Statut de validation</span>
+            <p-badge value="Erreur" severity="danger"></p-badge>
+          </div>
+          <p class="text-red-500 text-center mt-2 font-bold">
+            {{ validationResult.error || 'Erreur interne lors de la validation.' }}
+          </p>
+        }
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-center pt-4">
+      <p-button
+        icon="pi pi-sign-in"
+        label="Aller à la page de connexion"
+        (onClick)="navigateToLogin()"
+        styleClass="p-button-primary">
+      </p-button>
+    </div>
+  </ng-template>
+</p-card>
+
+<!-- Dialog for resending validation email -->
+<p-dialog
+  [(visible)]="resendDialogVisible"
+  [style]="{width: '450px'}"
+  header="Renvoyer l'email de validation"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="p-fluid">
+
+  <div class="p-4">
+    <p class="mb-4 text-center font-bold">
+      Nous allons renvoyer un email de validation à l'adresse <strong>{{ email }}</strong>.
+    </p>
+
+    @if (resendingValidationEmail) {
+      <div class="flex flex-col items-center py-4">
+        <p-progressSpinner [style]="{ width: '50px', height: '50px' }"></p-progressSpinner>
+        <p class="mt-4 text-gray-600 font-bold">Envoi en cours...</p>
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      icon="pi pi-times"
+      label="Annuler"
+      (onClick)="resendDialogVisible = false"
+      styleClass="p-button-text"
+      [disabled]="resendingValidationEmail">
+    </p-button>
+    <p-button
+      icon="pi pi-send"
+      label="Envoyer"
+      (onClick)="resendValidationEmail()"
+      [disabled]="resendingValidationEmail">
+    </p-button>
+  </ng-template>
+</p-dialog>
