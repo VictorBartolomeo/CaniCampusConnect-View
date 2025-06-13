@@ -10,7 +10,7 @@ import {DogService} from './dog.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit{
+export class AuthService{
   router = inject(Router);
   private apiUrl = 'http://localhost:8080';
   private darkMode: boolean = false;
@@ -20,7 +20,6 @@ export class AuthService implements OnInit{
   dogService = inject(DogService);
 
   constructor() {
-    // Initialiser l'état d'authentification au démarrage
     this.initializeAuthState();
   }
 
@@ -29,17 +28,6 @@ export class AuthService implements OnInit{
     if (jwt != null && this.checkJwtStatus()) {
       this.decodeJwt(jwt);
     }
-    this.loadThemePreference();
-  }
-
-
-  ngOnInit(
-  ) {
-    const jwt = this.getToken();
-    if (jwt != null) {
-      this.decodeJwt(jwt);
-    }
-
     this.loadThemePreference();
     this.dogService.loadUserDogs();
   }
@@ -105,6 +93,27 @@ export class AuthService implements OnInit{
     );
   }
 
+  redirectToDashboard(): void {
+    const userRole = this.authStateService.getRole();
+
+    switch (userRole) {
+      case 'ROLE_OWNER':
+        this.router.navigateByUrl('/dashboard');
+        break;
+      case 'ROLE_COACH':
+        this.router.navigateByUrl('/coach/dashboard');
+        break;
+      case 'ROLE_CLUB_OWNER':
+        this.router.navigateByUrl('/admin/dashboard');
+        break;
+      default:
+        console.warn('Rôle non reconnu:', userRole);
+        this.router.navigateByUrl('/login');
+        break;
+    }
+  }
+
+
 // Décodage du JWT
   decodeJwt(jwt: string) {
 
@@ -163,13 +172,12 @@ export class AuthService implements OnInit{
 
   setToken(token: string, rememberMe: boolean = false): void {
     if (rememberMe) {
-      // Si "Se souvenir de moi" est coché, stocker dans localStorage (persistant)
       localStorage.setItem('jwt', token);
       localStorage.setItem('rememberMe', 'true');
     } else {
       sessionStorage.setItem('jwt', token);
       localStorage.removeItem('rememberMe');
-      localStorage.removeItem('jwt'); // Nettoyer l'ancien token persistant
+      localStorage.removeItem('jwt');
     }
   }
 
@@ -177,7 +185,7 @@ export class AuthService implements OnInit{
 
     // Vérifier l'état du JWT
   checkJwtStatus(): boolean {
-    const jwt = this.getToken(); // ← Utiliser getToken() au lieu de localStorage direct
+    const jwt = this.getToken();
 
     if (jwt) {
       try {
