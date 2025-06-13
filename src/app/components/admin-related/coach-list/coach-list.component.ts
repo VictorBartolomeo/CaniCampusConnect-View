@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { AddCoachButtonComponent } from '../utilities/add-coach-button/add-coach-button.component';
+import { EditCoachButtonComponent } from '../utilities/edit-coach-button/edit-coach-button.component';
 
 @Component({
   selector: 'app-coach-list',
@@ -11,7 +13,9 @@ import { TooltipModule } from 'primeng/tooltip';
     CommonModule,
     TableModule,
     ButtonModule,
-    TooltipModule
+    TooltipModule,
+    AddCoachButtonComponent,
+    EditCoachButtonComponent
   ],
   templateUrl: './coach-list.component.html',
   styleUrl: './coach-list.component.scss'

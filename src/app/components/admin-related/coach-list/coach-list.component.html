@@ -1,12 +1,9 @@
 <div class="coach-list-container">
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-xl font-semibold">Liste des coachs</h2>
-    <button
-      pButton
-      icon="pi pi-plus"
-      label="Ajouter un coach"
-      (click)="requestAddCoach()">
-    </button>
+    <app-add-coach-button
+      (addCoachRequest)="requestAddCoach()">
+    </app-add-coach-button>
   </div>
 
   <p-table
@@ -25,6 +22,7 @@
         <th>Nom</th>
         <th>Prénom</th>
         <th>Email</th>
+        <th style="width: 100px">Actions</th>
       </tr>
     </ng-template>
 
@@ -33,16 +31,26 @@
         <td>{{ coach.lastname }}</td>
         <td>{{ coach.firstname }}</td>
         <td>{{ coach.email }}</td>
+        <td>
+          <app-edit-coach-button
+            [coach]="coach"
+            [small]="true"
+            (editCoach)="$event.stopPropagation(); editCoach($event)">
+          </app-edit-coach-button>
+        </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="3" class="text-center p-4">
-          <div *ngIf="loading">Chargement des coachs...</div>
-          <div *ngIf="!loading">
-            Aucun coach trouvé.
-          </div>
+        <td colspan="4" class="text-center p-4">
+          @if (loading) {
+            <div>Chargement des coachs...</div>
+          } @else {
+            <div>
+              Aucun coach trouvé.
+            </div>
+          }
         </td>
       </tr>
     </ng-template>
