@@ -23,6 +23,12 @@ import {CourseManagementComponent} from './pages/coach-related/course-management
 import {CalendarComponent} from './components/owner-related/calendar/calendar.component';
 import {ForgotPasswordPageComponent} from './pages/site-related/forgot-password-page/forgot-password-page.component';
 import {LandingNavbarComponent} from './components/site-related/landing-navbar/landing-navbar.component';
+import {
+  AdminDashboardNavbarComponent
+} from './components/admin-related/admin-dashboard-navbar/admin-dashboard-navbar.component';
+import {AdminDashboardComponent} from './pages/admin-related/admin-dashboard/admin-dashboard.component';
+import {ManageCoachesComponent} from './pages/admin-related/manage-coaches/manage-coaches.component';
+import {EmailValidationComponent} from './pages/site-related/email-validation/email-validation.component';
 
 export const routes: Routes = [
 
@@ -36,6 +42,7 @@ export const routes: Routes = [
       {path: "register", component: RegisterPageComponent},
       {path: "CGU", component: GeneralConditionsUseComponent},
       {path: "forgot-password", component: ForgotPasswordPageComponent},
+      {path: "validate-email", component: EmailValidationComponent},
     ]
   },
 
@@ -87,6 +94,41 @@ export const routes: Routes = [
     ]
   },
 
+  //ADMIN
+  {
+    path: "admin/dashboard",
+    component : AdminDashboardNavbarComponent,
+    canActivate: [loggedGuard, RoleGuard],
+    data: {authorizedRoles: ['ROLE_CLUB_OWNER']},
+    children: [
+      {
+        path: "general", component: AdminDashboardComponent,
+        children: []
+      },
+      {
+        path: "manage-coaches", component: ManageCoachesComponent
+      },
+      {
+        path: "manage-courses", component: AdminDashboardComponent,
+        children: []
+      },
+      {
+        path: "settings", component: AdminDashboardComponent,
+        children: []
+      },
+      {
+        path: "profile", component: AdminDashboardComponent,
+        children: []
+      },
+      {
+        path: "finances", component: AdminDashboardComponent,
+        children: []
+      },
+      {path: "", redirectTo: "general", pathMatch: "full"},
+    ]
+  },
+
+  //UTILITIES
   {path: "**", redirectTo: "404-not-found", pathMatch: "full"},
   {path: "404-not-found", component: NotFoundComponent},
   {path: 'unauthorized', component: UnauthorizedComponent},
