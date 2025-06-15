@@ -55,9 +55,12 @@ export class UserService {
       }
     });
 
-    // Debug de l'observable owner$
-    this.owner$.subscribe(owner => {
-      console.log('🔄 UserService - owner$ émis:', owner);
+    // ✅ NOUVEAU : S'abonner aux changements de connexion pour nettoyer automatiquement
+    this.authStateService.connected$.subscribe(connected => {
+      if (!connected) {
+        console.log('🧹 UserService - Utilisateur déconnecté, nettoyage automatique');
+        this.clearUserData();
+      }
     });
   }
 
@@ -115,7 +118,7 @@ export class UserService {
     switch (role) {
       case 'ROLE_OWNER':
       case 'OWNER':
-        endpoint = `owner/${userId}`;
+        endpoint = `owner/me`;
         break;
       case 'ROLE_COACH':
       case 'COACH':
@@ -206,7 +209,6 @@ export class UserService {
       newPassword
     });
   }
-
 
   // Méthodes spécifiques pour Owner
   loadOwnerInfo(ownerId: number | null): Observable<Owner | null> {
