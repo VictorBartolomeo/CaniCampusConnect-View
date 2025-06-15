@@ -56,7 +56,11 @@ export class CoachEditFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log('🔍 ngOnChanges called with changes:', changes);
+
     if (changes['coach'] && changes['coach'].currentValue) {
+      console.log('🔍 Coach changed to:', changes['coach'].currentValue);
+
       if (this.coachEditForm) {
         this.resetForm();
         this.populateForm();
@@ -65,6 +69,7 @@ export class CoachEditFormComponent implements OnInit, OnChanges {
     }
 
     if (changes['visible']) {
+      console.log('🔍 Visibility changed to:', changes['visible'].currentValue);
       this.visibleChange.emit(this.visible);
     }
   }
@@ -124,7 +129,20 @@ export class CoachEditFormComponent implements OnInit, OnChanges {
    * Populate the form with coach data
    */
   private populateForm(): void {
-    if (!this.coach) return;
+    console.log('🔍 populateForm called with coach:', this.coach);
+
+    if (!this.coach) {
+      console.warn('🔍 No coach provided to populateForm');
+      return;
+    }
+
+    console.log('🔍 Patching form with values:', {
+      firstname: this.coach.firstname || '',
+      lastname: this.coach.lastname || '',
+      email: this.coach.email || '',
+      phone: this.coach.phone || '',
+      acacedNumber: this.coach.acacedNumber || ''
+    });
 
     this.coachEditForm.patchValue({
       firstname: this.coach.firstname || '',
@@ -133,6 +151,9 @@ export class CoachEditFormComponent implements OnInit, OnChanges {
       phone: this.coach.phone || '',
       acacedNumber: this.coach.acacedNumber || ''
     });
+
+    console.log('🔍 Form after patching:', this.coachEditForm.value);
+    console.log('🔍 Form valid:', this.coachEditForm.valid);
   }
 
   /**
