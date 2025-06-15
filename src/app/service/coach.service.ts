@@ -51,4 +51,13 @@ export class CoachService {
   updateCoach(coachData: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/coach/${coachData.id}`, coachData);
   }
+
+  /**
+   * Delete a coach by ID
+   * @param id Coach ID
+   * @returns Observable with the operation result
+   */
+  deleteCoach(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/coach/${id}`);
+  }
 }
