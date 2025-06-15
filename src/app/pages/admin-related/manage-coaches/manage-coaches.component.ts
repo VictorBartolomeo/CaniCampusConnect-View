@@ -14,8 +14,6 @@ import {CoachListComponent} from '../../../components/admin-related/coach-list/c
 import {CoachEditFormComponent} from '../../../components/admin-related/coach-edit-form/coach-edit-form.component';
 import {CoachCardComponent} from '../../../components/admin-related/coach-card/coach-card.component';
 import {AdminService} from '../../../service/admin.service';
-import {AddCoachButtonComponent} from '../../../components/admin-related/utilities/add-coach-button/add-coach-button.component';
-import {EditCoachButtonComponent} from '../../../components/admin-related/utilities/edit-coach-button/edit-coach-button.component';
 
 @Component({
   selector: 'app-manage-coaches',
@@ -26,8 +24,9 @@ import {EditCoachButtonComponent} from '../../../components/admin-related/utilit
     CoachListComponent,
     CoachEditFormComponent,
     CoachCardComponent,
-    AddCoachButtonComponent,
-    EditCoachButtonComponent,
+    // ✅ SUPPRESSION des composants non utilisés
+    // AddCoachButtonComponent,
+    // EditCoachButtonComponent,
     TableModule,
     ButtonModule,
     DialogModule,
@@ -97,8 +96,18 @@ export class ManageCoachesComponent implements OnInit {
    */
   editCoach(coach: any) {
     console.log('🔧 Editing coach:', coach);
-    this.coachToEdit = { ...coach }; // ✅ Créer une copie pour éviter les références
-    this.editFormVisible = true;
+
+    // Reset the form state before setting a new coach
+    this.editFormVisible = false;
+    this.coachToEdit = null;
+
+    // Use setTimeout to ensure the form is reset before setting new values
+    setTimeout(() => {
+      console.log('🔧 Setting coachToEdit to:', coach);
+      this.coachToEdit = { ...coach }; // ✅ Créer une copie pour éviter les références
+      console.log('🔧 Setting editFormVisible to true');
+      this.editFormVisible = true;
+    }, 0);
   }
 
   /**
@@ -106,7 +115,6 @@ export class ManageCoachesComponent implements OnInit {
    * @param updatedCoach The updated coach
    */
   onCoachUpdated(updatedCoach: any) {
-    // ✅ SOLUTION SIMPLIFIÉE : Juste mettre à jour via AdminService
     console.log('Coach updated successfully:', updatedCoach);
 
     // Mettre à jour la liste des coaches via AdminService
@@ -128,5 +136,34 @@ export class ManageCoachesComponent implements OnInit {
    */
   onCoachAdded(newCoach: any) {
     console.log('Coach added:', newCoach);
+  }
+
+  /**
+   * Handle coach delete event
+   * @param coach The coach to delete
+   */
+  deleteCoach(coach: any) {
+    console.log('🗑️ Deleting coach:', coach);
+
+    if (!coach || !coach.id) {
+      console.error('Invalid coach or missing ID');
+      return;
+    }
+
+    this.adminService.deleteCoach(coach.id).subscribe({
+      next: () => {
+        console.log('Coach deleted successfully');
+
+        // If the deleted coach was the selected coach, clear the selection
+        if (this.selectedCoach && this.selectedCoach.id === coach.id) {
+          this.selectedCoach = null;
+        }
+      },
+      error: (error) => {
+        console.error('Error deleting coach:', error);
+        // Reload coaches in case of error
+        this.loadCoaches();
+      }
+    });
   }
 }
