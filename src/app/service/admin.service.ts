@@ -86,4 +86,18 @@ export class AdminService {
   getCoaches(): any[] {
     return this.coachesSubject.getValue();
   }
+
+  /**
+   * Delete a coach and update the observable
+   * @param coachId The ID of the coach to delete
+   */
+  deleteCoach(coachId: number): Observable<any> {
+    return this.coachService.deleteCoach(coachId).pipe(
+      tap(() => {
+        const currentCoaches = this.coachesSubject.getValue();
+        const updatedCoaches = currentCoaches.filter(coach => coach.id !== coachId);
+        this.coachesSubject.next(updatedCoaches);
+      })
+    );
+  }
 }
