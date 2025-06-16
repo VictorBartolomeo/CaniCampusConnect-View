@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable, BehaviorSubject, tap, Subject} from 'rxjs';
 import { Registration } from '../models/registration';
@@ -18,6 +18,8 @@ export interface CourseWithPendingRegistrations {
 })
 export class RegistrationService {
   private apiUrl = API_CONFIG_URL.apiUrl;
+  private http=inject(HttpClient)
+  private authStateService=inject(AuthStateService)
 
   private pendingCountSubject = new BehaviorSubject<number>(0);
   public pendingCount$ = this.pendingCountSubject.asObservable();
@@ -25,10 +27,15 @@ export class RegistrationService {
   private courseUpdatedSubject = new Subject<number>();
   public courseUpdated$ = this.courseUpdatedSubject.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    private authStateService: AuthStateService
-  ) {}
+  createRegistration(dogId: number, courseId: number): Observable<Registration> {
+    const registrationData = {
+      dog: { id: dogId },
+      course: { id: courseId }
+    };
+
+    return this.http.post<Registration>(`${this.apiUrl}/registration`, registrationData);
+  }
+
 
   /**
    * Récupère toutes les registrations en attente pour un coach
