@@ -262,32 +262,35 @@ export class DogService {
 
 
   getDogAvatarUrl(dog: Dog): string {
+    // Avatar propre du chien
     if (dog?.avatarUrl) {
       return `${this.apiUrl}${dog.avatarUrl}`;
     }
 
-    if (dog?.breeds && dog.breeds.length > 0) {
-      const primaryBreed = dog.breeds[0];
-      const breedImageUrl = this.breedService.getBreedImageFromBreed(primaryBreed);
+    // Image de la race principale
+    if (dog?.breeds?.[0]) {
+      const breed = dog.breeds[0];
 
-      if (breedImageUrl && breedImageUrl.trim() !== '') {
-        if (breedImageUrl.startsWith('http')) {
-          return breedImageUrl;
-        } else {
-          return `${this.apiUrl}${breedImageUrl}`;
-        }
+      // Utiliser l'avatarUrl de la breed si disponible
+      if (breed.avatarUrl) {
+        return breed.avatarUrl.startsWith('http')
+          ? breed.avatarUrl
+          : `${this.apiUrl}${breed.avatarUrl}`;
       }
+
+      // Fallback sur l'endpoint de l'image de breed
+      return `${this.apiUrl}/breed/${breed.id}/image`;
     }
 
-    console.log('🚫 Using fallback image');
     return '/icons/placeholder_no_breed.jpg';
   }
+
 
   public loadUserDogs(userId?: number | null): void {
     const id = userId || this.authStateService.getUserId();
     if (!id) return;
 
-    this.http.get<Dog[]>(`${this.apiUrl}/owner/${id}/dogs`).subscribe({
+    this.http.get<Dog[]>(`${this.apiUrl}/owner/connected/dogs`).subscribe({
       next: (dogs) => this.handleDogsLoaded(dogs),
       error: (error) => console.error('Erreur lors du chargement des chiens:', error)
     });

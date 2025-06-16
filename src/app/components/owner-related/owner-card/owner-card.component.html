@@ -1,71 +1,82 @@
-@if (owner) {
-<p-card styleClass="shadow-md rounded-md overflow-hidden mx-auto w-1/3">
-  <ng-template pTemplate="header">
-    <div class="relative h-36 w-full bg-primary">
-      <div class="absolute inset-0 flex items-center justify-center">
-        <p-avatar
-          [image]="'/img/avatars/user-default-avatar.png'"
-          size="xlarge"
-          styleClass=""></p-avatar>
+<p-card styleClass="h-fit shadow-lg rounded-xl">
+  <!-- En-tête avec avatar et nom -->
+  <div class="flex items-center mb-4">
+    <div class="mr-4">
+      <p-avatar
+        [image]="'/img/avatars/user-default-avatar.png'"
+        size="large"
+        shape="circle"
+        styleClass="mr-3">
+      </p-avatar>
+    </div>
+    <div class="flex-1">
+      <!-- ✅ CORRECTION : Utiliser fullName au lieu de getFullName() -->
+      <h2 class="text-xl font-bold mb-1">{{ fullName }}</h2>
+      <div class="flex items-center">
+        <p-tag
+          severity="success"
+          [value]="'Membre depuis ' + membershipDuration"
+          styleClass="text-xs">
+        </p-tag>
       </div>
     </div>
-  </ng-template>
-
-  <div class="text-center mb-3">
-    <h2 class="text-xl font-bold mb-1">{{getFullName()}}</h2>
-    @if (owner) {
-      <p class="text-gray-600 text-sm">{{owner.email}}</p>
-      <p-tag
-        severity="info"
-        [value]="'Membre depuis ' + membershipDuration"
-        styleClass="mt-2"></p-tag>
-    }
   </div>
 
   <p-divider></p-divider>
 
-  <div class="flex justify-center items-center p-3 rounded-md my-3 surface-hover">
-    <div class="flex flex-col items-center">
-      <span class="text-2xl font-bold text-primary">{{userDogs.length}}</span>
-      <span class="text-gray-600 text-sm">Chien{{userDogs.length !== 1 ? 's' : ''}}</span>
+  <!-- Statistiques des chiens -->
+  <div class="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+    <div class="text-center">
+      <span class="text-2xl font-bold text-primary">{{ userDogs.length }}</span>
+      <p class="text-gray-600 text-sm">Chien{{ userDogs.length !== 1 ? 's' : '' }}</p>
+    </div>
+    <div class="text-center">
+      <span class="text-2xl font-bold text-primary">0</span>
+      <p class="text-gray-600 text-sm">Cours actifs</p>
+    </div>
+    <div class="text-center">
+      <span class="text-2xl font-bold text-primary">0</span>
+      <p class="text-gray-600 text-sm">Réservations</p>
     </div>
   </div>
 
+  <p-divider></p-divider>
+
+  <!-- Informations de contact -->
   @if (owner) {
-    <div class="mt-3">
-      <h3 class="text-base font-semibold mb-2">Informations personnelles</h3>
-      <div class="space-y-2">
-        <div class="flex items-center gap-2">
-          <i class="pi pi-envelope text-primary"></i>
-          <span class="font-medium text-sm">Email:</span>
-          <span class="text-sm">{{owner.email}}</span>
-        </div>
-
-        @if (owner.phone) {
-          <div class="flex items-center gap-2">
-            <i class="pi pi-phone text-primary"></i>
-            <span class="font-medium text-sm">Téléphone:</span>
-            <span class="text-sm">{{owner.phone}}</span>
-          </div>
-        }
-
-        <div class="flex items-center gap-2">
-          <i class="pi pi-calendar text-primary"></i>
-          <span class="font-medium text-sm">Inscrit le:</span>
-          <span class="text-sm">{{getFormattedDate(owner.registrationDate)}}</span>
-        </div>
+    <div class="space-y-3">
+      <div class="flex items-center">
+        <i class="pi pi-envelope text-gray-500 mr-3"></i>
+        <span class="text-sm">{{ owner.email }}</span>
       </div>
+
+      @if (owner.phone) {
+        <div class="flex items-center">
+          <i class="pi pi-phone text-gray-500 mr-3"></i>
+          <span class="text-sm">{{ owner.phone }}</span>
+        </div>
+      }
+
+      @if (owner.registrationDate) {
+        <div class="flex items-center">
+          <i class="pi pi-calendar text-gray-500 mr-3"></i>
+          <!-- ✅ CORRECTION : Utiliser getFormattedDate() -->
+          <span class="text-sm">{{ getFormattedDate(owner.registrationDate) }}</span>
+        </div>
+      }
+    </div>
+
+    <p-divider></p-divider>
+
+    <!-- Boutons d'action -->
+    <div class="flex gap-2 pt-2">
+      <p-button
+        label="Modifier profil"
+        icon="pi pi-user-edit"
+        severity="secondary"
+        [routerLink]="['/dashboard/settings']"
+        styleClass="flex-1">
+      </p-button>
     </div>
   }
-
-  <ng-template pTemplate="footer">
-    <div class="flex justify-center mt-3">
-      <p-button
-        icon="pi pi-pencil"
-        label="Modifier mon profil"
-        [routerLink]="['/dashboard/settings']"
-      severity="primary"></p-button>
-    </div>
-  </ng-template>
 </p-card>
-}

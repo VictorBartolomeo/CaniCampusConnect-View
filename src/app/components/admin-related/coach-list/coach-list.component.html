@@ -1,0 +1,73 @@
+<div class="coach-list-container">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-semibold">Liste des coachs</h2>
+    <app-add-coach-button
+      (addCoachRequest)="requestAddCoach()">
+    </app-add-coach-button>
+  </div>
+
+  <p-table
+    [value]="coaches"
+    [loading]="loading"
+    styleClass="p-datatable-sm"
+    [paginator]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} coachs"
+    [rowsPerPageOptions]="[5, 10, 25]"
+    selectionMode="single">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th style="width: 100px">Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-coach>
+      <tr (click)="viewCoachDetails(coach)" class="cursor-pointer hover:bg-gray-50">
+        <td>{{ coach.lastname }}</td>
+        <td>{{ coach.firstname }}</td>
+        <td>{{ coach.email }}</td>
+        <td>
+          <div class="flex gap-1">
+            <app-edit-coach-button
+              [coach]="coach"
+              [small]="true"
+              (editCoach)="$event.stopPropagation(); editCoach($event)">
+            </app-edit-coach-button>
+
+            <app-delete-coach-button
+              [coach]="coach"
+              [small]="true"
+              (deleteCoach)="$event.stopPropagation(); showDeleteDialog($event)">
+            </app-delete-coach-button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center p-4">
+          @if (loading) {
+            <div>Chargement des coachs...</div>
+          } @else {
+            <div>
+              Aucun coach trouvé.
+            </div>
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Delete confirmation dialog -->
+  <app-delete-coach-dialog
+    [coach]="coachToDelete"
+    [(visible)]="deleteDialogVisible"
+    (confirmDelete)="onConfirmDelete($event)">
+  </app-delete-coach-dialog>
+</div>

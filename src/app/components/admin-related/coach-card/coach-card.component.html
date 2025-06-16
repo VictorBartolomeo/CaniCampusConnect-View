@@ -1,0 +1,77 @@
+@if (coach) {
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
+    <ng-template pTemplate="header">
+      <div class="relative h-full w-full flex justify-end pr-10">
+        <img
+          src="/icons/token_valid.png"
+          alt="Coach"
+          class="w-50 h-50 object-contain flex"
+        />
+        <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-r from-primary/60 via-primary/0 w-full">
+          <h2 class="text-white text-2xl font-bold">{{ coach.firstname }} {{ coach.lastname }}</h2>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="p-3 text-lg space-y-4">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-envelope text-primary"></i>
+        <span class="font-semibold">Email:</span>
+        <span>{{ coach.email }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-id-card text-primary"></i>
+        <span class="font-semibold">Numéro ACACED:</span>
+        <span>{{ coach.acacedNumber }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-phone text-primary"></i>
+        <span class="font-semibold">Téléphone:</span>
+        <span>{{ coach.phone || 'Non renseigné' }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-calendar text-primary"></i>
+        <span class="font-semibold">Date d'inscription:</span>
+        <span>{{ coach.registrationDate | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      @if (coach.emailValidated !== undefined) {
+        <div class="flex items-center gap-2">
+          <i class="pi pi-envelope text-primary"></i>
+          <span class="font-semibold">Email validé:</span>
+          <p-badge [value]="coach.emailValidated ? 'Oui' : 'Non'"
+                  [severity]="coach.emailValidated ? 'success' : 'danger'"></p-badge>
+        </div>
+      }
+
+      @if (coach.isActive !== undefined) {
+        <div class="flex items-center gap-2">
+          <i class="pi pi-check-circle text-primary"></i>
+          <span class="font-semibold">Compte actif:</span>
+          <p-badge [value]="coach.isActive ? 'Oui' : 'Non'"
+                  [severity]="coach.isActive ? 'success' : 'danger'"></p-badge>
+        </div>
+      }
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end pt-4">
+        <app-edit-coach-button
+          [coach]="coach"
+          (editCoach)="onEditCoach()">
+        </app-edit-coach-button>
+      </div>
+    </ng-template>
+  </p-card>
+} @else {
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
+    <div class="text-center p-6">
+      <i class="pi pi-user text-5xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Aucun coach sélectionné</h3>
+      <p class="text-gray-600">Sélectionnez un coach dans la liste pour voir ses détails</p>
+    </div>
+  </p-card>
+}

@@ -1,0 +1,39 @@
+<div class="manage-coaches-container">
+  <h1>Gestion des Coachs</h1>
+
+  <div class="flex flex-row gap-4">
+    <!-- Table des coachs à gauche -->
+    <div class="w-2/3 bg-white p-4 rounded-lg shadow">
+      <!-- Coach list component -->
+      <app-coach-list
+        [coaches]="coaches"
+        [loading]="loading"
+        (coachSelected)="showCoachDetails($event)"
+        (coachEdit)="editCoach($event)"
+        (coachDelete)="deleteCoach($event)"
+        (addCoachRequest)="showAddCoachDialog()">
+      </app-coach-list>
+    </div>
+
+    <!-- Détails du coach sélectionné à droite -->
+    <div class="w-1/3">
+      <app-coach-card
+        [coach]="selectedCoach"
+        (editCoach)="editCoach($event)">
+      </app-coach-card>
+    </div>
+  </div>
+</div>
+
+<!-- Coach edit form component avec mode admin -->
+<app-coach-edit-form
+  [coach]="coachToEdit"
+  [adminMode]="true"
+  [(visible)]="editFormVisible"
+  (coachUpdated)="onCoachUpdated($event)">
+</app-coach-edit-form>
+
+<!-- Coach register form component -->
+<app-coach-register-form
+  (coachAdded)="onCoachAdded($event)">
+</app-coach-register-form>

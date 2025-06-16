@@ -30,7 +30,6 @@ import {PasswordValidator} from '../../../service/validators/password-validator'
   styleUrl: './login-form.component.scss'
 })
 export class LoginFormComponent implements OnInit {
-  // 🚀 Injection moderne avec inject()
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -92,7 +91,6 @@ export class LoginFormComponent implements OnInit {
             this.redirectToDashboard();
           }, 1500);
         } else {
-          // ✅ Gérer le cas où la réponse est null (erreur)
           this.error = "Email ou mot de passe incorrect";
           this.notificationService.showError(
             'Échec de connexion',
@@ -127,6 +125,7 @@ export class LoginFormComponent implements OnInit {
   }
 
   private redirectToDashboard(): void {
-    this.router.navigateByUrl('/dashboard');
+    this.authService.redirectToDashboard();
   }
+
 }

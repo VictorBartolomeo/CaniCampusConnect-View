@@ -1,103 +1,129 @@
-import { Component, OnInit } from '@angular/core';
+
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CardModule } from 'primeng/card';
+import { BadgeModule } from 'primeng/badge';
+import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { TagModule } from 'primeng/tag';
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { BadgeModule } from 'primeng/badge';
 import { DividerModule } from 'primeng/divider';
-import { RouterModule } from '@angular/router';
+import { UserService } from '../../../service/user.service';
 import { AuthService } from '../../../service/auth.service';
 import { DogService } from '../../../service/dog.service';
 import { Owner } from '../../../models/user';
-import { Dog } from '../../../models/dog';
-import { differenceInDays, differenceInMonths, differenceInYears, format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-owner-card',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,        // ✅ Pour routerLink
     CardModule,
-    AvatarModule,
-    TagModule,
-    ButtonModule,
-    TooltipModule,
     BadgeModule,
-    DividerModule,
-    RouterModule
+    ButtonModule,
+    AvatarModule,      // ✅ Pour p-avatar
+    TagModule,         // ✅ Pour p-tag
+    DividerModule      // ✅ Pour p-divider
   ],
   templateUrl: './owner-card.component.html',
   styleUrl: './owner-card.component.scss'
 })
 export class OwnerCardComponent implements OnInit {
-  owner: Owner | undefined;
-  userDogs: Dog[] = [];
-  membershipDuration: string = '';
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private dogService = inject(DogService);
 
-  constructor(
-    private authService: AuthService,
-    private dogService: DogService
-  ) {}
+  owner: Owner | null = null;
+  userDogs: any[] = [];
 
   ngOnInit() {
-    // Récupérer les informations du propriétaire
-    this.authService.getUserInfo().subscribe({
-      next: (ownerData) => {
+    // Récupérer les données du propriétaire
+    this.userService.owner$.subscribe({
+      next: (ownerData: Owner | null) => {
         this.owner = ownerData;
-        this.calculateMembershipDuration();
+        console.log('Owner data loaded in card:', this.owner);
       },
-      error: (err) => {
-        console.error('Erreur lors de la récupération des informations du propriétaire:', err);
+      error: (err: any) => {
+        console.error('Error loading owner data:', err);
       }
     });
 
-    // S'abonner aux chiens de l'utilisateur
-    this.dogService.userDogs$.subscribe(dogs => {
-      this.userDogs = dogs;
+    // ✅ Récupérer les chiens de l'utilisateur
+    this.dogService.userDogs$.subscribe({
+      next: (dogs: any[]) => {
+        this.userDogs = dogs;
+        console.log('User dogs loaded in card:', this.userDogs);
+      },
+      error: (err: any) => {
+        console.error('Error loading user dogs:', err);
+      }
     });
+  }
 
-    // Charger les chiens si ce n'est pas déjà fait
-    if (this.dogService.userDogsSubject.getValue().length === 0) {
-      this.dogService.loadUserDogs();
+  get fullName(): string {
+    return this.userService.getFullName(this.owner);
+  }
+
+  get initials(): string {
+    if (!this.owner) return '';
+
+    const firstInitial = this.owner.firstname?.charAt(0)?.toUpperCase() || '';
+    const lastInitial = this.owner.lastname?.charAt(0)?.toUpperCase() || '';
+
+    return `${firstInitial}${lastInitial}`;
+  }
+
+  get registrationDate(): string {
+    if (!this.owner?.registrationDate) return '';
+
+    try {
+      const date = new Date(this.owner.registrationDate);
+      return date.toLocaleDateString('fr-FR');
+    } catch (error) {
+      console.error('Error formatting registration date:', error);
+      return '';
     }
   }
 
-  private calculateMembershipDuration(): void {
-    if (!this.owner?.registrationDate) return;
+  get membershipDuration(): string {
+    if (!this.owner?.registrationDate) return '';
 
-    const registrationDate = new Date(this.owner.registrationDate);
-    const now = new Date();
+    try {
+      const registrationDate = new Date(this.owner.registrationDate);
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - registrationDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    const years = differenceInYears(now, registrationDate);
-    const months = differenceInMonths(now, registrationDate) % 12;
-    const days = differenceInDays(now, registrationDate) % 30;
-
-    if (years > 0) {
-      this.membershipDuration = `${years} an${years > 1 ? 's' : ''} et ${months} mois`;
-    } else if (months > 0) {
-      this.membershipDuration = `${months} mois et ${days} jour${days > 1 ? 's' : ''}`;
-    } else {
-      this.membershipDuration = `${days} jour${days > 1 ? 's' : ''}`;
+      if (diffDays < 30) {
+        return `${diffDays} jour${diffDays > 1 ? 's' : ''}`;
+      } else if (diffDays < 365) {
+        const months = Math.floor(diffDays / 30);
+        return `${months} mois`;
+      } else {
+        const years = Math.floor(diffDays / 365);
+        return `${years} an${years > 1 ? 's' : ''}`;
+      }
+    } catch (error) {
+      console.error('Error calculating membership duration:', error);
+      return '';
     }
   }
 
-  getFormattedDate(dateString: string | undefined): string {
-    if (!dateString) return 'Date inconnue';
+  // ✅ Méthode pour formater une date (utilisée dans le template)
+  getFormattedDate(dateString: string): string {
+    if (!dateString) return '';
 
     try {
       const date = new Date(dateString);
-      return format(date, 'dd MMMM yyyy', { locale: fr });
+      return date.toLocaleDateString('fr-FR');
     } catch (error) {
-      console.error('Erreur de formatage de date:', error);
-      return 'Date invalide';
+      console.error('Error formatting date:', error);
+      return '';
     }
   }
 
-  getFullName(): string {
-    if (!this.owner) return '';
-    return `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim();
+  isDarkMode(): boolean {
+    return this.authService.isDarkMode();
   }
 }

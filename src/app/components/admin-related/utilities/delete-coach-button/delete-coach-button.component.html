@@ -1,0 +1,16 @@
+@if (small) {
+  <p-button
+    icon="pi pi-trash"
+    severity="danger"
+    styleClass="p-button-sm p-button-text"
+    (onClick)="onDeleteCoach()"
+    pTooltip="Supprimer">
+  </p-button>
+} @else {
+  <p-button
+    icon="pi pi-trash"
+    label="Supprimer"
+    severity="danger"
+    (onClick)="onDeleteCoach()">
+  </p-button>
+}

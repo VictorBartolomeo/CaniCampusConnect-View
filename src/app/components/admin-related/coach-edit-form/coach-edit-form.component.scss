@@ -1,0 +1,19 @@
+:host ::ng-deep {
+  .p-dialog-content {
+    padding: 1.5rem;
+  }
+
+  .p-message {
+    margin-bottom: 1rem;
+  }
+
+  .p-button.p-button-success {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+
+    &:hover {
+      background-color: var(--primary-color-darker);
+      border-color: var(--primary-color-darker);
+    }
+  }
+}

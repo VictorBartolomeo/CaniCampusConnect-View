@@ -1,26 +1,22 @@
-import { catchError, map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {inject, Injectable, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { AuthStateService } from './auth-state.service';
-import { UserService } from './user.service';
-import {DogService} from './dog.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit{
-  router = inject(Router);
+export class AuthService {
+  private router = inject(Router);
+  private http = inject(HttpClient);
+  private authStateService = inject(AuthStateService);
+
   private apiUrl = 'http://localhost:8080';
   private darkMode: boolean = false;
-  http = inject(HttpClient);
-  authStateService = inject(AuthStateService);
-  userService = inject(UserService);
-  dogService = inject(DogService);
 
   constructor() {
-    // Initialiser l'état d'authentification au démarrage
     this.initializeAuthState();
   }
 
@@ -30,18 +26,9 @@ export class AuthService implements OnInit{
       this.decodeJwt(jwt);
     }
     this.loadThemePreference();
-  }
 
-
-  ngOnInit(
-  ) {
-    const jwt = this.getToken();
-    if (jwt != null) {
-      this.decodeJwt(jwt);
-    }
-
-    this.loadThemePreference();
-    this.dogService.loadUserDogs();
+    // ✅ CORRECTION : Ne plus injecter directement UserService et DogService
+    // Ces services s'initialiseront automatiquement via leurs observables
   }
 
   // Méthode pour charger la préférence de thème
@@ -105,9 +92,28 @@ export class AuthService implements OnInit{
     );
   }
 
-// Décodage du JWT
-  decodeJwt(jwt: string) {
+  redirectToDashboard(): void {
+    const userRole = this.authStateService.getRole();
 
+    switch (userRole) {
+      case 'ROLE_OWNER':
+        this.router.navigateByUrl('/dashboard');
+        break;
+      case 'ROLE_COACH':
+        this.router.navigateByUrl('/coach/dashboard');
+        break;
+      case 'ROLE_CLUB_OWNER':
+        this.router.navigateByUrl('/admin/dashboard');
+        break;
+      default:
+        console.warn('Rôle non reconnu:', userRole);
+        this.router.navigateByUrl('/login');
+        break;
+    }
+  }
+
+  // Décodage du JWT
+  decodeJwt(jwt: string) {
     try {
       const jsonBody = atob(jwt.split('.')[1]);
       const body = JSON.parse(jsonBody);
@@ -123,17 +129,17 @@ export class AuthService implements OnInit{
     }
   }
 
-
   // Déconnexion
   disconnection() {
     localStorage.removeItem('jwt');
     sessionStorage.removeItem('jwt');
     sessionStorage.clear();
-    this.userService.clearUserData();
+
+    // ✅ CORRECTION : Clear via AuthStateService qui notifiera les autres services
     this.authStateService.clearState();
+
     this.router.navigateByUrl('/login');
   }
-
 
   getToken(): string | null {
     // Vérifier d'abord sessionStorage puis localStorage
@@ -150,34 +156,20 @@ export class AuthService implements OnInit{
     return this.authStateService.getUserId();
   }
 
-  getUserInfo(): Observable<any> {
-    return this.userService.getCurrentUser();
-  }
-
-  refreshUserInfo(): void {
-    const userId = this.authStateService.getUserId();
-    if (userId) {
-      this.userService.loadOwnerInfo(userId).subscribe();
-    }
-  }
-
   setToken(token: string, rememberMe: boolean = false): void {
     if (rememberMe) {
-      // Si "Se souvenir de moi" est coché, stocker dans localStorage (persistant)
       localStorage.setItem('jwt', token);
       localStorage.setItem('rememberMe', 'true');
     } else {
       sessionStorage.setItem('jwt', token);
       localStorage.removeItem('rememberMe');
-      localStorage.removeItem('jwt'); // Nettoyer l'ancien token persistant
+      localStorage.removeItem('jwt');
     }
   }
 
-
-
-    // Vérifier l'état du JWT
+  // Vérifier l'état du JWT
   checkJwtStatus(): boolean {
-    const jwt = this.getToken(); // ← Utiliser getToken() au lieu de localStorage direct
+    const jwt = this.getToken();
 
     if (jwt) {
       try {

@@ -273,7 +273,8 @@ ICI C'EST LES COMPOSANTS
         light: {
           background: "{alias.secondary_20}",
           color: "{primary.500}",
-          shadow: '1px 1px 3px 0 {primary.500}, 0 1px 2px 0 rgba(255,0,0,0.06)',
+          shadow: '{primary.100} 0px 8px 24px, 0 1px 2px 0 rgba(255,0,0,0.06)',
+
         },
         dark: {
           background: "{alias.black}",
