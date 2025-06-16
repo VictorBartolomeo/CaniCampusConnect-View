@@ -1,3 +1,4 @@
+
 import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
@@ -8,10 +9,12 @@ import {Toast} from 'primeng/toast';
 import {ConfirmPopupModule} from 'primeng/confirmpopup';
 import {Dialog} from 'primeng/dialog';
 import {faEye, faPaw} from '@fortawesome/free-solid-svg-icons';
-import {differenceInMonths, isAfter, startOfDay} from 'date-fns'; // ✅ Ajouter isAfter et startOfDay
+import {differenceInMonths, isAfter, startOfDay} from 'date-fns';
 import {AgeRangeCategory, getAgeRangeCategory} from '../../../models/age-range-category.enum';
 
 import {DogService} from '../../../service/dog.service';
+import {RegistrationService} from '../../../service/registration.service';
+import {CourseService} from '../../../service/course.service';
 import {Dog} from '../../../models/dog';
 import {Course} from '../../../models/course';
 import {RegistrationStatus} from '../../../models/registrationstatus.enum';
@@ -38,8 +41,9 @@ import {Card} from 'primeng/card';
   providers: [ConfirmationService, MessageService, FilterService],
 })
 export class RegisterCourseComponent implements OnInit {
-  http = inject(HttpClient);
   dogService = inject(DogService);
+  registrationService = inject(RegistrationService);
+  courseService = inject(CourseService);
   confirmationService = inject(ConfirmationService);
   messageService = inject(MessageService);
   filterService = inject(FilterService);
@@ -49,7 +53,6 @@ export class RegisterCourseComponent implements OnInit {
   selectedCourseForDialog: Course | null = null;
   selectedDog: Dog | null = null;
   filteredCourses: Course[] = [];
-  apiUrl = 'http://localhost:8080';
 
   // Les icônes pour les boutons
   protected readonly faEye = faEye;
@@ -71,16 +74,13 @@ export class RegisterCourseComponent implements OnInit {
   loadAvailableCourses() {
     if (!this.selectedDog) return;
 
-    // Utiliser la nouvelle route pour récupérer les cours avec leurs inscriptions
-    this.http.get<Course[]>(`${this.apiUrl}/courses/owner`).subscribe({
-      next: (courses) => {
+    this.courseService.getCoursesForOwner().subscribe({
+      next: (courses: Course[]) => {
         console.log('Cours chargés avec inscriptions:', courses);
         this.courses = courses;
-
-        // Filtrer les cours disponibles pour ce chien
         this.filterCoursesForDog();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erreur lors du chargement des cours:', error);
         this.messageService.add({
           severity: 'error',
@@ -98,36 +98,30 @@ export class RegisterCourseComponent implements OnInit {
       return;
     }
 
-    // ✅ Date d'aujourd'hui (début de journée) pour comparaison
     const today = startOfDay(new Date());
 
-    // Filtrer les cours pour le chien actif
     this.filteredCourses = this.courses.filter(course => {
-      // ✅ 1. Vérifier que le cours est à venir (pas dans le passé)
       const courseDate = new Date(course.startDatetime);
       const isFutureCourse = isAfter(courseDate, today) ||
-        courseDate.getTime() === today.getTime(); // Inclure les cours d'aujourd'hui
+        courseDate.getTime() === today.getTime();
 
       if (!isFutureCourse) {
         console.log(`Cours "${course.title}": dans le passé (${courseDate.toLocaleDateString()})`);
         return false;
       }
 
-      // ✅ 2. Vérifier si le chien est déjà inscrit à ce cours
       const isAlreadyRegistered = this.isDogRegisteredForCourse(course);
       if (isAlreadyRegistered) {
         console.log(`Cours "${course.title}": chien déjà inscrit`);
         return false;
       }
 
-      // ✅ 3. Vérifier si le chien est éligible par âge
       const isEligibleByAge = this.isDogEligibleForCourse(this.selectedDog!, course);
       if (!isEligibleByAge) {
         console.log(`Cours "${course.title}": chien non éligible par âge`);
         return false;
       }
 
-      // ✅ 4. Vérifier si le cours est complet
       const activeRegistrations = course.registrations ?
         course.registrations.filter(r =>
           r.status === RegistrationStatus.PENDING ||
@@ -144,7 +138,6 @@ export class RegisterCourseComponent implements OnInit {
       return true;
     });
 
-    // ✅ Trier les cours par date (du plus proche au plus lointain)
     this.filteredCourses.sort((a, b) => {
       const dateA = new Date(a.startDatetime).getTime();
       const dateB = new Date(b.startDatetime).getTime();
@@ -154,14 +147,6 @@ export class RegisterCourseComponent implements OnInit {
     console.log(`📅 ${this.filteredCourses.length} cours à venir disponibles pour ${this.selectedDog?.name}`);
   }
 
-  // ✅ Méthode utilitaire pour vérifier si un cours est à venir
-  private isFutureCourse(course: Course): boolean {
-    const today = startOfDay(new Date());
-    const courseDate = new Date(course.startDatetime);
-    return isAfter(courseDate, today) || courseDate.getTime() === today.getTime();
-  }
-
-  // Vérifier si le chien est déjà inscrit à un cours
   isDogRegisteredForCourse(course: Course): boolean {
     if (!course.registrations || !this.selectedDog) return false;
 
@@ -173,7 +158,6 @@ export class RegisterCourseComponent implements OnInit {
     );
   }
 
-  // Obtenir la catégorie d'âge du chien (pour l'affichage)
   getDogAgeCategory(dog: Dog): string {
     const dogBirthDate = new Date(dog.birthDate);
     const ageInMonths = differenceInMonths(new Date(), dogBirthDate);
@@ -191,7 +175,6 @@ export class RegisterCourseComponent implements OnInit {
     }
   }
 
-  // Obtenir la catégorie d'âge pour un cours (basé sur l'âge requis)
   getCourseAgeRangeCategory(course: Course): string {
     if (!course || !course.courseType || !course.courseType.ageRange) {
       return "Toutes catégories";
@@ -204,16 +187,13 @@ export class RegisterCourseComponent implements OnInit {
   }
 
   isDogEligibleForCourse(dog: Dog, course: Course): boolean {
-    // Calculer l'âge du chien À LA DATE DU COURS
     const courseDate = new Date(course.startDatetime);
     const dogBirthDate = new Date(dog.birthDate);
     const ageInMonths = differenceInMonths(courseDate, dogBirthDate);
 
-    // Obtenir les limites d'âge du cours
     const minAge = course.courseType.ageRange.minAge || 0;
-    const maxAge = course.courseType.ageRange.maxAge || 240; // 20 ans par défaut
+    const maxAge = course.courseType.ageRange.maxAge || 240;
 
-    // Vérifier si l'âge est dans la plage
     const isEligible = ageInMonths >= minAge && ageInMonths <= maxAge;
 
     console.log(`Chien ${dog.name} (${ageInMonths} mois à la date du cours) est ${isEligible ? 'éligible' : 'non éligible'} pour le cours "${course.title}" (âge requis: ${minAge}-${maxAge} mois)`);
@@ -275,14 +255,7 @@ export class RegisterCourseComponent implements OnInit {
       return;
     }
 
-    // Créer un objet pour la requête d'inscription
-    const registrationData = {
-      dog: { id: dog.id },
-      course: { id: course.id }
-    };
-
-    // Envoyer la demande d'inscription
-    this.http.post(`${this.apiUrl}/registration`, registrationData).subscribe({
+    this.registrationService.createRegistration(dog.id, course.id).subscribe({
       next: (response) => {
         console.log('Inscription réussie:', response);
 
@@ -293,10 +266,9 @@ export class RegisterCourseComponent implements OnInit {
           life: 3000,
         });
 
-        // Mettre à jour la liste des cours disponibles
         this.loadAvailableCourses();
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erreur lors de l\'inscription:', error);
 
         const errorMessage = error.error?.message || 'Une erreur est survenue lors de l\'inscription';
