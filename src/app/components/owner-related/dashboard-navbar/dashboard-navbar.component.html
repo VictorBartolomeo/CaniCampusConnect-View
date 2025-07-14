@@ -2,7 +2,6 @@
 <p-megaMenu [model]="items" [style]="{ display: 'flex' }"
               styleClass="p-4 bg-surface-0 dark:bg-surface-900">
 
-    {{(dogService.userDogsSubject | async)?.length}}
     <ng-template pTemplate="start">
       <p-select
         [options]="(dogService.userDogsSubject | async) || []"
@@ -12,16 +11,18 @@
         [filter]="true"
         filterBy="name"
         placeholder="Choisir un chien"
-        class="w-full md:w-56"
+        class="w-full md:w-56 lg:w-64"
         styleClass="font-semibold"
         emptyMessage="Aucun chien lié"
-        (onChange)="onDogChange($event.value)">
+        (onChange)="onDogChange($event.value)"
+        aria-label="Sélectionner un chien">
 
         <ng-template pTemplate="selectedItem" let-selectedOption>
           <div class="flex items-center gap-2">
             <img [src]="activeDog ? dogService.getDogAvatarUrl(activeDog) : '/icons/placeholder_no_breed.jpg'"
                  [alt]="activeDog?.name || 'Avatar du chien'"
-                 style="width: 32px"/>
+                 class="w-8 h-8"
+                 aria-hidden="false"/>
             <div>{{ selectedOption.name }}</div>
           </div>
         </ng-template>
@@ -30,7 +31,8 @@
           <div class="flex items-center gap-2">
             <img [src]="dogService.getDogAvatarUrl(dog)"
                  [alt]="dog?.name || 'Avatar du chien'"
-                 style="width: 32px"/>
+                 class="w-8 h-8"
+                 aria-hidden="false"/>
             <div>{{ dog.name }}</div>
           </div>
         </ng-template>
@@ -39,17 +41,18 @@
 
     <ng-template pTemplate="item" let-item>
       <a pRipple [routerLink]="item.route"
-         class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase">
-        <i [ngClass]="item.icon"></i>
+         class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase"
+         role="menuitem">
+        <i [ngClass]="item.icon" aria-hidden="true"></i>
         <span class="ml-2">{{ item.label }}</span>
       </a>
     </ng-template>
 
     <ng-template pTemplate="end">
-      <p-menu #menu [model]="avatar"  [popup]="true"></p-menu>
-      <p-button rounded="false" size="small" (click)="menu.toggle($event)" class="rounded-full avatar-button">
+      <p-menu #menu [model]="avatar" [popup]="true"></p-menu>
+      <p-button rounded="false" size="small" (click)="menu.toggle($event)" class="rounded-full avatar-button" aria-label="Menu utilisateur">
         <p-avatar image="/img/avatars/user-default-avatar.png" class="" size="large"
-                  shape="circle"></p-avatar>
+                  shape="circle" aria-label="Avatar utilisateur"></p-avatar>
       </p-button>
     </ng-template>
   </p-megaMenu>

@@ -1,13 +1,13 @@
-  <h1 class="text-2xl font-bold text-primary mb-10 p-6 text-center mx-auto">CONSULTER LES COURS DISPONIBLES</h1>
+  <h1 class="text-xl sm:text-2xl font-bold text-primary mb-6 sm:mb-10 p-4 sm:p-6 text-center mx-auto">CONSULTER LES COURS DISPONIBLES</h1>
 
   @if (!selectedDog) {
     <!-- Affichage quand aucun chien n'est sélectionné -->
-    <p-card styleClass="p-6 shadow-lg rounded-xl mb-4 w-[50%] mx-auto">
+    <p-card styleClass="p-4 sm:p-6 shadow-lg rounded-xl mb-4 w-full sm:w-4/5 md:w-3/4 lg:w-1/2 mx-auto">
       <div class="flex flex-col items-center text-center">
-        <i class="pi pi-exclamation-circle text-5xl text-yellow-500 mb-4"></i>
-        <h2 class="text-2xl font-bold mb-2">Aucun chien sélectionné</h2>
+        <i class="pi pi-exclamation-circle text-4xl sm:text-5xl text-yellow-500 mb-4" aria-hidden="true"></i>
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">Aucun chien sélectionné</h2>
         <p class="text-gray-600 mb-6">Veuillez sélectionner un chien dans le menu pour voir les cours disponibles.</p>
-        <button pButton type="button" label="Gérer mes chiens" icon="pi pi-dog" routerLink="/dashboard/manage-dog" class="p-button-primary"></button>
+        <button pButton type="button" label="Gérer mes chiens" icon="pi pi-dog" routerLink="/dashboard/manage-dog" class="p-button-primary" aria-label="Aller à la page de gestion des chiens"></button>
       </div>
     </p-card>
   } @else if (filteredCourses.length === 0) {
@@ -16,20 +16,20 @@
       <p class="mb-2 text-primary font-medium">
         Affichage des cours disponibles pour <strong class="font-bold">{{selectedDog.name | uppercase}}</strong>
         <span class="ml-2">
-          <span class="bg-primary text-white py-1 rounded-full text-xs font-semibold">
+          <span class="bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold">
             {{getDogAgeCategory(selectedDog)}}
           </span>
         </span>
       </p>
     </div>
 
-    <p-card styleClass="p-6 shadow-lg rounded-xl mb-4">
+    <p-card styleClass="p-4 sm:p-6 shadow-lg rounded-xl mb-4 w-full sm:w-4/5 md:w-3/4 lg:w-2/3 mx-auto">
       <div class="flex flex-col items-center text-center">
-        <i class="pi pi-calendar-times text-5xl text-blue-500 mb-4"></i>
-        <h2 class="text-2xl font-bold mb-2">Aucun cours disponible</h2>
+        <i class="pi pi-calendar-times text-4xl sm:text-5xl text-blue-500 mb-4" aria-hidden="true"></i>
+        <h2 class="text-xl sm:text-2xl font-bold mb-2">Aucun cours disponible</h2>
         <p class="text-gray-600 mb-2">Aucun cours n'est actuellement disponible pour {{selectedDog.name}}.</p>
         <p class="text-sm text-gray-500 mb-6">Soit tous les cours sont complets, soit votre chien est déjà inscrit à tous les cours pour lesquels il est éligible.</p>
-        <button pButton type="button" label="Rafraîchir" icon="pi pi-refresh" (click)="loadAvailableCourses()" class="p-button-outlined"></button>
+        <button pButton type="button" label="Rafraîchir" icon="pi pi-refresh" (click)="loadAvailableCourses()" class="p-button-outlined" aria-label="Rafraîchir la liste des cours"></button>
       </div>
     </p-card>
   } @else {
@@ -45,7 +45,7 @@
       </p>
     </div>
 
-    <div class="max-w-6xl mx-auto">
+    <div class="w-full max-w-6xl mx-auto overflow-x-auto">
       <p-table
         [value]="filteredCourses"
         [paginator]="true"
@@ -54,14 +54,16 @@
         rowHover="true"
         stripedRows="true"
         styleClass="mt-4 shadow-sm rounded-lg overflow-hidden"
+        [responsive]="true"
+        aria-label="Liste des cours disponibles"
       >
         <ng-template pTemplate="header">
           <tr>
-            <th>Cours</th>
-            <th>Coach</th>
-            <th>Date</th>
-            <th>Jauge</th>
-            <th>Actions</th>
+            <th scope="col">Cours</th>
+            <th scope="col">Coach</th>
+            <th scope="col">Date</th>
+            <th scope="col">Jauge</th>
+            <th scope="col">Actions</th>
           </tr>
         </ng-template>
 
@@ -71,13 +73,13 @@
             <td>{{ course.coach.firstname }} {{ course.coach.lastname }}</td>
             <td>{{ course.startDatetime | date : "dd MMMM yyyy à HH:mm" }}</td>
             <td>{{ course.registrations | activeRegistrations }} / {{ course.maxCapacity }}</td>
-            <td class="flex gap-3 items-center">
+            <td class="flex flex-col sm:flex-row gap-2 sm:gap-3 items-center">
               <div>
                 <p-toast position="bottom-center"/>
                 <p-confirmpopup>
                   <ng-template #content let-message>
                     <div class="flex flex-col items-center w-full gap-4 border-b border-surface-200 dark:border-surface-700 p-4 mb-4 pb-0">
-                      <i [class]="message.icon" class="!text-6xl text-primary-500"></i>
+                      <i [class]="message.icon" class="!text-6xl text-primary-500" aria-hidden="true"></i>
                       <p>{{ message.message }}</p>
                     </div>
                   </ng-template>
@@ -88,7 +90,8 @@
                   icon="pi pi-check-circle"
                   label="S'inscrire"
                   class="p-button-sm p-button-success"
-                  (click)="confirm(course, $event)">
+                  (click)="confirm(course, $event)"
+                  aria-label="S'inscrire au cours">
                 </button>
               </div>
               <div>
@@ -97,7 +100,8 @@
                   type="button"
                   icon="pi pi-info-circle"
                   class="p-button-sm p-button-info p-button-outlined"
-                  (click)="showCourseDialog(course)">
+                  (click)="showCourseDialog(course)"
+                  aria-label="Voir les détails du cours">
                 </button>
 
                 <p-dialog
@@ -105,23 +109,26 @@
                   [modal]="true"
                   [(visible)]="dialogVisible"
                   [style]="{ width: '40rem' }"
-                  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+                  [breakpoints]="{ '1199px': '75vw', '767px': '85vw', '575px': '90vw' }"
                   styleClass="course-details-dialog"
-                  [maximizable]="true">
+                  [maximizable]="true"
+                  [closeOnEscape]="true"
+                  aria-labelledby="course-dialog-title"
+                  role="dialog">
                   @if (selectedCourseForDialog) {
-                    <div class="flex flex-col gap-5 p-4">
-                      <div class="bg-gray-50 p-4 rounded-lg">
-                        <h3 class="text-lg font-bold text-primary mb-3">Informations du cours</h3>
+                    <div class="flex flex-col gap-4 sm:gap-5 p-3 sm:p-4">
+                      <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                        <h3 id="course-dialog-title" class="text-lg font-bold text-primary mb-3">Informations du cours</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <p class="mb-2"><i class="pi pi-calendar mr-2 text-primary"></i><span class="font-semibold">Date:</span> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}</p>
-                            <p class="mb-2"><i class="pi pi-clock mr-2 text-primary"></i><span class="font-semibold">Horaires:</span> {{ selectedCourseForDialog.startDatetime | date : "HH:mm" }} - {{ selectedCourseForDialog.endDatetime | date: "HH:mm" }}</p>
-                            <p class="mb-2"><i class="pi pi-users mr-2 text-primary"></i><span class="font-semibold">Jauge:</span> {{ selectedCourseForDialog.registrations | activeRegistrations }} / {{ selectedCourseForDialog.maxCapacity }}</p>
+                            <p class="mb-2"><i class="pi pi-calendar mr-2 text-primary" aria-hidden="true"></i><span class="font-semibold">Date:</span> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}</p>
+                            <p class="mb-2"><i class="pi pi-clock mr-2 text-primary" aria-hidden="true"></i><span class="font-semibold">Horaires:</span> {{ selectedCourseForDialog.startDatetime | date : "HH:mm" }} - {{ selectedCourseForDialog.endDatetime | date: "HH:mm" }}</p>
+                            <p class="mb-2"><i class="pi pi-users mr-2 text-primary" aria-hidden="true"></i><span class="font-semibold">Jauge:</span> {{ selectedCourseForDialog.registrations | activeRegistrations }} / {{ selectedCourseForDialog.maxCapacity }}</p>
                           </div>
                           <div>
-                            <p class="mb-2"><i class="pi pi-tag mr-2 text-primary"></i><span class="font-semibold">Type:</span> {{ selectedCourseForDialog.courseType.name }}</p>
+                            <p class="mb-2"><i class="pi pi-tag mr-2 text-primary" aria-hidden="true"></i><span class="font-semibold">Type:</span> {{ selectedCourseForDialog.courseType.name }}</p>
                             <p class="mb-2">
-                              <i class="pi pi-chart-bar mr-2 text-primary"></i>
+                              <i class="pi pi-chart-bar mr-2 text-primary" aria-hidden="true"></i>
                               <span class="font-semibold">Âge requis:</span>
                               <span class="bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold ml-1">
                                 {{ getCourseAgeRangeCategory(selectedCourseForDialog) }}
@@ -134,7 +141,7 @@
 
                       <div>
                         <h3 class="text-lg font-bold text-primary mb-2">Coach</h3>
-                        <p class="flex items-center"><i class="pi pi-user mr-2 text-primary"></i>{{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}</p>
+                        <p class="flex items-center"><i class="pi pi-user mr-2 text-primary" aria-hidden="true"></i>{{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}</p>
                       </div>
 
                       <div>
@@ -144,9 +151,9 @@
                     </div>
                   }
                   <ng-template pTemplate="footer">
-                    <div class="flex justify-between">
-                      <button pButton type="button" label="Fermer" icon="pi pi-times" (click)="dialogVisible = false" class="p-button-outlined"></button>
-                      <button pButton type="button" label="S'inscrire" icon="pi pi-check-circle" (click)="confirm(selectedCourseForDialog!, $event); dialogVisible = false" class="p-button-success"></button>
+                    <div class="flex flex-col sm:flex-row justify-between gap-2">
+                      <button pButton type="button" label="Fermer" icon="pi pi-times" (click)="dialogVisible = false" class="p-button-outlined" aria-label="Fermer la fenêtre de détails"></button>
+                      <button pButton type="button" label="S'inscrire" icon="pi pi-check-circle" (click)="confirm(selectedCourseForDialog!, $event); dialogVisible = false" class="p-button-success" aria-label="S'inscrire au cours"></button>
                     </div>
                   </ng-template>
                 </p-dialog>

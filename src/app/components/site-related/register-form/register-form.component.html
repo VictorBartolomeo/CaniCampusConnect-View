@@ -28,7 +28,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="field">
               <label for="firstname" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-                <i class="pi pi-user mr-2" style="color: #1B2140;"></i>PRÉNOM
+                <i class="pi pi-user mr-2" style="color: #1B2140;"></i>PRÉNOM *
               </label>
               <!-- ✅ Syntaxe correcte pour Angular 19 -->
               <input
@@ -55,7 +55,7 @@
 
             <div class="field">
               <label for="lastname" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-                <i class="pi pi-user mr-2" style="color: #1B2140;"></i>NOM
+                <i class="pi pi-user mr-2" style="color: #1B2140;"></i>NOM *
               </label>
               <input
                 pInputText
@@ -83,7 +83,7 @@
           <!-- Email -->
           <div class="field">
             <label for="email" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-              <i class="pi pi-envelope mr-2" style="color: #1B2140;"></i>EMAIL
+              <i class="pi pi-envelope mr-2" style="color: #1B2140;"></i>EMAIL *
             </label>
             <input
               pInputText
@@ -144,7 +144,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="field">
               <label for="password" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE
+                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE *
               </label>
               <p-password
                 id="password"
@@ -185,7 +185,7 @@
 
             <div class="field">
               <label for="confirmPassword" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>CONFIRMER
+                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>CONFIRMER *
               </label>
               <p-password
                 id="confirmPassword"
@@ -229,7 +229,7 @@
                    onmouseout="this.style.color='#93C01F'">
                   conditions générales d'utilisation
                 </a>
-                et je confirme être propriétaire d'un chien.
+                et je confirme être propriétaire d'un chien. *
               </label>
             </div>
             @if (submitted && f['acceptTerms'].errors?.['required']) {
@@ -278,4 +278,3 @@
     </p-card>
   </div>
 </div>
-

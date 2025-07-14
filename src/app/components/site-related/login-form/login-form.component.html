@@ -23,7 +23,7 @@
         <form [formGroup]="loginForm" (ngSubmit)="onConnection()" class="space-y-6">
           <div class="field">
             <label for="email" class="block text-sm font-medium mb-2" style="color: #1B2140;">
-              <i class="pi pi-envelope mr-2" style="color: #1B2140;"></i>EMAIL
+              <i class="pi pi-envelope mr-2" style="color: #1B2140;"></i>EMAIL *
             </label>
             <input
               pInputText
@@ -49,7 +49,7 @@
           <div class="field">
             <div class="flex justify-between items-center mb-2">
               <label for="password" class="text-sm font-medium" style="color: #1B2140;">
-                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE
+                <i class="pi pi-lock mr-2" style="color: #1B2140;"></i>MOT DE PASSE *
               </label>
 
               <a
@@ -132,4 +132,3 @@
     </p-card>
   </div>
 </div>
-

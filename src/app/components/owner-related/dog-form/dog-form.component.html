@@ -15,10 +15,10 @@
           Modifier le profil {{ updatedDog?.gender === 'FEMALE' || updatedDog?.gender === 'STERILIZED_FEMALE' ? 'de la chienne' : 'du chien' }} {{ updatedDog?.name | uppercase }}
         </h1>
 
-        <label for="name" class="text-primary font-bold">Nom du chien</label>
+        <label for="name" class="text-primary font-bold">Nom du chien *</label>
         <input class="w-full text-primary" type="text" pInputText formControlName="name"/>
 
-        <label class="block font-bold text-primary" for="gender">Genre</label>
+        <label class="block font-bold text-primary" for="gender">Genre *</label>
         <p-select [options]="genderOptions"
                   formControlName="gender"
                   optionLabel="label"
@@ -29,7 +29,7 @@
                   styleClass="w-full text-primary">
         </p-select>
 
-        <label class="block font-bold text-primary" for="breed">Races</label>
+        <label class="block font-bold text-primary" for="breed">Races *</label>
         <p-multiselect [options]="availableBreeds"
                        formControlName="breed"
                        optionLabel="name"
@@ -41,7 +41,7 @@
         <label class="font-bold text-primary" for="chipNumber">Numéro de puce</label>
         <input type="text" class="w-full text-primary" pInputText formControlName="chipNumber"/>
 
-        <label class="font-bold text-primary" for="birthDate">Date de naissance</label>
+        <label class="font-bold text-primary" for="birthDate">Date de naissance *</label>
         <p-datepicker
           formControlName="birthDate"
           inputId="birthDate"
