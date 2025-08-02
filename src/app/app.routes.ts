@@ -31,6 +31,9 @@ import {ManageCoachesComponent} from './pages/admin-related/manage-coaches/manag
 import {EmailValidationComponent} from './pages/site-related/email-validation/email-validation.component';
 import {BusinessIntelligenceComponent} from './pages/admin-related/business-intelligence/business-intelligence.component';
 import {ManageUsersComponent} from './pages/admin-related/manage-users/manage-users.component';
+import {
+  ManageCoursesComponent
+} from './pages/admin-related/manage-courses-component/manage-courses-component.component';
 
 export const routes: Routes = [
 
@@ -111,20 +114,10 @@ export const routes: Routes = [
           },
         ]
       },
-      {
-        path: "manage-coaches", component: ManageCoachesComponent
-      },
-      {
-        path: "manage-users", component: ManageUsersComponent
-      },
-      {
-        path: "manage-courses", component: AdminDashboardComponent,
-        children: []
-      },
-      {
-        path: "settings", component: AdminDashboardComponent,
-        children: []
-      },
+      {path: "manage-coaches", component: ManageCoachesComponent},
+      {path: "manage-users", component: ManageUsersComponent},
+      {path: "manage-courses", component: ManageCoursesComponent},
+      {path: "settings", component: SettingsComponent},
       {
         path: "profile", component: AdminDashboardComponent,
         children: []
