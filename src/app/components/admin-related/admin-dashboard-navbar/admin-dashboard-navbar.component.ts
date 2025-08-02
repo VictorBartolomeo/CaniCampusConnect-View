@@ -78,6 +78,11 @@ export class AdminDashboardNavbarComponent implements OnInit, OnDestroy {
         route: '/admin/dashboard/manage-coaches'
       },
       {
+        label: 'Gérer les utilisateurs',
+        root: true,
+        route: '/admin/dashboard/manage-users'
+      },
+      {
         label: 'Gérer les cours',
         root: true,
         route: '/admin/dashboard/manage-courses'
