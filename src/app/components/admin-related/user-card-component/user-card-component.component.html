@@ -1,0 +1,116 @@
+@if (user) {
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
+    <ng-template pTemplate="header">
+      <div class="relative h-full w-full flex justify-end pr-10">
+        <img
+          [src]="getUserAvatarUrl()"
+          (error)="onImageError($event)"
+          class="w-50 h-50 object-contain flex"
+          [alt]="user.firstname + ' ' + user.lastname">
+        <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-r from-primary/60 via-primary/0 w-full">
+          <h2 class="text-white text-2xl font-bold flex items-center gap-2">
+            {{ user.firstname }} {{ user.lastname }}
+          </h2>
+          <div class="flex gap-2 items-center text-white text-sm">
+            <span>{{ user.email }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="p-3 text-lg space-y-4">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-envelope text-primary"></i>
+        <span class="font-semibold">Email:</span>
+        <span>{{ user.email }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-phone text-primary"></i>
+        <span class="font-semibold">Téléphone:</span>
+        <span>{{ user.phone || 'Non renseigné' }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-calendar text-primary"></i>
+        <span class="font-semibold">Date d'inscription:</span>
+        <span>{{ user.registrationDate | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <i class="pi pi-shield text-primary"></i>
+        <span class="font-semibold">Rôle:</span>
+        <p-badge
+          [value]="getRoleLabel(user.role)"
+          [severity]="getRoleSeverity(user.role)">
+        </p-badge>
+      </div>
+
+      @if (user.validated !== undefined) {
+        <div class="flex items-center gap-2">
+          <i class="pi pi-check-circle text-primary"></i>
+          <span class="font-semibold">Email validé:</span>
+          <p-badge
+            [value]="user.validated ? 'Oui' : 'Non'"
+            [severity]="user.validated ? 'success' : 'danger'">
+          </p-badge>
+        </div>
+      }
+
+      @if (user.role === 'ROLE_COACH' && user.acacedNumber) {
+        <div class="flex items-center gap-2">
+          <i class="pi pi-id-card text-primary"></i>
+          <span class="font-semibold">Numéro ACACED:</span>
+          <span>{{ user.acacedNumber }}</span>
+        </div>
+      }
+
+      @if (user.role === 'ROLE_OWNER' && user.dogsCount !== undefined) {
+        <div class="flex items-center gap-2">
+          <i class="pi pi-heart text-primary"></i>
+          <span class="font-semibold">Nombre de chiens:</span>
+          <p-badge
+            [value]="user.dogsCount.toString()"
+            severity="info">
+          </p-badge>
+        </div>
+      }
+
+      @if (user.lastLogin) {
+        <div class="flex items-center gap-2">
+          <i class="pi pi-clock text-primary"></i>
+          <span class="font-semibold">Dernière connexion:</span>
+          <span>{{ user.lastLogin | date:'dd/MM/yyyy à HH:mm' }}</span>
+        </div>
+      }
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end gap-2 pt-4">
+        <button
+          pButton
+          icon="pi pi-pencil"
+          label="Modifier"
+          severity="contrast"
+          class="p-button-sm"
+          (click)="onEditUser()">
+        </button>
+        <button
+          pButton
+          icon="pi pi-eye"
+          label="Voir profil"
+          class="p-button-sm"
+          (click)="onViewProfile()">
+        </button>
+      </div>
+    </ng-template>
+  </p-card>
+} @else {
+  <p-card styleClass="shadow-lg rounded-xl overflow-hidden">
+    <div class="text-center p-6">
+      <i class="pi pi-user text-5xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Aucun utilisateur sélectionné</h3>
+      <p class="text-gray-600">Sélectionnez un utilisateur dans la liste pour voir ses détails</p>
+    </div>
+  </p-card>
+}
