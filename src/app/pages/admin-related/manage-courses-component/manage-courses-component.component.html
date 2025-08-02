@@ -1,0 +1,191 @@
+
+<div class="manage-courses-container p-6">
+  <!-- En-tête -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Gestion des Cours</h1>
+      <p class="text-gray-600">Gérez tous les cours du club, créez de nouveaux cours et consultez les inscriptions</p>
+    </div>
+    <button
+      pButton
+      label="Nouveau cours"
+      icon="pi pi-plus"
+      class="p-button-primary"
+      (click)="openCreateDialog()"
+      pTooltip="Créer un nouveau cours">
+    </button>
+  </div>
+
+  <!-- Filtres -->
+  <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div class="flex items-center gap-4">
+      <label class="text-sm font-medium text-gray-700">Filtrer par statut :</label>
+      <p-dropdown
+        [options]="filterOptions"
+        [(ngModel)]="filterType"
+        optionLabel="label"
+        optionValue="value"
+        class="w-48">
+      </p-dropdown>
+      <div class="ml-auto text-sm text-gray-500">
+        {{ getFilterSummary() }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau des cours -->
+  <div class="bg-white rounded-lg shadow-sm">
+    <p-table
+      [value]="filteredCourses"
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} cours"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Titre</th>
+          <th>Coach</th>
+          <th>Type</th>
+          <th>Date/Heure</th>
+          <th>Capacité</th>
+          <th>Statut</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-course>
+        <tr>
+          <!-- Titre et description -->
+          <td>
+            <div class="flex flex-col">
+              <span class="font-semibold text-gray-900">{{ course.title }}</span>
+              <span class="text-sm text-gray-500 line-clamp-2">{{ course.description }}</span>
+            </div>
+          </td>
+
+          <!-- Coach -->
+          <td>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-gray-400"></i>
+              <span>{{ course.coach?.firstname }} {{ course.coach?.lastname }}</span>
+            </div>
+          </td>
+
+          <!-- Type de cours -->
+          <td>
+            <p-chip
+              [label]="course.courseType?.name || 'Non défini'"
+              styleClass="p-chip-sm">
+            </p-chip>
+          </td>
+
+          <!-- Date et heure -->
+          <td>
+            <div class="flex flex-col text-sm">
+              <span class="font-medium">{{ formatDate(course.startDatetime) }}</span>
+              <span class="text-gray-500">{{ formatTime(course.endDatetime) }}</span>
+            </div>
+          </td>
+
+          <!-- Capacité -->
+          <td>
+            <div class="flex items-center gap-2">
+              <p-chip
+                [label]="getCapacityLabel(course)"
+                [style]="getCapacityChipStyle(course)"
+                styleClass="p-chip-sm">
+              </p-chip>
+              @if (course.registrationCount > 0) {
+                <button
+                  pButton
+                  icon="pi pi-users"
+                  class="p-button-text p-button-sm"
+                  (click)="openRegistrationsDialog(course)"
+                  pTooltip="Voir les inscriptions">
+                </button>
+              }
+            </div>
+          </td>
+
+          <!-- Statut -->
+          <td>
+            <p-tag
+              [value]="getCourseStatusLabel(course)"
+              [severity]="getCourseStatusSeverity(course)">
+            </p-tag>
+          </td>
+
+          <!-- Actions -->
+          <td class="text-center">
+            <div class="flex justify-center gap-2">
+              <button
+                pButton
+                icon="pi pi-eye"
+                class="p-button-text p-button-sm"
+                (click)="openRegistrationsDialog(course)"
+                pTooltip="Voir les détails et inscriptions">
+              </button>
+              <button
+                pButton
+                icon="pi pi-pencil"
+                class="p-button-text p-button-sm"
+                (click)="openEditDialog(course)"
+                pTooltip="Modifier le cours">
+              </button>
+              <button
+                pButton
+                icon="pi pi-trash"
+                class="p-button-text p-button-sm p-button-danger"
+                (click)="openDeleteDialog(course)"
+                pTooltip="Supprimer le cours">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center py-8">
+            <div class="flex flex-col items-center gap-3">
+              <i class="pi pi-calendar text-4xl text-gray-300"></i>
+              <span class="text-gray-500">Aucun cours trouvé</span>
+              @if (filterType !== 'all') {
+                <button
+                  pButton
+                  label="Voir tous les cours"
+                  class="p-button-text"
+                  (click)="resetFilter()">
+                </button>
+              }
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Composants de dialogue -->
+  <app-course-register-form
+    #courseRegisterForm
+    (courseAdded)="onCourseAdded($event)">
+  </app-course-register-form>
+
+  <app-course-edit-form
+    #courseEditForm
+    (courseUpdated)="onCourseUpdated($event)">
+  </app-course-edit-form>
+
+  <app-course-registrations-dialog
+    #registrationsDialog>
+  </app-course-registrations-dialog>
+
+  <app-delete-course-dialog
+    #deleteCourseDialog
+    (courseDeleted)="onCourseDeleted($event)">
+  </app-delete-course-dialog>
+</div>
