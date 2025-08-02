@@ -1,0 +1,39 @@
+<div class="manage-users-container px-4 py-6">
+  <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Gestion des Utilisateurs</h1>
+
+  <div class="flex flex-col lg:flex-row gap-4 lg:gap-6">
+    <!-- Table des utilisateurs à gauche -->
+    <div class="w-full lg:w-2/3 bg-white p-4 md:p-6 rounded-lg shadow-lg">
+      <!-- User list component -->
+      <app-user-list
+        [users]="users"
+        [loading]="loading"
+        (userSelected)="showUserDetails($event)"
+        (userEdit)="editUser($event)"
+        (userDelete)="deleteUser($event)"
+        (addUserRequest)="showAddUserDialog()">
+      </app-user-list>
+    </div>
+
+    <!-- Détails de l'utilisateur sélectionné à droite -->
+    <div class="w-full lg:w-1/3">
+      <app-user-card
+        [user]="selectedUser"
+        (editUser)="editUser($event)">
+      </app-user-card>
+    </div>
+  </div>
+</div>
+
+<!-- User edit form component avec mode admin -->
+<app-user-edit-form
+  [user]="userToEdit"
+  [adminMode]="true"
+  [(visible)]="editFormVisible"
+  (userUpdated)="onUserUpdated($event)">
+</app-user-edit-form>
+
+<!-- User register form component -->
+<app-user-register-form
+  (userAdded)="onUserAdded($event)">
+</app-user-register-form>
