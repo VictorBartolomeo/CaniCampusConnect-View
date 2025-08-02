@@ -172,8 +172,6 @@ export class UserService {
     if (!userId || !role) {
       return of(null as unknown as T);
     }
-
-    // ✅ CORRECTION : Gérer les rôles avec préfixe ROLE_
     let endpoint = '';
     switch (role) {
       case 'ROLE_OWNER':
