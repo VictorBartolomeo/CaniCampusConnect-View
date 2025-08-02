@@ -1,0 +1,127 @@
+<p-dialog
+  header="Confirmer la suppression"
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-md"
+  (onHide)="closeDialog()">
+
+  @if (currentCourse) {
+    <div class="space-y-6">
+
+      <!-- Icône d'avertissement -->
+      <div class="flex justify-center">
+        <div class="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full">
+          <i class="pi pi-exclamation-triangle text-red-600 text-2xl"></i>
+        </div>
+      </div>
+
+      <!-- Message principal -->
+      <div class="text-center">
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+          Supprimer ce cours ?
+        </h3>
+        <p class="text-gray-600">
+          Cette action est irréversible et supprimera définitivement le cours ainsi que toutes les inscriptions associées.
+        </p>
+      </div>
+
+      <!-- Détails du cours -->
+      <div class="bg-gray-50 rounded-lg p-4">
+        <h4 class="font-medium text-gray-900 mb-3">Détails du cours à supprimer :</h4>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Titre :</span>
+            <span class="font-medium">{{ currentCourse.title }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-gray-600">Coach :</span>
+            <span>{{ currentCourse.coach?.firstname }} {{ currentCourse.coach?.lastname }}</span>
+          </div>
+
+          <div class="flex justify-between">
+            <span class="text-gray-600">Date :</span>
+            <span>{{ formatDate(currentCourse.startDatetime) }}</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">Statut :</span>
+            <p-tag
+              [value]="courseStatusLabel"
+              [severity]="courseStatusSeverity"
+              styleClass="p-tag-sm">
+            </p-tag>
+          </div>
+
+          @if (hasRegistrations) {
+            <p-divider></p-divider>
+            <div class="flex justify-between items-center">
+              <span class="text-red-600 font-medium">Inscriptions :</span>
+              <p-chip
+                [label]="registrationCount + ' participant' + (registrationCount > 1 ? 's' : '')"
+                severity="danger"
+                styleClass="p-chip-sm">
+              </p-chip>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Avertissement spécial si inscriptions -->
+      @if (hasRegistrations) {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+          <div class="flex items-start gap-2">
+            <i class="pi pi-exclamation-triangle text-red-500 mt-0.5"></i>
+            <div class="text-sm">
+              <p class="font-medium text-red-800 mb-1">Attention !</p>
+              <p class="text-red-700">
+                Ce cours a {{ registrationCount }} inscription{{ registrationCount > 1 ? 's' : '' }}.
+                La suppression annulera automatiquement {{ registrationCount > 1 ? 'ces inscriptions' : 'cette inscription' }}.
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Avertissement général -->
+      @if (isUpcomingCourse && !hasRegistrations) {
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+          <div class="flex items-start gap-2">
+            <i class="pi pi-info-circle text-yellow-500 mt-0.5"></i>
+            <div class="text-sm text-yellow-800">
+              Ce cours est planifié pour le futur. Êtes-vous sûr de vouloir le supprimer ?
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
+      <button
+        pButton
+        label="Annuler"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        (click)="closeDialog()"
+        [disabled]="loading">
+      </button>
+      <button
+        pButton
+        label="Supprimer définitivement"
+        icon="pi pi-trash"
+        class="p-button-danger"
+        (click)="confirmDelete()"
+        [disabled]="loading"
+        [loading]="loading">
+      </button>
+    </div>
+  </ng-template>
+
+</p-dialog>
