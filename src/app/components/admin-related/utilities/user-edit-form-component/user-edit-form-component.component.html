@@ -1,0 +1,164 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-2xl mx-4"
+  header="Modifier l'utilisateur">
+
+  @if (user) {
+    <form [formGroup]="userEditForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+      <!-- Informations personnelles -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Prénom -->
+        <div class="flex flex-col gap-2">
+          <label for="firstname" class="text-sm font-medium text-gray-700">
+            Prénom <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="firstname"
+            pInputText
+            formControlName="firstname"
+            [class.ng-invalid]="f['firstname'].invalid && (f['firstname'].dirty || submitted)"
+            class="w-full"
+            placeholder="Entrez le prénom">
+          @if (f['firstname'].invalid && (f['firstname'].dirty || submitted)) {
+            <small class="text-red-600">
+              @if (f['firstname'].errors?.['required']) {
+                Le prénom est requis.
+              }
+              @if (f['firstname'].errors?.['minlength']) {
+                Le prénom doit contenir au moins 1 caractère.
+              }
+              @if (f['firstname'].errors?.['maxlength']) {
+                Le prénom ne doit pas dépasser 100 caractères.
+              }
+              @if (f['firstname'].errors?.['invalidName']) {
+                Le prénom ne doit contenir que des lettres, espaces et tirets.
+              }
+            </small>
+          }
+        </div>
+
+        <!-- Nom -->
+        <div class="flex flex-col gap-2">
+          <label for="lastname" class="text-sm font-medium text-gray-700">
+            Nom <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="lastname"
+            pInputText
+            formControlName="lastname"
+            [class.ng-invalid]="f['lastname'].invalid && (f['lastname'].dirty || submitted)"
+            class="w-full"
+            placeholder="Entrez le nom">
+          @if (f['lastname'].invalid && (f['lastname'].dirty || submitted)) {
+            <small class="text-red-600">
+              @if (f['lastname'].errors?.['required']) {
+                Le nom est requis.
+              }
+              @if (f['lastname'].errors?.['minlength']) {
+                Le nom doit contenir au moins 1 caractère.
+              }
+              @if (f['lastname'].errors?.['maxlength']) {
+                Le nom ne doit pas dépasser 100 caractères.
+              }
+              @if (f['lastname'].errors?.['invalidName']) {
+                Le nom ne doit contenir que des lettres, espaces et tirets.
+              }
+            </small>
+          }
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col gap-2">
+        <label for="email" class="text-sm font-medium text-gray-700">
+          Email <span class="text-red-500">*</span>
+        </label>
+        <input
+          type="email"
+          id="email"
+          pInputText
+          formControlName="email"
+          [class.ng-invalid]="f['email'].invalid && (f['email'].dirty || submitted)"
+          class="w-full"
+          placeholder="Entrez l'adresse email">
+        @if (f['email'].invalid && (f['email'].dirty || submitted)) {
+          <small class="text-red-600">
+            @if (f['email'].errors?.['required']) {
+              L'email est requis.
+            }
+            @if (f['email'].errors?.['invalidEmail']) {
+              L'adresse email n'est pas valide.
+            }
+            @if (f['email'].errors?.['maxlength']) {
+              L'email ne doit pas dépasser 150 caractères.
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Téléphone -->
+      <div class="flex flex-col gap-2">
+        <label for="phone" class="text-sm font-medium text-gray-700">
+          Téléphone
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          pInputText
+          formControlName="phone"
+          [class.ng-invalid]="f['phone'].invalid && (f['phone'].dirty || submitted)"
+          class="w-full"
+          placeholder="Entrez le numéro de téléphone">
+        @if (f['phone'].invalid && (f['phone'].dirty || submitted)) {
+          <small class="text-red-600">
+            @if (f['phone'].errors?.['invalidPhone']) {
+              Le numéro de téléphone n'est pas valide.
+            }
+            @if (f['phone'].errors?.['maxlength']) {
+              Le téléphone ne doit pas dépasser 50 caractères.
+            }
+          </small>
+        }
+      </div>
+
+      <!-- Message d'erreur général -->
+      @if (error) {
+        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div class="flex items-center">
+            <i class="pi pi-exclamation-triangle text-red-600 mr-2"></i>
+            <span class="text-red-800 text-sm">{{ error }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- ✅ CORRIGÉ : Boutons dans le formulaire pour accéder aux propriétés -->
+      <div class="flex justify-end gap-3 pt-4 border-t">
+        <button
+          type="button"
+          pButton
+          label="Annuler"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="closeDialog()"
+          [disabled]="loading">
+        </button>
+        <button
+          type="submit"
+          pButton
+          label="Enregistrer"
+          icon="pi pi-check"
+          class="p-button-primary"
+          [loading]="loading"
+          [disabled]="userEditForm.invalid || loading">
+        </button>
+      </div>
+    </form>
+  }
+</p-dialog>
