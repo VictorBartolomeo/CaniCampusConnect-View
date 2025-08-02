@@ -29,6 +29,8 @@ import {
 import {AdminDashboardComponent} from './pages/admin-related/admin-dashboard/admin-dashboard.component';
 import {ManageCoachesComponent} from './pages/admin-related/manage-coaches/manage-coaches.component';
 import {EmailValidationComponent} from './pages/site-related/email-validation/email-validation.component';
+import {BusinessIntelligenceComponent} from './pages/admin-related/business-intelligence/business-intelligence.component';
+import {ManageUsersComponent} from './pages/admin-related/manage-users/manage-users.component';
 
 export const routes: Routes = [
 
@@ -103,10 +105,17 @@ export const routes: Routes = [
     children: [
       {
         path: "general", component: AdminDashboardComponent,
-        children: []
+        children: [
+          {
+            path: "business-intelligence", component: BusinessIntelligenceComponent
+          },
+        ]
       },
       {
         path: "manage-coaches", component: ManageCoachesComponent
+      },
+      {
+        path: "manage-users", component: ManageUsersComponent
       },
       {
         path: "manage-courses", component: AdminDashboardComponent,
