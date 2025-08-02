@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {
   CoachRegisterFormComponent
 } from '../../../components/admin-related/coach-register-form/coach-register-form.component';
-import {CoachResponse} from '../../../service/coach.service';
 import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
@@ -24,9 +23,6 @@ import {AdminService} from '../../../service/admin.service';
     CoachListComponent,
     CoachEditFormComponent,
     CoachCardComponent,
-    // ✅ SUPPRESSION des composants non utilisés
-    // AddCoachButtonComponent,
-    // EditCoachButtonComponent,
     TableModule,
     ButtonModule,
     DialogModule,
