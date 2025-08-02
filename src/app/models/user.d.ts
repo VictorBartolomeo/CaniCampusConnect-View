@@ -7,7 +7,12 @@ export interface User {
   firstname: string;
   lastname: string;
   phone?: string;
+  role?: string; // ✅ AJOUTÉ : Le rôle de l'utilisateur
+  validated?: boolean; // ✅ AJOUTÉ : Statut de validation
+  registrationDate?: string; // ✅ AJOUTÉ : Date d'inscription
+  anonymized?: boolean; // ✅ AJOUTÉ : Statut d'anonymisation
 }
+
 
 export interface Owner extends User {
   registrationDate?: string;
@@ -25,3 +30,13 @@ export interface Coach extends User {
 export interface ClubOwner extends User {
   club?: Club;
 }
+
+export interface UserStatsDto {
+  totalUsers: number;
+  totalCoaches: number;
+  totalOwners: number;
+  validatedUsers: number;
+  unvalidatedUsers: number;
+  anonymizedUsers: number;
+}
+
