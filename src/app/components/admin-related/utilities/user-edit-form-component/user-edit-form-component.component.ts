@@ -178,8 +178,6 @@ export class UserEditFormComponent implements OnInit, OnChanges {
     };
 
     console.log('📤 user-edit-form - Envoi des données:', updateData);
-
-    // ✅ UTILISE AdminService.updateUser()
     this.adminService.updateUser(updateData).subscribe({
       next: (updatedUser) => {
         this.loading = false;
