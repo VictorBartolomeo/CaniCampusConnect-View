@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable, throwError} from 'rxjs';
+import {catchError, map, tap} from 'rxjs/operators';
 
 export interface CoachResponse {
   data?: any[];
@@ -20,10 +21,31 @@ export class CoachService {
    * Get all coaches
    * @returns Observable with the list of coaches or a response containing coaches
    */
-  getAllCoaches(): Observable<any[] | CoachResponse> {
-    console.log('Calling API:', `${this.apiUrl}/coachs`);
-    return this.http.get<any[] | CoachResponse>(`${this.apiUrl}/coachs`);
+  getAllCoaches(): Observable<any[]> {
+    console.log('🔄 CoachService.getAllCoaches()');
+    return this.http.get<any>(`${this.apiUrl}/coaches`).pipe(
+      map((response: any) => {
+        // Si la réponse est un objet avec une propriété data/coaches, l'extraire
+        if (response && Array.isArray(response)) {
+          return response;
+        } else if (response && response.data && Array.isArray(response.data)) {
+          return response.data;
+        } else if (response && response.coaches && Array.isArray(response.coaches)) {
+          return response.coaches;
+        }
+        // Sinon, retourner un tableau vide
+        return [];
+      }),
+      tap(coaches => {
+        console.log('✅ CoachService.getAllCoaches() - Coaches loaded:', coaches);
+      }),
+      catchError(error => {
+        console.error('❌ CoachService.getAllCoaches() - Error:', error);
+        return throwError(() => error);
+      })
+    );
   }
+
 
   /**
    * Get coach details by ID
