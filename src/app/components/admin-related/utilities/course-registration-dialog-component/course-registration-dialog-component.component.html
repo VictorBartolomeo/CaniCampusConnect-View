@@ -1,0 +1,176 @@
+<p-dialog
+  [header]="'Inscriptions - ' + (currentCourse?.title || '')"
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-4xl"
+  (onHide)="closeDialog()">
+
+  <!-- En-tête avec infos du cours -->
+  @if (currentCourse) {
+    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Informations générales -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Détails du cours</h3>
+          <div class="space-y-1 text-sm">
+            <div><span class="text-gray-600">Coach:</span> {{ currentCourse.coach?.firstname }} {{ currentCourse.coach?.lastname }}</div>
+            <div><span class="text-gray-600">Type:</span> {{ currentCourse.courseType?.name }}</div>
+            <div><span class="text-gray-600">Date:</span> {{ formatDate(currentCourse.startDatetime) }}</div>
+          </div>
+        </div>
+
+        <!-- Capacité -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Capacité</h3>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-sm">
+              <span>{{ registrations.length }} / {{ currentCourse.maxCapacity }} inscrits</span>
+              <span class="font-medium">{{ fillPercentage }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div
+                [class]="progressBarClass"
+                class="h-2 rounded-full transition-all duration-300"
+                [style.width.%]="fillPercentage">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statut -->
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Statut</h3>
+          <div class="space-y-2">
+            @if (registrations.length === 0) {
+              <p-chip label="Aucune inscription" severity="secondary" styleClass="p-chip-sm"></p-chip>
+            } @else if (registrations.length >= currentCourse.maxCapacity) {
+              <p-chip label="Complet" severity="danger" styleClass="p-chip-sm"></p-chip>
+            } @else {
+              <p-chip label="Places disponibles" severity="success" styleClass="p-chip-sm"></p-chip>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Liste des inscriptions -->
+  @if (loading) {
+    <div class="flex justify-center items-center py-8">
+      <p-progressSpinner styleClass="w-8 h-8"></p-progressSpinner>
+      <span class="ml-3 text-gray-600">Chargement des inscriptions...</span>
+    </div>
+  } @else if (registrations.length === 0) {
+    <div class="text-center py-8">
+      <i class="pi pi-users text-4xl text-gray-300 mb-3"></i>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune inscription</h3>
+      <p class="text-gray-600">Ce cours n'a pas encore d'inscriptions.</p>
+    </div>
+  } @else {
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900">
+        Liste des participants ({{ registrations.length }})
+      </h3>
+
+      <p-table
+        [value]="registrations"
+        styleClass="p-datatable-sm"
+        [paginator]="registrations.length > 10"
+        [rows]="10">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Chien</th>
+            <th>Propriétaire</th>
+            <th>Race</th>
+            <th>Âge</th>
+            <th>Date d'inscription</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-registration>
+          <tr>
+            <!-- Chien -->
+            <td>
+              <div class="flex items-center gap-3">
+                <p-avatar
+                  [label]="getDogInitial(registration.dog?.name)"
+                  shape="circle"
+                  size="large"
+                  [style]="{ 'background-color': getDogAvatarColor(registration.dog?.breed?.name), 'color': 'white' }">
+                </p-avatar>
+                <div>
+                  <div class="font-semibold text-gray-900">{{ registration.dog?.name }}</div>
+                  <div class="text-sm text-gray-500">{{ registration.dog?.gender === 'MALE' ? 'Mâle' : 'Femelle' }}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Propriétaire -->
+            <td>
+              <div class="flex flex-col">
+                <span class="font-medium">{{ registration.ownerFullName }}</span>
+                <span class="text-sm text-gray-500">{{ registration.dog?.owner?.email }}</span>
+              </div>
+            </td>
+
+            <!-- Race -->
+            <td>
+              <p-chip
+                [label]="registration.dog?.breed?.name || 'Non spécifiée'"
+                styleClass="p-chip-sm">
+              </p-chip>
+            </td>
+
+            <!-- Âge -->
+            <td>
+              <span class="text-sm font-medium">{{ registration.dogAge }}</span>
+            </td>
+
+            <!-- Date d'inscription -->
+            <td>
+              <span class="text-sm">{{ formatDate(registration.registrationDate) }}</span>
+            </td>
+
+            <!-- Actions -->
+            <td class="text-center">
+              <button
+                pButton
+                icon="pi pi-times"
+                class="p-button-text p-button-sm p-button-danger"
+                (click)="cancelRegistration(registration)"
+                pTooltip="Annuler l'inscription"
+                tooltipPosition="top">
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-between items-center">
+      <div class="text-sm text-gray-600">
+        @if (registrations.length > 0) {
+          {{ registrations.length }} participant{{ registrations.length > 1 ? 's' : '' }} inscrit{{ registrations.length > 1 ? 's' : '' }}
+        }
+      </div>
+      <button
+        pButton
+        label="Fermer"
+        icon="pi pi-times"
+        class="p-button-secondary"
+        (click)="closeDialog()">
+      </button>
+    </div>
+  </ng-template>
+
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
