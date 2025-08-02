@@ -74,7 +74,7 @@ export class RegisterCourseComponent implements OnInit {
   loadAvailableCourses() {
     if (!this.selectedDog) return;
 
-    this.courseService.getCoursesForOwner().subscribe({
+    this.courseService.getAllCourses().subscribe({
       next: (courses: Course[]) => {
         console.log('Cours chargés avec inscriptions:', courses);
         this.courses = courses;
