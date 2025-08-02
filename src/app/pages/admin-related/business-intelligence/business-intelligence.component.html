@@ -1,0 +1,95 @@
+<div class="business-intelligence-container">
+  <h1>Business Intelligence</h1>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total Users Card -->
+    <p-card styleClass="h-full">
+      <div class="flex flex-column align-items-center">
+        <span class="text-xl font-semibold mb-2">Utilisateurs</span>
+        <span class="text-3xl font-bold text-primary">{{ totalUsers }}</span>
+        <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+      </div>
+    </p-card>
+
+    <!-- Total Courses Card -->
+    <p-card styleClass="h-full">
+      <div class="flex flex-column align-items-center">
+        <span class="text-xl font-semibold mb-2">Cours</span>
+        <span class="text-3xl font-bold text-primary">{{ totalCourses }}</span>
+        <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+      </div>
+    </p-card>
+
+    <!-- Total Registrations Card -->
+    <p-card styleClass="h-full">
+      <div class="flex flex-column align-items-center">
+        <span class="text-xl font-semibold mb-2">Inscriptions</span>
+        <span class="text-3xl font-bold text-primary">{{ totalRegistrations }}</span>
+        <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+      </div>
+    </p-card>
+
+    <!-- Total Revenue Card -->
+    <p-card styleClass="h-full">
+      <div class="flex flex-column align-items-center">
+        <span class="text-xl font-semibold mb-2">Revenus</span>
+        <span class="text-3xl font-bold text-primary">{{ formatCurrency(totalRevenue) }}</span>
+        <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- User Growth Chart -->
+    <p-card header="Évolution des utilisateurs" styleClass="h-full">
+      <p-chart type="line" [data]="userGrowthData" [options]="chartOptions" height="300px"
+               [responsive]="true" aria-label="Graphique d'évolution des utilisateurs"></p-chart>
+    </p-card>
+
+    <!-- Course Popularity Chart -->
+    <p-card header="Popularité des cours" styleClass="h-full">
+      <p-chart type="bar" [data]="coursePopularityData" [options]="chartOptions" height="300px"
+               [responsive]="true" aria-label="Graphique de popularité des cours"></p-chart>
+    </p-card>
+
+    <!-- Revenue Analytics Chart -->
+    <p-card header="Analyse des revenus" styleClass="h-full">
+      <p-chart type="line" [data]="revenueData" [options]="chartOptions" height="300px"
+               [responsive]="true" aria-label="Graphique d'analyse des revenus"></p-chart>
+    </p-card>
+
+    <!-- Registration Trends Chart -->
+    <p-card header="Répartition des inscriptions" styleClass="h-full">
+      <p-chart type="pie" [data]="registrationTrendsData" [options]="chartOptions" height="300px"
+               [responsive]="true" aria-label="Graphique de répartition des inscriptions"></p-chart>
+    </p-card>
+  </div>
+
+  <!-- Additional Statistics Section -->
+  <div class="mt-6">
+    <p-card header="Statistiques détaillées">
+      <p-table [value]="[
+        {category: 'Taux de conversion', value: '12.5%'},
+        {category: 'Taux de rétention', value: '85.2%'},
+        {category: 'Satisfaction client', value: '4.8/5'},
+        {category: 'Cours par utilisateur', value: '1.5'},
+        {category: 'Durée moyenne de session', value: '45 minutes'}
+      ]" [responsive]="true" styleClass="p-datatable-sm" [loading]="loading">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Catégorie</th>
+            <th>Valeur</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-stat>
+          <tr>
+            <td>{{ stat.category }}</td>
+            <td>{{ stat.value }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>
