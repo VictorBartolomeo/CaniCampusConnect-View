@@ -1,0 +1,251 @@
+
+<div class="card">
+  <!-- En-tête avec filtres -->
+  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+    <div class="flex flex-col sm:flex-row gap-3 flex-1">
+      <!-- Recherche avec icône intégrée -->
+      <div class="flex-1 relative">
+        <span class="p-input-icon-left w-full">
+          <input
+            type="text"
+            pInputText
+            placeholder="Rechercher un utilisateur..."
+            [(ngModel)]="searchQuery"
+            (input)="filterUsers()"
+            class="w-full pl-10">
+        </span>
+      </div>
+
+      <!-- Filtre par rôle -->
+      <div class="min-w-[200px]">
+        <p-dropdown
+          [options]="userRoles"
+          [(ngModel)]="selectedRole"
+          (onChange)="filterUsers()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Filtrer par rôle"
+          [showClear]="true"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <!-- Bouton reset filtres - ajusté pour être plus petit -->
+      <button
+        pButton
+        type="button"
+        icon="pi pi-filter-slash"
+        class="p-button-outlined p-button-secondary p-button-sm"
+        (click)="resetFilters()"
+        pTooltip="Réinitialiser les filtres">
+      </button>
+    </div>
+
+    <!-- Bouton ajouter -->
+    <button
+      pButton
+      type="button"
+      icon="pi pi-plus"
+      label="Ajouter un utilisateur"
+      class="p-button-primary"
+      (click)="onAddUser()">
+    </button>
+  </div>
+
+  <!-- Vue Desktop/Tablette : Tableau -->
+  <div class="hidden md:block">
+    <p-table
+      [value]="filteredUsers"
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[5, 10, 20, 50]"
+      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} utilisateurs"
+      [globalFilterFields]="['firstname','lastname','email','phone']"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="firstname" style="min-width: 150px">
+            Prénom <p-sortIcon field="firstname"></p-sortIcon>
+          </th>
+          <th pSortableColumn="lastname" style="min-width: 150px">
+            Nom <p-sortIcon field="lastname"></p-sortIcon>
+          </th>
+          <th pSortableColumn="email" style="min-width: 200px">
+            Email <p-sortIcon field="email"></p-sortIcon>
+          </th>
+          <th pSortableColumn="phone" style="min-width: 150px">
+            Téléphone <p-sortIcon field="phone"></p-sortIcon>
+          </th>
+          <th pSortableColumn="role" style="min-width: 130px">
+            Rôle <p-sortIcon field="role"></p-sortIcon>
+          </th>
+          <th pSortableColumn="registrationDate" style="min-width: 130px">
+            Inscription <p-sortIcon field="registrationDate"></p-sortIcon>
+          </th>
+          <th style="min-width: 150px">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-user>
+        <tr class="cursor-pointer hover:bg-gray-50" (click)="onUserSelect(user)">
+          <td>
+            <span class="font-medium">{{ user.firstname }}</span>
+          </td>
+          <td>
+            <span class="font-medium">{{ user.lastname }}</span>
+          </td>
+          <td>
+            <span class="text-blue-600">{{ user.email }}</span>
+          </td>
+          <td>
+            <span>{{ user.phone || 'Non renseigné' }}</span>
+          </td>
+          <td>
+            <p-badge
+              [value]="getRoleLabel(user.role)"
+              [severity]="getRoleSeverity(user.role)">
+            </p-badge>
+          </td>
+          <td>
+            <span>{{ user.registrationDate | date:'dd/MM/yyyy' }}</span>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text p-button-sm"
+                (click)="onUserEdit(user); $event.stopPropagation()"
+                pTooltip="Modifier">
+              </button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-sm p-button-danger"
+                (click)="onUserDelete(user); $event.stopPropagation()"
+                pTooltip="Supprimer">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center py-8">
+            <div class="flex flex-col items-center gap-3">
+              <i class="pi pi-users text-4xl text-gray-400"></i>
+              <p class="text-gray-500">Aucun utilisateur trouvé</p>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-plus"
+                label="Ajouter le premier utilisateur"
+                class="p-button-primary"
+                (click)="onAddUser()">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Vue Mobile : Cards compactes -->
+  <div class="block md:hidden">
+    <div class="space-y-4">
+      @for (user of filteredUsers; track user.id) {
+        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+          <div class="flex justify-between items-start mb-3">
+            <div>
+              <h3 class="font-semibold text-lg text-gray-900">
+                {{ user.firstname }} {{ user.lastname }}
+              </h3>
+              <p class="text-sm text-gray-600">{{ user.email }}</p>
+            </div>
+            <p-badge
+              [value]="getRoleLabel(user.role)"
+              [severity]="getRoleSeverity(user.role)"
+              class="text-xs">
+            </p-badge>
+          </div>
+
+          <div class="space-y-2 text-sm text-gray-600 mb-4">
+            <div class="flex items-center gap-2" *ngIf="user.phone">
+              <i class="pi pi-phone text-primary"></i>
+              <span>{{ user.phone }}</span>
+            </div>
+            <div class="flex items-center gap-2" *ngIf="user.registrationDate">
+              <i class="pi pi-calendar text-primary"></i>
+              <span>Inscrit le {{ user.registrationDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-2">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-eye"
+              class="p-button-sm p-button-outlined"
+              (click)="onUserSelect(user)"
+              pTooltip="Voir détails">
+            </button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-pencil"
+              class="p-button-sm p-button-outlined"
+              (click)="onUserEdit(user)"
+              pTooltip="Modifier">
+            </button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-sm p-button-outlined p-button-danger"
+              (click)="onUserDelete(user)"
+              pTooltip="Supprimer">
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (filteredUsers.length === 0) {
+        <div class="text-center py-8">
+          <i class="pi pi-users text-4xl text-gray-400 mb-4"></i>
+          <p class="text-gray-500 mb-4">Aucun utilisateur trouvé</p>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-plus"
+            label="Ajouter le premier utilisateur"
+            class="p-button-primary"
+            (click)="onAddUser()">
+          </button>
+        </div>
+      }
+
+      <!-- Pagination pour mobile -->
+      @if (filteredUsers.length > 10) {
+        <div class="flex justify-center pt-4">
+          <p-paginator
+            [rows]="10"
+            [totalRecords]="filteredUsers.length"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Page {currentPage} sur {totalPages}">
+          </p-paginator>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Dialogs -->
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
