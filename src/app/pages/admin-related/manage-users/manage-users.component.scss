@@ -1,0 +1,157 @@
+.manage-users-container {
+  padding: 1.5rem;
+
+  h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  // Filters container styling
+  .filters-container {
+    margin-bottom: 1.5rem;
+
+    .p-input-icon-left {
+      width: 100%;
+    }
+  }
+
+  // Table styling
+  ::ng-deep .p-datatable {
+    .p-datatable-header {
+      background-color: var(--surface-ground);
+      padding: 0.75rem 1rem;
+    }
+
+    .p-datatable-thead > tr > th {
+      background-color: var(--surface-ground);
+      color: var(--text-color);
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+    }
+
+    .p-datatable-tbody > tr > td {
+      padding: 0.75rem 1rem;
+    }
+
+    .p-datatable-tbody > tr:hover {
+      background-color: var(--surface-hover);
+    }
+
+    // Responsive table
+    @media screen and (max-width: 768px) {
+      .p-datatable-tbody > tr > td .p-column-title {
+        font-weight: 600;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  // Card styling
+  ::ng-deep .p-card {
+    height: 100%;
+
+    .p-card-body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .p-card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  // User details styling
+  .user-details {
+    .avatar-circle {
+      width: 80px;
+      height: 80px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .initials {
+        color: white;
+        font-size: 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+    }
+
+    .field {
+      margin-bottom: 1rem;
+
+      label {
+        color: var(--text-color-secondary);
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  // Dialog styling
+  ::ng-deep .p-dialog {
+    .p-dialog-header {
+      padding: 1.25rem;
+      background-color: var(--surface-card);
+      color: var(--text-color);
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .p-dialog-content {
+      padding: 1.25rem;
+      background-color: var(--surface-card);
+      color: var(--text-color);
+    }
+
+    .p-dialog-footer {
+      padding: 1.25rem;
+      background-color: var(--surface-card);
+      color: var(--text-color);
+      border-top: 1px solid var(--surface-border);
+    }
+
+    .field {
+      margin-bottom: 1.25rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // Accessibility focus indicators
+  ::ng-deep .p-component:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  // High contrast mode support
+  @media (forced-colors: active) {
+    ::ng-deep .p-card,
+    ::ng-deep .p-datatable,
+    ::ng-deep .p-dialog {
+      border: 1px solid CanvasText;
+    }
+  }
+
+  // Responsive adjustments
+  @media screen and (max-width: 768px) {
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+}
