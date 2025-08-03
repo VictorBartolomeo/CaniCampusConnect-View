@@ -54,7 +54,25 @@ export class DogService {
     });
   }
 
-  // ====== MÉTHODES UTILITAIRES POUR LES DATES ======
+  setActiveDog(dog: Dog | null): void {
+    this.activeDogSubject.next(dog);
+    if (dog) {
+      localStorage.setItem('activeDogId', dog.id.toString());
+    } else {
+      localStorage.removeItem('activeDogId');
+    }
+  }
+
+  public loadUserDogs(userId?: number | null): void {
+    const id = userId || this.authStateService.getUserId();
+    if (!id) return;
+
+    this.http.get<Dog[]>(`${this.apiUrl}/owner/connected/dogs`).subscribe({
+      next: (dogs) => this.handleDogsLoaded(dogs),
+      error: (error) => console.error('Erreur lors du chargement des chiens:', error)
+    });
+  }
+
 
   /**
    * Formate une date pour l'envoi au backend (évite les problèmes de fuseau horaire)
@@ -286,15 +304,7 @@ export class DogService {
   }
 
 
-  public loadUserDogs(userId?: number | null): void {
-    const id = userId || this.authStateService.getUserId();
-    if (!id) return;
 
-    this.http.get<Dog[]>(`${this.apiUrl}/owner/connected/dogs`).subscribe({
-      next: (dogs) => this.handleDogsLoaded(dogs),
-      error: (error) => console.error('Erreur lors du chargement des chiens:', error)
-    });
-  }
 
   private handleDogsLoaded(dogs: Dog[]): void {
     if (!dogs || dogs.length === 0) {
@@ -327,14 +337,7 @@ export class DogService {
     return dogs[0];
   }
 
-  setActiveDog(dog: Dog | null): void {
-    this.activeDogSubject.next(dog);
-    if (dog) {
-      localStorage.setItem('activeDogId', dog.id.toString());
-    } else {
-      localStorage.removeItem('activeDogId');
-    }
-  }
+
 
   getActiveDog(): Dog | null {
     return this.activeDogSubject.value;
