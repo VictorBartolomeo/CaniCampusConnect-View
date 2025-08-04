@@ -1,18 +1,6 @@
 <div class="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-4 lg:mt-10">
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
     <h1 class="font-bold text-2xl sm:text-3xl">Dashboard</h1>
-    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-
-      <div class="card flex justify-center">
-        <p-datepicker [(ngModel)]="dates" selectionMode="multiple" [readonlyInput]="true"
-                     aria-label="Sélectionner des dates"/>
-      </div>
-      <div class="card flex justify-center">
-        <p-button label="Télécharger le .ics" icon="pi pi-calendar" [loading]="loading" (onClick)="load()"
-                 aria-label="Télécharger le calendrier au format ICS"/>
-      </div>
-
-    </div>
   </div>
 
 

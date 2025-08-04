@@ -36,7 +36,6 @@ import {
 } from './pages/admin-related/manage-courses-component/manage-courses-component.component';
 
 export const routes: Routes = [
-
   //LANDING
   {path: "",
     component: LandingNavbarComponent,
@@ -50,7 +49,6 @@ export const routes: Routes = [
       {path: "validate-email", component: EmailValidationComponent},
     ]
   },
-
   //OWNERS
   {
     path: "dashboard",
@@ -77,7 +75,6 @@ export const routes: Routes = [
       {path: "**", component: NotFoundComponent}
     ]
   },
-
   //COACHS
   {
     path: "coach/dashboard",
@@ -98,7 +95,6 @@ export const routes: Routes = [
       {path: "", redirectTo: "general", pathMatch: "full"},
     ]
   },
-
   //ADMIN
   {
     path: "admin/dashboard",

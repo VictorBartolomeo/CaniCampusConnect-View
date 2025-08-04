@@ -206,7 +206,7 @@ ICI C'EST LES COMPOSANTS
               hoverBorderColor: '{primary.500}',
             },
             secondary: {
-              background: "#212121",
+              background: "{secondary.500}",
             },
             success :{
               background: "{success.500}",

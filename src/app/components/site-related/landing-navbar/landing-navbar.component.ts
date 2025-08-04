@@ -28,29 +28,41 @@ export class LandingNavbarComponent implements OnInit, AfterViewInit, OnDestroy 
       {
         label: 'Accueil',
         icon: 'pi pi-home',
-        route: "/home/#Accueil"
+        route: "/home"
       },
       {
         label: "À propos",
         icon: 'pi pi-info-circle',
-        route: "#À propos"
+        command: () => this.scrollToSection('À propos')
       },
       {
         label: 'Nos cours',
         icon: 'pi pi-graduation-cap',
-        route: "#Nos cours"
+        command: () => this.scrollToSection('Nos cours')
       },
       {
         label: 'Coachs',
         icon: 'pi pi-users',
-        route: "#Contact"
+        command: () => this.scrollToSection('Coachs')
       },
       {
         label: 'Contact',
         icon: 'pi pi-phone',
-        route: "#Contact"
+        command: () => this.scrollToSection('Contact')
       }
     ];
+  }
+
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offsetPosition = element.offsetTop; // 20px de marge supplémentaire
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   }
 
 

@@ -26,7 +26,6 @@ export class ManageDogsPageComponent implements OnInit, OnDestroy {
   constructor(private dogService: DogService) {}
 
   ngOnInit() {
-    // ✅ Pas besoin du LayoutService - la CSS variable gère tout !
     this.subscription = this.dogService.activeDog$.subscribe(dog => {
       this.currentDog = dog;
       console.log('Manage Dogs page updated for dog:', dog?.name);

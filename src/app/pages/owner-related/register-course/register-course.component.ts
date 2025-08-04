@@ -18,6 +18,7 @@ import {ButtonDirective, ButtonIcon, ButtonLabel} from 'primeng/button';
 import {ActiveRegistrationsPipe} from '../../../Pipes/active-registrations.pipe';
 import {Card} from 'primeng/card';
 import {RouterLink} from '@angular/router';
+import {AccordionModule} from 'primeng/accordion';
 
 @Component({
   selector: 'app-register-course',
@@ -35,6 +36,7 @@ import {RouterLink} from '@angular/router';
     RouterLink,
     ButtonIcon,
     ButtonLabel,
+    AccordionModule,
   ],
   templateUrl: './register-course.component.html',
   styleUrl: './register-course.component.scss',
@@ -186,7 +188,6 @@ export class RegisterCourseComponent implements OnInit {
       });
       return;
     }
-
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Inscrire ' + this.selectedDog.name + ' au cours de ' + course.title + ' ?',
@@ -227,8 +228,6 @@ export class RegisterCourseComponent implements OnInit {
 
     this.registrationService.createRegistration(dog.id, course.id).subscribe({
       next: (response) => {
-        console.log('Inscription réussie:', response);
-
         this.messageService.add({
           severity: 'success',
           summary: 'Inscription réussie!',
@@ -239,8 +238,6 @@ export class RegisterCourseComponent implements OnInit {
         this.loadAvailableCourses();
       },
       error: (error: any) => {
-        console.error('Erreur lors de l\'inscription:', error);
-
         const errorMessage = error.error?.message || 'Une erreur est survenue lors de l\'inscription';
         this.messageService.add({
           severity: 'error',

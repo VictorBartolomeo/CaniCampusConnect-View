@@ -1,8 +1,8 @@
 <div #navbarContainer class="navbar-container">
-<p-megaMenu [model]="items" [style]="{ display: 'flex' }"
+<p-megaMenu [model]="items" [style]="{ display: 'flex', 'border-radius': '0' }"
               styleClass="p-4 bg-surface-0 dark:bg-surface-900">
 
-    <ng-template pTemplate="start">
+    <ng-template pTemplate="start" class="sm:order-2">
       <p-select
         [options]="(dogService.userDogsSubject | async) || []"
         [(ngModel)]="selectedDogId"
@@ -39,7 +39,7 @@
       </p-select>
     </ng-template>
 
-    <ng-template pTemplate="item" let-item>
+    <ng-template pTemplate="item" class="sm:order-1" let-item>
       <a pRipple [routerLink]="item.route"
          class="flex items-center cursor-pointer px-4 py-2 overflow-hidden relative font-semibold text-lg uppercase"
          role="menuitem">

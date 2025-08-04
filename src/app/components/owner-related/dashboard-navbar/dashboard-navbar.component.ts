@@ -32,7 +32,6 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
   activeDog$: Observable<Dog | null>;
   selectedDogId: number | null = null;
 
-  // ✅ AJOUT : Propriété locale pour le chien actif
   activeDog: Dog | null = null;
   private activeDogSubscription?: Subscription;
 
@@ -56,7 +55,6 @@ export class DashboardNavbarComponent implements OnInit, OnDestroy {
       this.dogService.loadUserDogs();
     }
 
-    // ✅ S'abonner aux changements d'owner pour mettre à jour le menu
     this.userService.owner$.subscribe(owner => {
       this.buildAvatarMenu();
     });

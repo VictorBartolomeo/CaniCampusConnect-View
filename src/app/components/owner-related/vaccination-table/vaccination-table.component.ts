@@ -5,7 +5,9 @@ import {TableModule} from 'primeng/table';
 import {CardModule} from 'primeng/card';
 import {DatePipe, NgClass} from '@angular/common';
 import {Vaccination} from '../../../models/vaccination';
+
 import {Subscription} from 'rxjs';
+
 import {DogService} from '../../../service/dog.service';
 
 
