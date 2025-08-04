@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, BehaviorSubject, tap, Subject, throwError} from 'rxjs';
+import {Observable, BehaviorSubject, tap, Subject, throwError, of} from 'rxjs';
 import { Registration } from '../models/registration';
 import { Course } from '../models/course';
 import { AuthStateService } from './auth-state.service';
@@ -95,6 +95,23 @@ export class RegistrationService {
     return this.pendingCountSubject.getValue();
   }
 
+  /**
+   * ✅ Obtient le nombre de registrations pour un cours
+   */
+  getRegistrationsCount(courseId: number): Observable<number> {
+    console.log('🔄 CourseService.getRegistrationsCount() - Course ID:', courseId);
+    return this.http.get<number>(`${this.apiUrl}/course/${courseId}/registrations/count`).pipe(
+      tap(count => {
+        console.log('✅ CourseService.getRegistrationsCount() - Count:', count);
+      }),
+      catchError(error => {
+        console.error('❌ CourseService.getRegistrationsCount() - Error:', error);
+        return of(0);
+      })
+    );
+  }
+
+
 
   /**
    * ✅ Obtient les inscriptions d'un cours
@@ -102,7 +119,6 @@ export class RegistrationService {
    */
   getRegistrationsByCourseId(courseId: number): Observable<any[]> {
     console.log('🔄 RegistrationService.getRegistrationsByCourseId() - Course ID:', courseId);
-    // Utilisez l'endpoint approprié selon votre backend
     return this.http.get<any[]>(`${this.apiUrl}/course/${courseId}/registrations`).pipe(
       tap(registrations => {
         console.log('✅ RegistrationService.getRegistrationsByCourseId() - Registrations:', registrations);
