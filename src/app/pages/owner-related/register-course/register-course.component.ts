@@ -186,7 +186,6 @@ export class RegisterCourseComponent implements OnInit {
       });
       return;
     }
-
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: 'Inscrire ' + this.selectedDog.name + ' au cours de ' + course.title + ' ?',
@@ -227,8 +226,6 @@ export class RegisterCourseComponent implements OnInit {
 
     this.registrationService.createRegistration(dog.id, course.id).subscribe({
       next: (response) => {
-        console.log('Inscription réussie:', response);
-
         this.messageService.add({
           severity: 'success',
           summary: 'Inscription réussie!',
@@ -239,8 +236,6 @@ export class RegisterCourseComponent implements OnInit {
         this.loadAvailableCourses();
       },
       error: (error: any) => {
-        console.error('Erreur lors de l\'inscription:', error);
-
         const errorMessage = error.error?.message || 'Une erreur est survenue lors de l\'inscription';
         this.messageService.add({
           severity: 'error',
