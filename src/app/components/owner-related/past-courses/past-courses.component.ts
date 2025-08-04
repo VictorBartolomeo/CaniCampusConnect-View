@@ -7,8 +7,9 @@ import {Registration} from '../../../models/registration';
 import {Subscription} from 'rxjs';
 import {DogService} from '../../../service/dog.service';
 import {ButtonDirective, ButtonIcon} from 'primeng/button';
-import {DatePicker} from 'primeng/datepicker';
 import {Card} from 'primeng/card';
+import {Accordion, AccordionContent, AccordionHeader, AccordionPanel} from 'primeng/accordion';
+import {Calendar} from 'primeng/calendar';
 
 
 @Component({
@@ -19,8 +20,12 @@ import {Card} from 'primeng/card';
     FormsModule,
     ButtonDirective,
     ButtonIcon,
-    DatePicker,
-    Card
+    Card,
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    Calendar,
+    AccordionContent
   ],
   templateUrl: './past-courses.component.html',
   styleUrl: './past-courses.component.scss'
