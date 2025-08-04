@@ -18,6 +18,7 @@ import {ButtonDirective, ButtonIcon, ButtonLabel} from 'primeng/button';
 import {ActiveRegistrationsPipe} from '../../../Pipes/active-registrations.pipe';
 import {Card} from 'primeng/card';
 import {RouterLink} from '@angular/router';
+import {AccordionModule} from 'primeng/accordion';
 
 @Component({
   selector: 'app-register-course',
@@ -35,6 +36,7 @@ import {RouterLink} from '@angular/router';
     RouterLink,
     ButtonIcon,
     ButtonLabel,
+    AccordionModule,
   ],
   templateUrl: './register-course.component.html',
   styleUrl: './register-course.component.scss',
