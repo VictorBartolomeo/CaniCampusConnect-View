@@ -1,18 +1,16 @@
 import {Component} from '@angular/core';
-import {LandingNavbarComponent} from '../../../components/site-related/landing-navbar/landing-navbar.component';
 import {Button} from 'primeng/button';
-import {Card} from 'primeng/card';
-import {Divider} from 'primeng/divider';
-import {NgClass, NgOptimizedImage} from '@angular/common';
-import {Avatar} from 'primeng/avatar';
-import {Badge} from 'primeng/badge';
-import {InputText} from 'primeng/inputtext';
-import {InputTextarea} from 'primeng/inputtextarea';
 import {FormsModule} from '@angular/forms';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
-  imports: [Button],
+  imports: [
+    Button,
+    FormsModule,
+    RouterLinkActive,
+    RouterLink
+  ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
@@ -54,12 +52,12 @@ export class LandingPageComponent {
     {
       name: 'Tetiana Lombardi',
       description: 'Éducatrice canine certifiée avec plus de 15 ans d\'expérience, Tetiana est spécialisée dans la rééducation comportementale et l\'approche positive. Sa patience et sa compréhension profonde de la psychologie canine font d\'elle une coach très appréciée par les chiens les plus anxieux.',
-      image: 'assets/images/placeholder-coach-female.jpg'
+      image: '/img/avatars/coachs/Coach_TL.jpeg'
     },
     {
       name: 'Stéphane Scheeres',
       description: 'Ancien vétérinaire reconverti en éducateur canin, Stéphane combine ses connaissances médicales avec une approche ludique de l\'apprentissage. Passionné par les sports canins, il excelle particulièrement dans les cours d\'agility et d\'obéissance avancée.',
-      image: 'assets/images/placeholder-coach-male.jpg'
+      image: '/img/avatars/coachs/Coach_SS.jpeg'
     }
   ];
 }
