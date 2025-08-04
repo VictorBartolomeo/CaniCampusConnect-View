@@ -131,8 +131,6 @@ export class DogService {
     }
   }
 
-  // ====== MÉTHODES POUR LA GESTION DES GENRES ======
-
   /**
    * Récupère l'icône et la couleur du genre
    */
