@@ -76,7 +76,6 @@ export class DogSummaryComponent implements OnInit, OnDestroy {
     return this.dogService.getGenderLabel(this.dog?.gender);
   }
 
-  // ✅ Méthode sans paramètre pour le template
   getDogAge(): string {
     return this.dogService.getDogAge(this.dog?.birthDate);
   }
@@ -85,7 +84,6 @@ export class DogSummaryComponent implements OnInit, OnDestroy {
     return this.dogService.getBreedNames(this.dog?.breeds);
   }
 
-  // ✅ Méthode sans paramètre pour le template
   formatDate(): string {
     return this.dogService.formatDateForDisplay(this.dog?.birthDate);
   }
@@ -102,7 +100,4 @@ export class DogSummaryComponent implements OnInit, OnDestroy {
     return this.dog ? this.dogService.getVaccinationStatus(this.dog) : { label: 'Non renseignée', color: 'text-gray-500' };
   }
 
-  navigateToAddDog(): void {
-    this.router.navigate(['/dashboard/manage-dog'], { queryParams: { add: true } });
-  }
 }
