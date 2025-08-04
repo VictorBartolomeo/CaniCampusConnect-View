@@ -47,7 +47,8 @@
     </p>
   </div>
 
-  <div class="w-full max-w-6xl mx-auto overflow-x-auto">
+  <!-- Vue Desktop/Tablette : Tableau (md et plus) -->
+  <div class="hidden md:block w-full max-w-6xl mx-auto overflow-x-auto px-4 sm:px-6">
     <p-table
       [value]="filteredCourses"
       [paginator]="true"
@@ -57,8 +58,8 @@
       stripedRows="true"
       styleClass="mt-4 shadow-sm rounded-lg overflow-hidden"
       [responsive]="true"
-      aria-label="Liste des cours disponibles"
-    >
+      aria-label="Liste des cours disponibles">
+
       <ng-template pTemplate="header">
         <tr>
           <th scope="col">Cours</th>
@@ -75,18 +76,8 @@
           <td>{{ course.coach.firstname }} {{ course.coach.lastname }}</td>
           <td>{{ course.startDatetime | date : "dd MMMM yyyy à HH:mm" }}</td>
           <td>{{ course.registrations | activeRegistrations }} / {{ course.maxCapacity }}</td>
-          <td class="flex flex-col sm:flex-row gap-2 sm:gap-3 items-center">
-            <div>
-              <p-toast position="bottom-center"/>
-              <p-confirmPopup>
-                <ng-template #content let-message>
-                  <div
-                    class="flex flex-col items-center w-full gap-4 border-b border-surface-200 dark:border-surface-700 p-4 mb-4 pb-0">
-                    <i [class]="message.icon" class="!text-6xl text-primary-500" aria-hidden="true"></i>
-                    <p>{{ message.message }}</p>
-                  </div>
-                </ng-template>
-              </p-confirmPopup>
+          <td>
+            <div class="flex gap-2">
               <button
                 pButton
                 type="button"
@@ -96,8 +87,6 @@
                 (click)="confirm(course, $event)"
                 aria-label="S'inscrire au cours">
               </button>
-            </div>
-            <div>
               <button
                 pButton
                 type="button"
@@ -106,78 +95,166 @@
                 (click)="showCourseDialog(course)"
                 aria-label="Voir les détails du cours">
               </button>
-
-              <p-dialog
-                header="{{ selectedCourseForDialog?.title }}"
-                [modal]="true"
-                [(visible)]="dialogVisible"
-                [style]="{ width: '40rem' }"
-                [breakpoints]="{ '1199px': '75vw', '767px': '85vw', '575px': '90vw' }"
-                styleClass="course-details-dialog"
-                [maximizable]="true"
-                [closeOnEscape]="true"
-                aria-labelledby="course-dialog-title"
-                role="dialog">
-                @if (selectedCourseForDialog) {
-                  <div class="flex flex-col gap-4 sm:gap-5 p-3 sm:p-4">
-                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                      <h3 id="course-dialog-title" class="text-lg font-bold text-primary mb-3">Informations du
-                        cours</h3>
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <p class="mb-2"><i class="pi pi-calendar mr-2 text-primary" aria-hidden="true"></i><span
-                            class="font-semibold">Date:</span> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}
-                          </p>
-                          <p class="mb-2"><i class="pi pi-clock mr-2 text-primary" aria-hidden="true"></i><span
-                            class="font-semibold">Horaires:</span> {{ selectedCourseForDialog.startDatetime | date : "HH:mm" }}
-                            - {{ selectedCourseForDialog.endDatetime | date: "HH:mm" }}</p>
-                          <p class="mb-2"><i class="pi pi-users mr-2 text-primary" aria-hidden="true"></i><span
-                            class="font-semibold">Jauge:</span> {{ selectedCourseForDialog.registrations | activeRegistrations }}
-                            / {{ selectedCourseForDialog.maxCapacity }}</p>
-                        </div>
-                        <div>
-                          <p class="mb-2"><i class="pi pi-tag mr-2 text-primary" aria-hidden="true"></i><span
-                            class="font-semibold">Type:</span> {{ selectedCourseForDialog.courseType.name }}</p>
-                          <p class="mb-2">
-                            <i class="pi pi-chart-bar mr-2 text-primary" aria-hidden="true"></i>
-                            <span class="font-semibold">Âge requis:</span>
-                            <span class="bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold ml-1">
-                                {{ getCourseAgeRangeCategory(selectedCourseForDialog) }}
-                              </span>
-                            <span class="ml-1">({{ selectedCourseForDialog.courseType.ageRange.minAge }}
-                              -{{ selectedCourseForDialog.courseType.ageRange.maxAge }} mois)</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 class="text-lg font-bold text-primary mb-2">Coach</h3>
-                      <p class="flex items-center"><i class="pi pi-user mr-2 text-primary"
-                                                      aria-hidden="true"></i>{{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 class="text-lg font-bold text-primary mb-2">Description</h3>
-                      <p class="text-gray-700">{{ selectedCourseForDialog.description }}</p>
-                    </div>
-                  </div>
-                }
-                <ng-template pTemplate="footer">
-                  <div class="flex flex-col sm:flex-row justify-between gap-2">
-                    <button pButton type="button" label="Fermer" icon="pi pi-times" (click)="dialogVisible = false"
-                            class="p-button-outlined" aria-label="Fermer la fenêtre de détails"></button>
-                    <button pButton type="button" label="S'inscrire" icon="pi pi-check-circle"
-                            (click)="confirm(selectedCourseForDialog!, $event); dialogVisible = false"
-                            class="p-button-success" aria-label="S'inscrire au cours"></button>
-                  </div>
-                </ng-template>
-              </p-dialog>
             </div>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </div>
+
+  <div class="block md:hidden w-full max-w-4xl mx-auto px-4">
+      <p-accordion value="0" class="gap-2">
+    @for (course of filteredCourses; track course.id) {
+        <p-accordion-panel [value]="course.id">
+          <p-accordion-header>
+            <div class="flex justify-between items-center w-full pr-4">
+              <div class="flex-1">
+                <h3 class="font-bold text-base">{{ course.title }}</h3>
+                <p class="text-sm text-gray-600 mt-1">
+                  <i class="pi pi-calendar mr-1"></i>
+                  {{ course.startDatetime | date : "dd MMM yyyy" }} à {{ course.startDatetime | date : "HH:mm" }}
+                </p>
+              </div>
+              <div class="flex items-center gap-1 text-xs text-gray-600">
+                <i class="pi pi-users"></i>
+                <span>{{ course.registrations | activeRegistrations }}/{{ course.maxCapacity }}</span>
+              </div>
+            </div>
+          </p-accordion-header>
+
+          <p-accordion-content>
+            <div class="pt-3">
+              <!-- Informations compactes du cours -->
+              <div class="space-y-2 mb-4 text-sm">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-user text-primary"></i>
+                  <span>{{ course.coach.firstname }} {{ course.coach.lastname }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-clock text-primary"></i>
+                  <span>{{ course.startDatetime | date : "HH:mm" }} - {{ course.endDatetime | date: "HH:mm" }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-tag text-primary"></i>
+                  <span>{{ course.courseType.name }}</span>
+                  <span class="bg-primary text-white px-2 py-0.5 rounded-full text-xs ml-1">
+                    {{ getCourseAgeRangeCategory(course) }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Actions pour mobile -->
+              <div class="flex gap-2">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-check-circle"
+                  label="S'inscrire"
+                  class="p-button-sm p-button-success flex-1"
+                  (click)="confirm(course, $event)"
+                  aria-label="S'inscrire au cours">
+                </button>
+
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-info-circle"
+                  class="p-button-sm p-button-outlined"
+                  (click)="showCourseDialog(course)"
+                  aria-label="Voir les détails du cours">
+                </button>
+              </div>
+            </div>
+          </p-accordion-content>
+        </p-accordion-panel>
+    }
+      </p-accordion>
+
+    <!-- Compteur pour mobile -->
+    @if (filteredCourses.length > 0) {
+      <div class="text-center mt-4">
+        <p class="text-sm text-gray-600">{{ filteredCourses.length }} cours disponibles</p>
+      </div>
+    }
+  </div>
+
+  <!-- Dialog pour les détails (commun aux deux vues) -->
+  <p-dialog
+    header="{{ selectedCourseForDialog?.title }}"
+    [modal]="true"
+    [(visible)]="dialogVisible"
+    [style]="{ width: '40rem' }"
+    [breakpoints]="{ '1199px': '75vw', '767px': '85vw', '575px': '90vw' }"
+    styleClass="course-details-dialog"
+    [maximizable]="true"
+    [closeOnEscape]="true"
+    aria-labelledby="course-dialog-title"
+    role="dialog">
+    @if (selectedCourseForDialog) {
+      <div class="flex flex-col gap-4 sm:gap-5 p-3 sm:p-4">
+        <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+          <h3 id="course-dialog-title" class="text-lg font-bold text-primary mb-3">Informations du cours</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="mb-2"><i class="pi pi-calendar mr-2 text-primary" aria-hidden="true"></i><span
+                class="font-semibold">Date:</span> {{ selectedCourseForDialog.startDatetime | date : "dd MMMM yyyy" }}
+              </p>
+              <p class="mb-2"><i class="pi pi-clock mr-2 text-primary" aria-hidden="true"></i><span
+                class="font-semibold">Horaires:</span> {{ selectedCourseForDialog.startDatetime | date : "HH:mm" }}
+                - {{ selectedCourseForDialog.endDatetime | date: "HH:mm" }}</p>
+              <p class="mb-2"><i class="pi pi-users mr-2 text-primary" aria-hidden="true"></i><span
+                class="font-semibold">Jauge:</span> {{ selectedCourseForDialog.registrations | activeRegistrations }}
+                / {{ selectedCourseForDialog.maxCapacity }}</p>
+            </div>
+            <div>
+              <p class="mb-2"><i class="pi pi-tag mr-2 text-primary" aria-hidden="true"></i><span
+                class="font-semibold">Type:</span> {{ selectedCourseForDialog.courseType.name }}</p>
+              <p class="mb-2">
+                <i class="pi pi-chart-bar mr-2 text-primary" aria-hidden="true"></i>
+                <span class="font-semibold">Âge requis:</span>
+                <span class="bg-primary text-white px-2 py-1 rounded-full text-xs font-semibold ml-1">
+                    {{ getCourseAgeRangeCategory(selectedCourseForDialog) }}
+                  </span>
+                <span class="ml-1">({{ selectedCourseForDialog.courseType.ageRange.minAge }}
+                  -{{ selectedCourseForDialog.courseType.ageRange.maxAge }} mois)</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-primary mb-2">Coach</h3>
+          <p class="flex items-center"><i class="pi pi-user mr-2 text-primary"
+                                          aria-hidden="true"></i>{{ selectedCourseForDialog.coach.firstname }} {{ selectedCourseForDialog.coach.lastname }}
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-primary mb-2">Description</h3>
+          <p class="text-gray-700">{{ selectedCourseForDialog.description }}</p>
+        </div>
+      </div>
+    }
+    <ng-template pTemplate="footer">
+      <div class="flex flex-col sm:flex-row justify-between gap-2">
+        <button pButton type="button" label="Fermer" icon="pi pi-times" (click)="dialogVisible = false"
+                class="p-button-outlined" aria-label="Fermer la fenêtre de détails"></button>
+        <button pButton type="button" label="S'inscrire" icon="pi pi-check-circle"
+                (click)="confirm(selectedCourseForDialog!, $event); dialogVisible = false"
+                class="p-button-success" aria-label="S'inscrire au cours"></button>
+      </div>
+    </ng-template>
+  </p-dialog>
 }
+
+<!-- Toast et ConfirmPopup (communs) -->
+<p-toast position="bottom-center"/>
+<p-confirmPopup>
+  <ng-template #content let-message>
+    <div
+      class="flex flex-col items-center w-full gap-4 border-b border-surface-200 dark:border-surface-700 p-4 mb-4 pb-0">
+      <i [class]="message.icon" class="!text-6xl text-primary-500" aria-hidden="true"></i>
+      <p>{{ message.message }}</p>
+    </div>
+  </ng-template>
+</p-confirmPopup>
