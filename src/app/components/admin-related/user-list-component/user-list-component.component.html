@@ -83,9 +83,6 @@
           <th pSortableColumn="role" style="min-width: 130px">
             Rôle <p-sortIcon field="role"></p-sortIcon>
           </th>
-          <th pSortableColumn="registrationDate" style="min-width: 130px">
-            Inscription <p-sortIcon field="registrationDate"></p-sortIcon>
-          </th>
           <th style="min-width: 150px">Actions</th>
         </tr>
       </ng-template>
@@ -99,7 +96,12 @@
             <span class="font-medium">{{ user.lastname }}</span>
           </td>
           <td>
-            <span class="text-blue-600">{{ user.email }}</span>
+      <span
+        class="text-blue-600 block truncate max-w-[180px]"
+        [pTooltip]="user.email"
+        tooltipPosition="top">
+        {{ user.email }}
+      </span>
           </td>
           <td>
             <span>{{ user.phone || 'Non renseigné' }}</span>
@@ -109,9 +111,6 @@
               [value]="getRoleLabel(user.role)"
               [severity]="getRoleSeverity(user.role)">
             </p-badge>
-          </td>
-          <td>
-            <span>{{ user.registrationDate | date:'dd/MM/yyyy' }}</span>
           </td>
           <td>
             <div class="flex gap-2">
@@ -188,14 +187,6 @@
           </div>
 
           <div class="flex justify-end gap-2">
-            <button
-              pButton
-              type="button"
-              icon="pi pi-eye"
-              class="p-button-sm p-button-outlined"
-              (click)="onUserSelect(user)"
-              pTooltip="Voir détails">
-            </button>
             <button
               pButton
               type="button"
