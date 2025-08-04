@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {Tab, TabList, Tabs} from 'primeng/tabs';
 import {FormsModule} from '@angular/forms';
-import {DatePicker} from 'primeng/datepicker';
-import {Button} from 'primeng/button';
 
 @Component({
   selector: 'app-dashboard-user-page',
@@ -14,8 +12,8 @@ import {Button} from 'primeng/button';
     RouterLink,
     TabList,
     FormsModule,
-    DatePicker,
-    Button,
+    RouterLinkActive,
+
   ],
   templateUrl: './dashboard-user-page.component.html',
   styleUrl: './dashboard-user-page.component.scss'
