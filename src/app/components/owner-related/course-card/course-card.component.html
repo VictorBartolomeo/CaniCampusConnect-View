@@ -1,67 +1,224 @@
-<div class="lg:py-10">
-  <p-carousel
-    [value]="getCarouselItems()"
-    [numVisible]="3"
-    [numScroll]="3"
-    [responsiveOptions]="responsiveOptions"
-    [circular]="false">
-    <ng-template let-item pTemplate="item">
-      <div class="p-3 relative mx-auto h-full">
 
-        @if (item.registration) {
-          <p-card>
-            <div class="w-full h-full flex flex-col justify-between">
-              <div class="mb-2">
-                <div class="inline-flex items-center rounded-full text-sm"
-                     [ngClass]="getStatusClass(item.registration.status)">
-                  <i [class]="getStatusIcon(item.registration.status)" class="mr-1"></i>
-                  <span>{{ getStatusLabel(item.registration.status) }}</span>
+<p-carousel
+  [value]="getCarouselItems()"
+  [numVisible]="3"
+  [numScroll]="3"
+  [responsiveOptions]="responsiveOptions"
+  [circular]="false"
+  [autoplayInterval]="0"
+  styleClass="custom-carousel">
+
+  <ng-template pTemplate="item" let-item>
+    @if (item.registration && item.registration.course) {
+      <!-- Card avec cours valide -->
+      <div class="p-7">
+        <p-card styleClass="shadow-md rounded-lg overflow-hidden h-full course-card-compact">
+
+          <!-- Header plus compact -->
+          <ng-template pTemplate="header">
+            <div class="relative h-20 bg-gradient-to-r from-primary to-primary-600">
+              <div class="absolute inset-0 flex items-center justify-between p-4">
+                <div class="text-white flex-1">
+                  <h3 class="text-base font-bold truncate mb-1">{{ item.registration.course.title }}</h3>
+                  <div class="flex items-center gap-2 text-xs opacity-90">
+                    <i class="pi pi-user text-xs"></i>
+                    <span class="truncate">{{ getCoachName(item.registration.course) }}</span>
+                  </div>
+                </div>
+
+                <!-- Badge de statut du cours -->
+                <p-badge
+                  [value]="getCourseStatus(item.registration.course).label"
+                  styleClass="text-xs">
+                </p-badge>
+              </div>
+            </div>
+          </ng-template>
+
+          <!-- Contenu principal plus dense -->
+          <div class="p-4">
+            <!-- État de l'inscription -->
+            <div class="mb-3">
+              <div class="flex items-center gap-2 p-2 rounded-md"
+                   [class]="getStatusClass(item.registration.status) + ' registration-status'">
+                <i [class]="getStatusIcon(getStatusLabel(item.registration.status))"
+                   class="text-sm"></i>
+                <span class="text-sm font-medium">
+                  {{ getStatusLabel(item.registration.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-3">
+              <!-- Date et heure côte à côte -->
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <i class="pi pi-calendar text-primary text-sm"></i>
+                  <span class="text-sm font-medium text-gray-700">
+                    {{ item.registration.course.startDatetime | date:'dd/MM/yyyy':'':'fr' }}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-clock text-primary text-sm"></i>
+                  <span class="text-sm text-gray-600">
+                    {{ item.registration.course.startDatetime | date:'HH:mm':'':'fr' }}
+                  </span>
                 </div>
               </div>
 
-              <div>
-                <p class="font-medium text-[24px]">
-                  {{ item.registration.course.title }}
-                </p>
-                <p-chip label="{{item.registration.course.courseType?.name}}" class="mt-1"/>
-              </div>
-
-              <div>
-                <p class="font-bold text-[43px]">
-                  {{ item.registration.course.startDatetime | date:'d MMMM yyyy':'':'fr' }}
-                </p>
-                <p class="font-bold text-[24px]">
-                  {{ item.registration.course.startDatetime | date:'HH:mm':'':'fr' }}
-                </p>
-              </div>
-
-              <div>
-                <p class="font-light text-[22px]">
-                  {{ item.registration.course.coach.firstname }} {{ item.registration.course.coach.lastname }}
-                </p>
+              <!-- Type de cours -->
+              <div class="text-right flex-shrink-0">
+                <div class="flex items-center gap-2 justify-end">
+                  <i class="pi pi-tag text-primary text-sm"></i>
+                  <span class="text-xs text-gray-600 font-medium">
+                    {{ item.registration.course.courseType?.name || 'N/A' }}
+                  </span>
+                </div>
               </div>
             </div>
-          </p-card>
-        }
 
-
-        @if (!item.registration) {
-          <p-card styleClass="text-center p-4 mx-auto">
-            @if (!activeDog) {
-              <div class="flex flex-col items-center bg">
-                <i class="pi pi-info-circle text-3xl mb-2 text-primary"></i>
-                <p class="text-lg text-primary">Aucun chien sélectionné. Veuillez sélectionner un chien pour voir ses inscriptions aux cours.</p>
-              </div>
-            } @else {
-              <div class="flex flex-col items-center">
-                <i class="pi pi-calendar-times text-3xl mb-2 text-primary"></i>
-                <p class="text-lg">Aucune inscription aux cours pour {{activeDog.name}}.</p>
+            <!-- Chien inscrit - plus compact -->
+            @if (item.registration.dog?.name) {
+              <div class="bg-green-50 rounded-md p-2 mb-3 border-l-3 border-green-400">
+                <div class="flex items-center gap-2">
+                  <i class="pi pi-heart text-green-600 text-sm"></i>
+                  <span class="text-green-800 text-sm font-medium">{{ item.registration.dog.name }}</span>
+                </div>
               </div>
             }
-          </p-card>
-        }
 
+            <!-- Barre de progression PrimeNG pour la capacité -->
+            <div class="mb-4">
+              <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
+                <span class="font-medium">Participants</span>
+                <div class="flex items-center gap-1">
+                  @if (isCountLoading(item.registration.course)) {
+                    <i class="pi pi-spinner pi-spin text-xs"></i>
+                  }
+                  <span class="font-medium text-gray-700">
+                    {{ getActualRegistrationCount(item.registration.course) }}/{{ item.registration.course.maxCapacity }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Progress Bar PrimeNG -->
+              <p-progressbar
+                [value]="getCapacityPercentage(item.registration.course)"
+                [styleClass]="getProgressBarStyleClass(item.registration.course)">
+              </p-progressbar>
+            </div>
+          </div>
+
+          <!-- Footer avec boutons - corrigé -->
+          <ng-template pTemplate="footer">
+            <div class="card-footer-fixed">
+              <div class="flex gap-2">
+                <!-- Bouton ICS principal -->
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-download"
+                  label="Télécharger le fichier .ics"
+                  class="p-button-sm flex-1"
+                  [loading]="isDownloading(item.registration.course.id)"
+                  (click)="downloadCourseICS(item.registration)"
+                  pTooltip="Télécharger le fichier .ics"
+                  tooltipPosition="top">
+                </button>
+
+                <!-- ✅ Bouton annulation avec debug -->
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-times"
+                  class="p-button-outlined p-button-sm p-button-danger footer-btn-cancel"
+                  [disabled]="isCourseStarted(item.registration.course)"
+                  (click)="onCancelClick(item.registration)"
+                  pTooltip="Annuler l'inscription"
+                  tooltipPosition="top"
+                  style="pointer-events: auto !important; cursor: pointer !important;">
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </p-card>
       </div>
-    </ng-template>
-  </p-carousel>
-</div>
+    } @else {
+      <!-- Card vide plus compacte -->
+      <div class="p-7">
+        <p-card styleClass="shadow-md rounded-lg overflow-hidden h-full">
+          <div class="text-center p-8">
+            <i class="pi pi-calendar text-3xl text-gray-300 mb-3"></i>
+            <h3 class="text-base font-medium text-gray-500 mb-1">Aucun cours</h3>
+            <p class="text-gray-400 text-xs">Pas de cours à venir</p>
+          </div>
+        </p-card>
+      </div>
+    }
+  </ng-template>
+</p-carousel>
+
+<!-- ✅ Dialog de confirmation d'annulation - Déplacé en dehors du carousel et avec z-index élevé -->
+<p-dialog
+  [(visible)]="cancelDialogVisible"
+  header="Confirmer l'annulation"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [blockScroll]="true"
+  [dismissableMask]="true"
+  [baseZIndex]="10000"
+  [appendTo]="'body'"
+  styleClass="p-dialog-confirm"
+  contentStyleClass="p-0">
+
+  <div class="p-6">
+    <div class="flex items-start gap-3 mb-4">
+      <i class="pi pi-exclamation-triangle text-orange-500 text-2xl mt-1"></i>
+      <div class="flex-1">
+        <p class="text-gray-800 mb-2 font-medium">
+          Êtes-vous sûr de vouloir annuler l'inscription de
+          <strong class="text-primary">{{ registrationToCancel?.dog?.name }}</strong>
+          au cours <strong class="text-primary">{{ registrationToCancel?.course?.title }}</strong> ?
+        </p>
+        <p class="text-sm text-gray-600">
+          Cette action est irréversible. Vous devrez vous réinscrire si vous changez d'avis.
+        </p>
+      </div>
+    </div>
+
+    <!-- ✅ Informations du cours -->
+    @if (registrationToCancel) {
+      <div class="bg-gray-50 rounded-lg p-3 mb-4">
+        <div class="text-sm text-gray-600 space-y-1">
+          <div><strong>Date :</strong> {{ registrationToCancel.course.startDatetime | date:'dd/MM/yyyy à HH:mm':'':'fr' }}</div>
+          <div><strong>Statut :</strong> {{ getStatusLabel(registrationToCancel.status) }}</div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2 p-4 border-t border-gray-200">
+      <button
+        pButton
+        type="button"
+        label="Annuler"
+        icon="pi pi-times"
+        class="p-button-text p-button-secondary"
+        (click)="cancelDialogVisible = false"
+        [disabled]="cancellingRegistration">
+      </button>
+      <button
+        pButton
+        type="button"
+        label="Confirmer l'annulation"
+        icon="pi pi-check"
+        class="p-button-danger"
+        [loading]="cancellingRegistration"
+        (click)="confirmCancelRegistration()">
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
