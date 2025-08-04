@@ -63,9 +63,9 @@
   <!-- Accordéon pour tablette et mobile -->
   <div class="block lg:hidden">
     @if (filteredRegistrations && filteredRegistrations.length > 0) {
-      <p-accordion [multiple]="false" styleClass="w-full">
+      <p-accordion [multiple]="false" styleClass="w-full" value="0">
         @for (registration of filteredRegistrations; track registration.id) {
-          <p-accordionpanel>
+          <p-accordionpanel [value]="registration.id">
             <p-accordionheader>
               <div class="flex justify-between items-center w-full">
                 <div class="flex flex-col">
