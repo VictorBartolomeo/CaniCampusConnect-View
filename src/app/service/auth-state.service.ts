@@ -43,7 +43,6 @@ export class AuthStateService {
     this.roleSubject.next(role);
   }
 
-  // Réinitialiser l'état
   clearState(): void {
     this.connectedSubject.next(false);
     this.userIdSubject.next(null);

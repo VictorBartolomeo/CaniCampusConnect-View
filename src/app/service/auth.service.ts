@@ -27,8 +27,6 @@ export class AuthService {
     }
     this.loadThemePreference();
 
-    // ✅ CORRECTION : Ne plus injecter directement UserService et DogService
-    // Ces services s'initialiseront automatiquement via leurs observables
   }
 
   // Méthode pour charger la préférence de thème
@@ -135,7 +133,6 @@ export class AuthService {
     sessionStorage.removeItem('jwt');
     sessionStorage.clear();
 
-    // ✅ CORRECTION : Clear via AuthStateService qui notifiera les autres services
     this.authStateService.clearState();
 
     this.router.navigateByUrl('/login');
