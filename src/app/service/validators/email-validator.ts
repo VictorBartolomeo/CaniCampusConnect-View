@@ -7,7 +7,7 @@ export class EmailValidator {
   static validEmail(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (!control.value) {
-        return null; // Ne pas valider si vide (c'est le rôle de required)
+        return null;
       }
       const valid = EmailValidator.EMAIL_PATTERN.test(control.value);
       return valid ? null : { invalidEmail: true };
