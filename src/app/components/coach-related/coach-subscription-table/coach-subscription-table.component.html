@@ -48,12 +48,12 @@
 
           @if (isRowExpanded(courseData.course)) {
             <tr>
-              <td colspan="5" class="p-4 bg-slate-50 dark:bg-slate-900">
+              <td colspan="5" class="p-4 bg-slate-50">
                 <h3 class="font-semibold mb-4">Demandes pour {{ courseData.course.title }}</h3>
 
                 <div class="space-y-3">
                   @for (registration of courseData.registrations; track registration.id) {
-                    <div class="flex justify-between items-center p-3 bg-white dark:bg-slate-800 rounded">
+                    <div class="flex justify-between items-center p-3 rounded">
                       <div>
                         <div class="font-medium">{{ registration.dog.name }}</div>
                         <div class="text-sm text-slate-600">{{ formatDate(registration.registrationDate) }}</div>
