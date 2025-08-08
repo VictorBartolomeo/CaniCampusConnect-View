@@ -1,6 +1,6 @@
 {
   "name": "canicampusconnect-view",
-  "version": "0.0.1",
+  "version": "0.0.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
