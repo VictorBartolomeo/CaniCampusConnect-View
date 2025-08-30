@@ -58,7 +58,6 @@ export class RegistrationService {
     return this.http.patch<Registration>(`${this.apiUrl}/registrations/${registrationId}/status`, body)
       .pipe(
         tap(updatedRegistration => {
-          // ✅ AJOUT : Notifier que le cours a été mis à jour
           this.notifyCourseUpdate(updatedRegistration.course.id);
         })
       );
@@ -102,10 +101,10 @@ export class RegistrationService {
     console.log('🔄 CourseService.getRegistrationsCount() - Course ID:', courseId);
     return this.http.get<number>(`${this.apiUrl}/course/${courseId}/registrations/count`).pipe(
       tap(count => {
-        console.log('✅ CourseService.getRegistrationsCount() - Count:', count);
+        console.log('CourseService.getRegistrationsCount() - Count:', count);
       }),
       catchError(error => {
-        console.error('❌ CourseService.getRegistrationsCount() - Error:', error);
+        console.error('CourseService.getRegistrationsCount() - Error:', error);
         return of(0);
       })
     );

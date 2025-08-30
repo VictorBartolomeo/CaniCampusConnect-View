@@ -55,7 +55,7 @@ export class CourseService {
     console.log('🔄 CourseService.getUpcomingCourses()');
     return this.http.get<any[]>(`${this.apiUrl}/courses/upcoming`).pipe(
       tap(courses => {
-        console.log('✅ CourseService.getUpcomingCourses() - Upcoming courses:', courses);
+        console.log('CourseService.getUpcomingCourses() - Upcoming courses:', courses);
       }),
       catchError(error => {
         console.error('❌ CourseService.getUpcomingCourses() - Error:', error);

@@ -39,7 +39,6 @@ export class DogSummaryComponent implements OnInit, OnDestroy {
 
   constructor(
     public dogService: DogService,
-    private router: Router
   ) {}
 
   ngOnInit() {
